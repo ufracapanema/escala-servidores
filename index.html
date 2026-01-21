@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala de Trabalho - Ícones de Contato</title>
+    <title>Escala de Trabalho dos Servidores Tecnicos Administrativos em Educação</title>
     <style>
         :root {
             --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
-            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-whatsapp: #128c7e;
+            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-whatsapp: #25D366;
         }
 
         body {
@@ -55,18 +55,22 @@
 
         th { background: #f8fafc; padding: 15px 5px; font-size: 0.8rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; text-align: center; }
         .col-nome { text-align: left !important; padding-left: 25px !important; width: 260px; }
-        .col-contato { text-align: left !important; width: 260px; }
+        .col-contato { text-align: left !important; width: 270px; }
         .col-dia { width: 65px; text-align: center !important; }
 
         td { padding: 14px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
         .nome-servidor { font-weight: 800; color: #0f172a; font-size: 1.25rem; display: block; }
         .horario-tag { display: inline-block; background-color: #f1f5f9; color: #1e293b; font-weight: 700; font-size: 0.85rem; padding: 2px 10px; border-radius: 5px; margin-top: 4px; }
 
-        /* ESTILO DOS CONTATOS COM ÍCONES */
-        .contato-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; text-decoration: none; }
-        .email-link { color: #2563eb; font-size: 0.95rem; font-weight: 500; }
-        .whatsapp-link { color: var(--cor-whatsapp); font-weight: 800; font-size: 1.05rem; }
-        .icon { font-size: 1.1rem; flex-shrink: 0; }
+        /* ESTILO DOS CONTATOS COM LOGOS */
+        .contato-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; text-decoration: none; transition: opacity 0.2s; }
+        .contato-item:hover { opacity: 0.7; }
+        
+        .email-link { color: #2563eb; font-size: 0.95rem; font-weight: 600; }
+        .whatsapp-link { color: #075e54; font-weight: 800; font-size: 1.1rem; }
+        
+        .logo-zap { width: 20px; height: 20px; flex-shrink: 0; }
+        .logo-email { width: 18px; height: 18px; flex-shrink: 0; color: #3b82f6; }
 
         .status-badge { 
             display: inline-flex; align-items: center; justify-content: center; 
@@ -89,7 +93,7 @@
 <body>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala Geral de Servidores</h1>
+        <h1 class="titulo-pagina">Escala de Trabalho dos Servidores Tecnicos Administrativos em Educação</h1>
         <span id="data-atualizacao" class="atualizacao-tag">Sincronizando dados...</span>
     </div>
 
@@ -107,6 +111,10 @@
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
+        // Ícones SVG para performance (não dependem de arquivos externos)
+        const iconZap = `<svg class="logo-zap" viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+        const iconEmail = `<svg class="logo-email" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+
         function formatarTelefone(num) {
             const limpo = ('' + num).replace(/\D/g, '');
             const match = limpo.match(/^(\d{2})(\d{5})(\d{4})$/);
@@ -164,11 +172,11 @@
                                 <td class="col-nome"><span class="nome-servidor">${s.nome}</span><span class="horario-tag">${s.horario}</span></td>
                                 <td class="col-contato">
                                     <a href="mailto:${s.email}" class="contato-item email-link">
-                                        <span class="icon">✉️</span> ${s.email || '-'}
+                                        ${iconEmail} <span>${s.email || '-'}</span>
                                     </a>
                                     ${zapLimpo ? `
                                     <a href="https://wa.me/55${zapLimpo}" target="_blank" class="contato-item whatsapp-link">
-                                        <span class="icon">📞</span> ${formatarTelefone(s.zap)}
+                                        ${iconZap} <span>${formatarTelefone(s.zap)}</span>
                                     </a>` : '-'}
                                 </td>
                                 ${s.dias.map((d, index) => {
@@ -190,7 +198,7 @@
                                         ${emailDoSetor ? `
                                             <div class="email-setor-box">
                                                 <a href="mailto:${emailDoSetor}" class="email-setor-link">
-                                                    ✉️ ${emailDoSetor}
+                                                    ${iconEmail} ${emailDoSetor}
                                                 </a>
                                             </div>` : ''}
                                     </th>
@@ -207,7 +215,7 @@
                             </thead>
                             <tbody>${rowsHtml}</tbody>
                         </table>
-                        <div class="footer-contagem">${hoje >= 1 && hoje <= 5 ? `Disponíveis hoje neste setor: ${ativosHoje}` : 'Escala Semanal'}</div>
+                        <div class="footer-contagem">${hoje >= 1 && hoje <= 5 ? `Disponíveis hoje: ${ativosHoje}` : 'Escala Semanal'}</div>
                     </div>`;
                 });
 
