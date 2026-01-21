@@ -1,1 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escala de Trabalho Profissional</title>
+    <style>
+        :root {
+            --cor-c: #f1c40f; 
+            --cor-p: #34495e; 
+            --cor-t: #10b981; 
+            --cor-a: #ef4444; 
+            --brilho-hoje: #fffde7; 
+            --borda-hoje: #f1c40f;
+            --cor-whatsapp: #128c7e;
+        }
 
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #1e293b;
+        }
+
+        .header-container { text-align: center; margin-bottom: 25px; }
+        .titulo-pagina { color: #0f172a; text-transform: uppercase; margin: 0; border-bottom: 4px solid #3b82f6; padding-bottom: 8px; }
+        .atualizacao-tag { font-size: 0.85rem; color: #64748b; margin-top: 10px; display: block; font-weight: 600; }
+
+        .legenda {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+            margin-bottom: 30px; background: white; padding: 15px 30px; border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 700; }
+
+        .tabela-container {
+            width: 100%; max-width: 1350px; background: white; border-radius: 16px;
+            overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 40px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        .header-setor { color: white; padding: 20px; font-size: 1.6rem; text-align: center; font-weight: 800; text-transform: uppercase; }
+        .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
+        .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
+
+        th { background: #f8fafc; padding: 15px 5px; font-size: 0.85rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+
+        .col-nome { text-align: left; padding-left: 25px !important; width: 280px; }
+        .col-contato { text-align: left; width: 260px; }
+        .col-dia { width: 65px; }
+
+        td { padding: 15px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+
+        .nome-servidor { font-weight: 800; color: #0f172a; font-size: 1.3rem; display: block; margin-bottom: 4px; }
+        .horario-tag { display: inline-block; background-color: #f1f5f9; color: #1e293b; font-weight: 700; font-size: 1rem; padding: 4px 12px; border-radius: 6px; }
+
+        /* Estilo Contatos (Aumentados) */
+        .email-link { color: #2563eb; text-decoration: none; font-size: 1rem; display: block; margin-bottom: 6px; font-weight: 500; }
+        .whatsapp-link { 
+            display: inline-flex; align-items: center; gap: 8px; color: var(--cor-whatsapp); 
+            text-decoration: none; font-weight: 700; font-size: 1.1rem;
+        }
+
+        .status-badge { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; font-weight: 800; color: white; font-size: 1.1rem; }
+        .c-chefia { background-color: var(--cor-c); color: #000; }
+        .p-presencial { background-color: var(--cor-p); }
+        .t-teletrabalho { background-color: var(--cor-t); }
+        .a-afastado { background-color: var(--cor-a); }
+        .vazio { background-color: #f1f5f9; color: #cbd5e1; }
+
+        .col-hoje { background-color: var(--brilho-hoje) !important; box-shadow: inset 0 0 0 1px var(--borda-hoje); }
+        .footer-contagem { background-color: #f8fafc; padding: 15px 25px; font-size: 1.1rem; color: #1e293b; font-weight: 700; text-align: right; border-top: 1px solid #e2e8f0; }
+
+        #loading { padding: 80px; color: #64748b; font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1 class="titulo-pagina">Escala Geral de Servidores</h1>
+        <span id="data-atualizacao" class="atualizacao-tag">Sincronizando...</span>
+    </div>
+
+    <div class="legenda">
+        <div class="legenda-item"><span class="status-badge c-chefia" style="width:28px; height:28px; font-size:0.9rem">C</span> Chefia</div>
+        <div class="legenda-item"><span class="status-badge p-presencial" style="width:28px; height:28px; font-size:0.9rem">P</span> Presencial</div>
+        <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:28px; height:28px; font-size:0.9rem">T</span> Teletrabalho</div>
+        <div class="legenda-item"><span class="status-badge a-afastado" style="width:28px; height:28px; font-size:0.9rem">A</span> Afastado</div>
+    </div>
+
+    <div id="conteudo"><div id="loading">Sincronizando dados e contatos...</div></div>
+
+    <script>
+        const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+        const hoje = new Date().getDay(); 
+
+        // Função de Máscara para Telefone
+        function formatarTelefone(num) {
+            const limpo = ('' + num).replace(/\D/g, '');
+            const match = limpo.match(/^(\d{2})(\d{5})(\d{4})$/);
+            if (match) {
+                return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+            }
+            return num; // Retorna original se não bater com o padrão de 11 dígitos
+        }
+
+        async function carregarDados() {
+            try {
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+                const linhas = dados.slice(1);
+                
+                const setoresMap = {};
+                linhas.forEach(row => {
+                    if (row.length >= 10 && row[0]) {
+                        const [setor, nome, horario, email, zap, seg, ter, qua, qui, sex] = row;
+                        const nomeSetor = setor.trim();
+                        if (!setoresMap[nomeSetor]) setoresMap[nomeSetor] = [];
+                        setoresMap[nomeSetor].push({ nome, horario, email, zap, dias: [seg, ter, qua, qui, sex] });
+                    }
+                });
+
+                let nomesSetores = Object.keys(setoresMap).sort((a, b) => a.localeCompare(b));
+                const indexAfastado = nomesSetores.findIndex(s => s.toUpperCase() === 'AFASTADO');
+                if (indexAfastado !== -1) {
+                    const setorAfastado = nomesSetores.splice(indexAfastado, 1);
+                    nomesSetores.push(setorAfastado[0]);
+                }
+
+                let htmlFinal = '';
+                nomesSetores.forEach((setor, i) => {
+                    let ativosHoje = 0;
+                    const rowsHtml = setoresMap[setor].map(s => {
+                        if (hoje >= 1 && hoje <= 5) {
+                            const statusHoje = s.dias[hoje - 1]?.toString().toUpperCase().trim();
+                            if (['C', 'P', 'T'].includes(statusHoje)) ativosHoje++;
+                        }
+
+                        const zapLimpo = s.zap ? s.zap.toString().replace(/\D/g, '') : '';
+                        const zapComMascara = s.zap ? formatarTelefone(s.zap) : '-';
+
+                        return `
+                            <tr>
+                                <td class="col-nome">
+                                    <span class="nome-servidor">${s.nome}</span>
+                                    <span class="horario-tag">${s.horario}</span>
+                                </td>
+                                <td class="col-contato">
+                                    <a href="mailto:${s.email}" class="email-link">${s.email || '-'}</a>
+                                    ${zapLimpo ? 
+                                        `<a href="https://wa.me/55${zapLimpo}" target="_blank" class="whatsapp-link">
+                                            <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.39-4.19-1.15l-.3-.17l-3.12.82l.83-3.04l-.2-.32a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24m-3.53 2.32c-.13 0-.34.05-.51.24c-.17.19-.64.63-.64 1.53c0 .9.66 1.76.75 1.89c.09.13 1.29 1.97 3.12 2.76c.44.19.78.3 1.05.38c.44.14.84.12 1.15.07c.35-.05 1.07-.44 1.22-.86c.15-.42.15-.78.1-.86c-.05-.08-.18-.13-.38-.23c-.2-.1-.1.44-.1.44c-.75.34-1.28.11-1.28.11c-.5-.14-.94-.36-1.29-.65c-.46-.39-.81-.88-1.02-1.42c-.05-.13-.25-.87.08-1.4c.03-.04.14-.15.22-.26c.08-.11.13-.19.18-.28c.05-.09.02-.18-.01-.23c-.03-.05-.27-.66-.37-.9c-.1-.24-.21-.21-.31-.21h-.19z"/></svg>
+                                            ${zapComMascara}
+                                        </a>` : '-'}
+                                </td>
+                                ${s.dias.map((d, index) => {
+                                    const diaIndex = index + 1;
+                                    let classe = 'vazio';
+                                    let letra = d ? d.toString().toUpperCase().trim() : '-';
+                                    if (letra === 'C') classe = 'c-chefia';
+                                    else if (letra === 'P') classe = 'p-presencial';
+                                    else if (letra === 'T') classe = 't-teletrabalho';
+                                    else if (letra === 'A') classe = 'a-afastado';
+                                    return `<td class="col-dia ${hoje === diaIndex ? 'col-hoje' : ''}"><span class="status-badge ${classe}">${letra}</span></td>`;
+                                }).join('')}
+                            </tr>`;
+                    }).join('');
+
+                    htmlFinal += `
+                    <div class="tabela-container">
+                        <table>
+                            <thead>
+                                <tr><th colspan="7" class="header-setor bg-${i % 4}">${setor}</th></tr>
+                                <tr>
+                                    <th class="col-nome">Servidor / Horário</th>
+                                    <th class="col-contato">Contatos</th>
+                                    <th class="col-dia ${hoje === 1 ? 'col-hoje' : ''}">Seg</th>
+                                    <th class="col-dia ${hoje === 2 ? 'col-hoje' : ''}">Ter</th>
+                                    <th class="col-dia ${hoje === 3 ? 'col-hoje' : ''}">Qua</th>
+                                    <th class="col-dia ${hoje === 4 ? 'col-hoje' : ''}">Qui</th>
+                                    <th class="col-dia ${hoje === 5 ? 'col-hoje' : ''}">Sex</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                        <div class="footer-contagem">${hoje >= 1 && hoje <= 5 ? `Total de Servidores disponíveis hoje: ${ativosHoje}` : 'Escala Semanal'}</div>
+                    </div>`;
+                });
+
+                document.getElementById('conteudo').innerHTML = htmlFinal || "Nenhum dado encontrado.";
+                const agora = new Date();
+                document.getElementById('data-atualizacao').innerText = `Última sincronização: ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+            } catch (e) {
+                document.getElementById('conteudo').innerHTML = "Erro ao carregar escala.";
+            }
+        }
+        carregarDados();
+    </script>
+</body>
+</html>
