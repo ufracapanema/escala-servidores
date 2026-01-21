@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala de Trabalho dos Servidores Tecnicos Administrativos em Educação</title>
+    <title>Escala de Trabalho Oficial</title>
     <style>
         :root {
             --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
@@ -19,14 +19,15 @@
 
         .header-container { text-align: center; margin-bottom: 25px; width: 100%; }
         .titulo-pagina { color: #0f172a; text-transform: uppercase; margin: 0; border-bottom: 4px solid #3b82f6; padding-bottom: 8px; font-size: 1.5rem; display: inline-block; }
-        .atualizacao-tag { font-size: 0.8rem; color: #64748b; margin-top: 12px; display: block; font-weight: 600; }
-
+        
+        /* ESTILO DA LEGENDA */
         .legenda { 
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; 
             margin-bottom: 30px; background: white; padding: 12px 25px; border-radius: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s ease-in;
         }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; }
+        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: #475569; }
 
         #conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; }
 
@@ -36,94 +37,88 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 40px;
         }
 
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        table { width: 100%; border-collapse: collapse; min-width: 950px; }
 
-        .header-setor-container { color: white; padding: 22px 15px; text-align: center; }
-        .nome-setor { font-size: 1.7rem; font-weight: 900; text-transform: uppercase; display: block; line-height: 1.1; letter-spacing: 1px; }
-        
-        .email-setor-box { 
-            display: inline-block; margin-top: 10px; background: white; 
-            padding: 6px 16px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .email-setor-link { 
-            font-size: 1rem; font-weight: 800; color: #1e293b; 
-            text-decoration: none; display: flex; align-items: center; gap: 8px;
-        }
+        .header-setor-container { color: white; padding: 20px; text-align: center; }
+        .nome-setor { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; display: block; }
+        .email-setor-box { display: inline-block; margin-top: 8px; background: white; padding: 5px 15px; border-radius: 50px; }
+        .email-setor-link { font-size: 0.95rem; font-weight: 800; color: #1e293b; text-decoration: none; display: flex; align-items: center; gap: 6px; }
         
         .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
         .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
 
-        th { background: #f8fafc; padding: 15px 5px; font-size: 0.8rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; text-align: center; }
-        .col-nome { text-align: left !important; padding-left: 25px !important; width: 260px; }
-        .col-contato { text-align: left !important; width: 270px; }
+        th { background: #f8fafc; padding: 12px 5px; font-size: 0.75rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; text-align: center; }
+        
+        .col-servidor { width: 280px; text-align: left !important; padding-left: 20px !important; border-right: 1px solid #f1f5f9; }
+        .col-turno { width: 140px; text-align: left !important; padding-left: 15px !important; border-right: 1px solid #f1f5f9; }
         .col-dia { width: 65px; text-align: center !important; }
 
-        td { padding: 14px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        .nome-servidor { font-weight: 800; color: #0f172a; font-size: 1.25rem; display: block; }
-        .horario-tag { display: inline-block; background-color: #f1f5f9; color: #1e293b; font-weight: 700; font-size: 0.85rem; padding: 2px 10px; border-radius: 5px; margin-top: 4px; }
+        td { padding: 10px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .border-servidor { border-bottom: 3px solid #e2e8f0 !important; }
 
-        /* ESTILO DOS CONTATOS COM LOGOS */
-        .contato-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; text-decoration: none; transition: opacity 0.2s; }
-        .contato-item:hover { opacity: 0.7; }
-        
-        .email-link { color: #2563eb; font-size: 0.95rem; font-weight: 600; }
-        .whatsapp-link { color: #075e54; font-weight: 800; font-size: 1.1rem; }
-        
-        .logo-zap { width: 20px; height: 20px; flex-shrink: 0; }
-        .logo-email { width: 18px; height: 18px; flex-shrink: 0; color: #3b82f6; }
+        .nome-servidor { font-weight: 800; color: #0f172a; font-size: 1.1rem; display: block; }
+        .contato-item { display: flex; align-items: center; gap: 6px; text-decoration: none; margin-top: 3px; font-size: 0.8rem; font-weight: 600; }
+        .email-link { color: #2563eb; }
+        .whatsapp-link { color: #075e54; }
+
+        .label-turno { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 2px; }
+        .m-bg { background: #e0f2fe; color: #0369a1; }
+        .t-bg { background: #fef3c7; color: #92400e; }
+        .n-bg { background: #ede9fe; color: #5b21b6; }
+        .hora-turno { display: block; font-weight: 700; font-size: 0.85rem; color: #1e293b; }
 
         .status-badge { 
             display: inline-flex; align-items: center; justify-content: center; 
-            width: 38px; height: 38px; border-radius: 9px; 
-            font-weight: 800; color: white; font-size: 1.1rem; margin: 0 auto;
+            width: 34px; height: 34px; border-radius: 8px; 
+            font-weight: 800; color: white; font-size: 1rem; margin: 0 auto;
         }
 
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
         .a-afastado { background-color: var(--cor-a); }
-        .vazio { background-color: #f1f5f9; color: #cbd5e1; }
+        .vazio { background-color: #f1f5f9; color: #cbd5e1; font-size: 0.8rem; }
 
         .col-hoje { background-color: var(--brilho-hoje) !important; box-shadow: inset 0 0 0 1px var(--borda-hoje); }
-        .footer-contagem { background-color: #f8fafc; padding: 15px 25px; font-size: 1rem; color: #1e293b; font-weight: 700; text-align: right; border-top: 1px solid #e2e8f0; }
+        .logo-zap, .logo-email { width: 14px; height: 14px; flex-shrink: 0; }
 
-        #loading { padding: 80px; color: #64748b; font-weight: bold; font-size: 1.2rem; text-align: center; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #loading { padding: 50px; font-weight: bold; color: #64748b; }
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala de Trabalho dos Servidores Tecnicos Administrativos em Educação</h1>
-        <span id="data-atualizacao" class="atualizacao-tag">Sincronizando dados...</span>
+        <h1 class="titulo-pagina">Escala Geral de Servidores</h1>
+        <span id="data-atualizacao" style="display:block; font-size:0.8rem; color:#64748b; margin-top:5px;">Sincronizando...</span>
     </div>
 
-    <div class="legenda">
-        <div class="legenda-item"><span class="status-badge c-chefia" style="width:22px; height:22px; font-size:0.8rem">C</span> Chefia</div>
-        <div class="legenda-item"><span class="status-badge p-presencial" style="width:22px; height:22px; font-size:0.8rem">P</span> Presencial</div>
-        <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:22px; height:22px; font-size:0.8rem">T</span> Teletrabalho</div>
-        <div class="legenda-item"><span class="status-badge a-afastado" style="width:22px; height:22px; font-size:0.8rem">A</span> Afastado</div>
-    </div>
+    <div id="container-legenda"></div>
 
     <div id="conteudo">
-        <div id="loading">Carregando informações da planilha...</div>
+        <div id="loading">Carregando dados da escala...</div>
     </div>
 
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
-        // Ícones SVG para performance (não dependem de arquivos externos)
         const iconZap = `<svg class="logo-zap" viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
-        const iconEmail = `<svg class="logo-email" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+        const iconEmail = `<svg class="logo-email" viewBox="0 0 24 24" fill="#3b82f6" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
 
-        function formatarTelefone(num) {
-            const limpo = ('' + num).replace(/\D/g, '');
-            const match = limpo.match(/^(\d{2})(\d{5})(\d{4})$/);
-            return match ? `(${match[1]}) ${match[2]}-${match[3]}` : num;
+        // FUNÇÃO PARA CRIAR A LEGENDA DINAMICAMENTE
+        function mostrarLegenda() {
+            const htmlLegenda = `
+                <div class="legenda">
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px; height:20px; font-size:0.7rem; border-radius:4px;">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px; height:20px; font-size:0.7rem; border-radius:4px;">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px; height:20px; font-size:0.7rem; border-radius:4px;">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px; height:20px; font-size:0.7rem; border-radius:4px;">A</span> Afastado</div>
+                </div>`;
+            document.getElementById('container-legenda').innerHTML = htmlLegenda;
         }
 
         async function carregarDados() {
             const hoje = new Date().getDay(); 
-
             try {
                 const resposta = await fetch(url);
                 const dados = await resposta.json();
@@ -132,80 +127,95 @@
                 const setoresMap = {};
                 const infoSetores = {};
 
-                linhas.forEach(row => {
-                    if (row.length >= 11 && row[0]) {
-                        const [setor, emailSetor, nome, horario, emailServidor, zap, seg, ter, qua, qui, sex] = row;
-                        const nomeSetor = setor.trim();
-                        
-                        if (!setoresMap[nomeSetor]) {
-                            setoresMap[nomeSetor] = [];
-                            infoSetores[nomeSetor] = emailSetor; 
-                        }
-                        
-                        setoresMap[nomeSetor].push({ 
-                            nome, horario, email: emailServidor, zap, dias: [seg, ter, qua, qui, sex] 
-                        });
+                for (let i = 0; i < linhas.length; i += 3) {
+                    const l1 = linhas[i];
+                    const l2 = linhas[i+1];
+                    const l3 = linhas[i+2];
+
+                    if (!l1 || !l1[0]) continue;
+
+                    const setor = l1[0].trim();
+                    if (!setoresMap[setor]) {
+                        setoresMap[setor] = [];
+                        infoSetores[setor] = l1[1];
                     }
-                });
+
+                    const servidorObj = {
+                        nome: l1[2], email: l1[4], zap: l1[5], turnos: []
+                    };
+
+                    [l1, l2, l3].forEach((linha, idx) => {
+                        if (!linha) return;
+                        const temDados = linha[3] || linha.slice(6, 11).some(d => d && d !== '-');
+                        if (temDados) {
+                            servidorObj.turnos.push({
+                                label: idx === 0 ? 'Manhã' : idx === 1 ? 'Tarde' : 'Noite',
+                                class: idx === 0 ? 'm-bg' : idx === 1 ? 't-bg' : 'n-bg',
+                                horario: linha[3],
+                                dias: linha.slice(6, 11)
+                            });
+                        }
+                    });
+                    setoresMap[setor].push(servidorObj);
+                }
 
                 let nomesSetores = Object.keys(setoresMap).sort((a, b) => a.localeCompare(b));
-                const indexAfastado = nomesSetores.findIndex(s => s.toUpperCase().includes('AFASTADO'));
-                if (indexAfastado !== -1) {
-                    const itemAfastado = nomesSetores.splice(indexAfastado, 1);
-                    nomesSetores.push(itemAfastado[0]);
+                const idxAf = nomesSetores.findIndex(s => s.toUpperCase().includes('AFASTADO'));
+                if (idxAf !== -1) {
+                    const itemAf = nomesSetores.splice(idxAf, 1);
+                    nomesSetores.push(itemAf[0]);
                 }
 
                 let htmlFinal = '';
 
-                nomesSetores.forEach((setor, i) => {
-                    let ativosHoje = 0;
-                    const emailDoSetor = infoSetores[setor] || '';
+                nomesSetores.forEach((setor, sIdx) => {
+                    let rowsHtml = '';
+                    const isSetorAfastado = setor.toUpperCase().includes('AFASTADO');
 
-                    const rowsHtml = setoresMap[setor].map(s => {
-                        if (hoje >= 1 && hoje <= 5) {
-                            const statusHoje = s.dias[hoje - 1]?.toString().toUpperCase().trim();
-                            if (['C', 'P', 'T'].includes(statusHoje)) ativosHoje++;
-                        }
-                        const zapLimpo = s.zap ? s.zap.toString().replace(/\D/g, '') : '';
-                        return `
-                            <tr>
-                                <td class="col-nome"><span class="nome-servidor">${s.nome}</span><span class="horario-tag">${s.horario}</span></td>
-                                <td class="col-contato">
-                                    <a href="mailto:${s.email}" class="contato-item email-link">
-                                        ${iconEmail} <span>${s.email || '-'}</span>
-                                    </a>
-                                    ${zapLimpo ? `
-                                    <a href="https://wa.me/55${zapLimpo}" target="_blank" class="contato-item whatsapp-link">
-                                        ${iconZap} <span>${formatarTelefone(s.zap)}</span>
-                                    </a>` : '-'}
-                                </td>
-                                ${s.dias.map((d, index) => {
-                                    const diaIndex = index + 1;
-                                    let letra = d ? d.toString().toUpperCase().trim() : '-';
-                                    let classe = letra === 'C' ? 'c-chefia' : letra === 'P' ? 'p-presencial' : letra === 'T' ? 't-teletrabalho' : letra === 'A' ? 'a-afastado' : 'vazio';
-                                    return `<td class="col-dia ${hoje === diaIndex ? 'col-hoje' : ''}"><span class="status-badge ${classe}">${letra}</span></td>`;
-                                }).join('')}
-                            </tr>`;
-                    }).join('');
+                    setoresMap[setor].forEach(serv => {
+                        serv.turnos.forEach((turno, tIdx) => {
+                            const isLast = tIdx === serv.turnos.length - 1;
+                            rowsHtml += `
+                                <tr class="${isLast ? 'border-servidor' : ''}">
+                                    ${tIdx === 0 ? `
+                                        <td rowspan="${serv.turnos.length}" class="col-servidor">
+                                            <span class="nome-servidor">${serv.nome}</span>
+                                            <a href="mailto:${serv.email}" class="contato-item email-link">${iconEmail} ${serv.email || '-'}</a>
+                                            ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" class="contato-item whatsapp-link">${iconZap} ${serv.zap}</a>` : ''}
+                                        </td>
+                                    ` : ''}
+                                    <td class="col-turno">
+                                        ${!isSetorAfastado ? `
+                                            <span class="label-turno ${turno.class}">${turno.label}</span>
+                                            <span class="hora-turno">${turno.horario || '--:--'}</span>
+                                        ` : '<span style="color:#cbd5e1">-</span>'}
+                                    </td>
+                                    ${turno.dias.map((d, dIdx) => {
+                                        const diaIdx = dIdx + 1;
+                                        const l = d ? d.toString().toUpperCase().trim() : '-';
+                                        const classe = l === 'C' ? 'c-chefia' : l === 'P' ? 'p-presencial' : l === 'T' ? 't-teletrabalho' : l === 'A' ? 'a-afastado' : 'vazio';
+                                        return `<td class="col-dia ${hoje === diaIdx ? 'col-hoje' : ''}"><span class="status-badge ${classe}">${l}</span></td>`;
+                                    }).join('')}
+                                </tr>`;
+                        });
+                    });
 
                     htmlFinal += `
                     <div class="tabela-wrapper">
                         <table>
                             <thead>
                                 <tr>
-                                    <th colspan="7" class="header-setor-container bg-${i % 4}">
+                                    <th colspan="7" class="header-setor-container bg-${sIdx % 4}">
                                         <span class="nome-setor">${setor}</span>
-                                        ${emailDoSetor ? `
-                                            <div class="email-setor-box">
-                                                <a href="mailto:${emailDoSetor}" class="email-setor-link">
-                                                    ${iconEmail} ${emailDoSetor}
-                                                </a>
-                                            </div>` : ''}
+                                        ${infoSetores[setor] ? `
+                                        <div class="email-setor-box">
+                                            <a href="mailto:${infoSetores[setor]}" class="email-setor-link">${iconEmail} ${infoSetores[setor]}</a>
+                                        </div>` : ''}
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th class="col-nome">Servidor</th>
-                                    <th class="col-contato">Contatos</th>
+                                    <th class="col-servidor">Servidor</th>
+                                    <th class="col-turno">${isSetorAfastado ? 'Status' : 'Turno / Hora'}</th>
                                     <th class="col-dia ${hoje===1?'col-hoje':''}">Seg</th>
                                     <th class="col-dia ${hoje===2?'col-hoje':''}">Ter</th>
                                     <th class="col-dia ${hoje===3?'col-hoje':''}">Qua</th>
@@ -215,13 +225,15 @@
                             </thead>
                             <tbody>${rowsHtml}</tbody>
                         </table>
-                        <div class="footer-contagem">${hoje >= 1 && hoje <= 5 ? `Disponíveis hoje: ${ativosHoje}` : 'Escala Semanal'}</div>
                     </div>`;
                 });
 
-                document.getElementById('conteudo').innerHTML = htmlFinal || "Nenhum dado encontrado.";
-                const agora = new Date();
-                document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+                document.getElementById('conteudo').innerHTML = htmlFinal;
+                document.getElementById('data-atualizacao').innerText = `Atualizado: ${new Date().toLocaleTimeString()}`;
+                
+                // MOSTRA A LEGENDA SOMENTE AGORA
+                mostrarLegenda();
+
             } catch (e) {
                 document.getElementById('conteudo').innerHTML = "Erro ao carregar escala.";
             }
