@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala de Trabalho - Foco em Setores</title>
+    <title>Escala de Trabalho - Ícones de Contato</title>
     <style>
         :root {
             --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
@@ -38,20 +38,15 @@
 
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
 
-        /* DESTAQUE DO CABEÇALHO DO SETOR */
         .header-setor-container { color: white; padding: 22px 15px; text-align: center; }
         .nome-setor { font-size: 1.7rem; font-weight: 900; text-transform: uppercase; display: block; line-height: 1.1; letter-spacing: 1px; }
         
         .email-setor-box { 
-            display: inline-block;
-            margin-top: 10px;
-            background: white; /* Fundo branco para destaque máximo */
-            padding: 6px 16px;
-            border-radius: 50px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-block; margin-top: 10px; background: white; 
+            padding: 6px 16px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .email-setor-link { 
-            font-size: 1rem; font-weight: 800; color: #1e293b; /* Texto escuro no fundo branco */
+            font-size: 1rem; font-weight: 800; color: #1e293b; 
             text-decoration: none; display: flex; align-items: center; gap: 8px;
         }
         
@@ -60,15 +55,18 @@
 
         th { background: #f8fafc; padding: 15px 5px; font-size: 0.8rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; text-align: center; }
         .col-nome { text-align: left !important; padding-left: 25px !important; width: 260px; }
-        .col-contato { text-align: left !important; width: 240px; }
+        .col-contato { text-align: left !important; width: 260px; }
         .col-dia { width: 65px; text-align: center !important; }
 
         td { padding: 14px 5px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
         .nome-servidor { font-weight: 800; color: #0f172a; font-size: 1.25rem; display: block; }
         .horario-tag { display: inline-block; background-color: #f1f5f9; color: #1e293b; font-weight: 700; font-size: 0.85rem; padding: 2px 10px; border-radius: 5px; margin-top: 4px; }
 
-        .email-link { color: #2563eb; text-decoration: none; font-size: 1rem; display: block; margin-bottom: 4px; font-weight: 500; }
-        .whatsapp-link { display: inline-flex; align-items: center; gap: 6px; color: var(--cor-whatsapp); text-decoration: none; font-weight: 800; font-size: 1.1rem; }
+        /* ESTILO DOS CONTATOS COM ÍCONES */
+        .contato-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; text-decoration: none; }
+        .email-link { color: #2563eb; font-size: 0.95rem; font-weight: 500; }
+        .whatsapp-link { color: var(--cor-whatsapp); font-weight: 800; font-size: 1.05rem; }
+        .icon { font-size: 1.1rem; flex-shrink: 0; }
 
         .status-badge { 
             display: inline-flex; align-items: center; justify-content: center; 
@@ -142,9 +140,7 @@
                     }
                 });
 
-                // LÓGICA DE ORDENAÇÃO: Alfabética, mas AFASTADO por último
                 let nomesSetores = Object.keys(setoresMap).sort((a, b) => a.localeCompare(b));
-                
                 const indexAfastado = nomesSetores.findIndex(s => s.toUpperCase().includes('AFASTADO'));
                 if (indexAfastado !== -1) {
                     const itemAfastado = nomesSetores.splice(indexAfastado, 1);
@@ -167,8 +163,13 @@
                             <tr>
                                 <td class="col-nome"><span class="nome-servidor">${s.nome}</span><span class="horario-tag">${s.horario}</span></td>
                                 <td class="col-contato">
-                                    <a href="mailto:${s.email}" class="email-link">${s.email || '-'}</a>
-                                    ${zapLimpo ? `<a href="https://wa.me/55${zapLimpo}" target="_blank" class="whatsapp-link">${formatarTelefone(s.zap)}</a>` : '-'}
+                                    <a href="mailto:${s.email}" class="contato-item email-link">
+                                        <span class="icon">✉️</span> ${s.email || '-'}
+                                    </a>
+                                    ${zapLimpo ? `
+                                    <a href="https://wa.me/55${zapLimpo}" target="_blank" class="contato-item whatsapp-link">
+                                        <span class="icon">📞</span> ${formatarTelefone(s.zap)}
+                                    </a>` : '-'}
                                 </td>
                                 ${s.dias.map((d, index) => {
                                     const diaIndex = index + 1;
