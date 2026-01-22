@@ -57,14 +57,12 @@
         .logo-zap, .logo-email { width: 18px; height: 18px; flex-shrink: 0; }
 
         .escala-wrapper { display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Turno linha mantém o grid de 85px para garantir alinhamento sempre */
         .turno-linha { 
             display: grid; grid-template-columns: 85px 1fr; align-items: center;
             background: #f8fafc; padding: 10px; border-radius: 10px; gap: 12px;
         }
 
-        .turno-info { display: flex; flex-direction: column; }
+        .turno-info { display: flex; flex-direction: column; min-height: 40px; justify-content: center; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
         .m-bg { background: #e0f2fe; color: #0369a1; }
         .t-bg { background: #fef3c7; color: #92400e; }
@@ -93,10 +91,20 @@
         .a-afastado { background-color: var(--cor-a); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
+        /* ANIMAÇÕES DO LOADER */
         .loader-container { padding: 80px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top: 5px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        .piscando { 
+            font-weight: 800; color: #64748b; text-transform: uppercase;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 
+            0% { opacity: 1; } 
+            50% { opacity: 0.3; } 
+            100% { opacity: 1; } 
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
@@ -115,7 +123,7 @@
     <div id="conteudo" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="loader-container">
             <div class="spinner"></div>
-            <div style="font-weight: 800; color: #64748b; text-transform: uppercase;">Carregando Escala...</div>
+            <div class="piscando">Carregando Escala...</div>
         </div>
     </div>
 
@@ -177,7 +185,6 @@
 
                     setoresMap[setor].forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
-                            // LÓGICA DE DETECÇÃO DE AFASTADO
                             const diasPreenchidos = t.dias.filter(d => d && d !== '-');
                             const estaTotalmenteAfastado = diasPreenchidos.length > 0 && diasPreenchidos.every(d => d.toString().toUpperCase().trim() === 'A');
 
