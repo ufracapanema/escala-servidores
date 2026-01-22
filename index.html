@@ -57,13 +57,12 @@
         .logo-zap, .logo-email { width: 18px; height: 18px; flex-shrink: 0; }
 
         .escala-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Turno linha mantém o grid de 85px para garantir alinhamento sempre */
         .turno-linha { 
             display: grid; grid-template-columns: 85px 1fr; align-items: center;
             background: #f8fafc; padding: 10px; border-radius: 10px; gap: 12px;
         }
-
-        /* Classe para ocultar a info do turno em afastados */
-        .turno-oculto { grid-template-columns: 1fr !important; }
 
         .turno-info { display: flex; flex-direction: column; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
@@ -171,25 +170,25 @@
                 }
 
                 let nomesSetores = Object.keys(setoresMap).sort();
-                const afIdx = nomesSetores.findIndex(s => s.toUpperCase().includes('AFASTADO'));
-                if(afIdx !== -1) {
-                    const itemAf = nomesSetores.splice(afIdx, 1)[0];
-                    nomesSetores.push(itemAf);
-                }
 
                 let htmlFinal = '';
                 nomesSetores.forEach((setor, sIdx) => {
-                    const isSetorAfastado = setor.toUpperCase().includes('AFASTADO');
                     let servidoresHtml = '';
 
                     setoresMap[setor].forEach(serv => {
-                        let turnosHtml = serv.turnos.map(t => `
-                            <div class="turno-linha ${isSetorAfastado ? 'turno-oculto' : ''}">
-                                ${!isSetorAfastado ? `
+                        let turnosHtml = serv.turnos.map(t => {
+                            // LÓGICA DE DETECÇÃO DE AFASTADO
+                            const diasPreenchidos = t.dias.filter(d => d && d !== '-');
+                            const estaTotalmenteAfastado = diasPreenchidos.length > 0 && diasPreenchidos.every(d => d.toString().toUpperCase().trim() === 'A');
+
+                            return `
+                            <div class="turno-linha">
                                 <div class="turno-info">
-                                    <span class="turno-badge ${t.class}">${t.label}</span>
-                                    <span class="turno-hora">${t.hora || '--:--'}</span>
-                                </div>` : ''}
+                                    ${!estaTotalmenteAfastado ? `
+                                        <span class="turno-badge ${t.class}">${t.label}</span>
+                                        <span class="turno-hora">${t.hora || '--:--'}</span>
+                                    ` : ''}
+                                </div>
                                 <div class="dias-grid">
                                     ${['Seg','Ter','Qua','Qui','Sex'].map((n, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
@@ -201,8 +200,8 @@
                                             </div>`;
                                     }).join('')}
                                 </div>
-                            </div>
-                        `).join('');
+                            </div>`;
+                        }).join('');
 
                         servidoresHtml += `
                             <div class="servidor-item">
