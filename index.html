@@ -91,7 +91,6 @@
         .a-afastado { background-color: var(--cor-a); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
-        /* ANIMAÇÕES DO LOADER */
         .loader-container { padding: 80px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top: 5px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         .piscando { 
@@ -161,7 +160,10 @@
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
-                    if (!setoresMap[setor]) { setoresMap[setor] = []; infoSetores[setor] = l1[1]; }
+                    if (!setoresMap[setor]) { 
+                        setoresMap[setor] = []; 
+                        infoSetores[setor] = l1[1]; 
+                    }
                     
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
@@ -177,11 +179,15 @@
                     setoresMap[setor].push(serv);
                 }
 
-                let nomesSetores = Object.keys(setoresMap).sort();
+                // ORDENAÇÃO DOS SETORES
+                let nomesSetores = Object.keys(setoresMap).sort((a, b) => a.localeCompare(b));
 
                 let htmlFinal = '';
                 nomesSetores.forEach((setor, sIdx) => {
                     let servidoresHtml = '';
+
+                    // ORDENAÇÃO DOS SERVIDORES DENTRO DO SETOR
+                    setoresMap[setor].sort((a, b) => a.nome.localeCompare(b.nome));
 
                     setoresMap[setor].forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
