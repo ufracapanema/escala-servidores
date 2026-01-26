@@ -41,50 +41,50 @@
             display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
 
-        /* HEADER E MÊS */
-        .header-container { text-align: center; margin-bottom: 25px; width: 100%; }
-        .titulo-pagina { color: var(--texto-principal); text-transform: uppercase; margin: 0; border-bottom: 4px solid var(--cor-primaria); padding-bottom: 8px; font-size: 1.5rem; display: inline-block; }
-        
-        .mes-container { width: 100%; text-align: center; margin-bottom: 30px; }
-        .mes-titulo { 
-            font-size: 1.5rem; font-weight: 900; color: var(--texto-principal); 
-            text-transform: uppercase; border-left: 6px solid var(--cor-primaria);
-            padding: 5px 15px; display: inline-block; background: var(--bg-card);
-            border-radius: 0 8px 8px 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        }
+        /* HEADER */
+        .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
+        .titulo-pagina { color: var(--texto-principal); text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+        #data-atualizacao { font-size: 0.8rem; color: var(--texto-secundario); margin-top: 5px; }
 
-        /* LEGENDA */
-        .legenda { 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; 
-            margin-bottom: 25px; background: var(--bg-card); padding: 12px 25px; border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        /* MÊS E LEGENDA SEPARADOS */
+        .mes-bloco { 
+            margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none;
         }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: var(--texto-secundario); }
+        .mes-titulo { font-size: 1.3rem; font-weight: 900; color: var(--texto-principal); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* SETORES E SERVIDORES */
+        .legenda-bloco { 
+            display: none; flex-wrap: wrap; justify-content: center; gap: 15px; 
+            margin-bottom: 30px; background: var(--bg-card); padding: 12px 25px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: var(--texto-secundario); }
+
+        /* SETORES - CORES DE FUNDO COMO ANTES */
         .setor-container { 
             width: 100%; max-width: 950px; background: var(--bg-card); 
             border-radius: 16px; overflow: hidden; margin-bottom: 35px;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        .setor-header { padding: 20px; text-align: center; color: white; }
+        .setor-header { padding: 25px 20px; text-align: center; color: white; }
         .setor-nome { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; display: block; }
-        .setor-email-box { display: inline-block; margin-top: 8px; background: white; padding: 5px 15px; border-radius: 50px; }
-        .setor-email-link { font-size: 0.95rem; font-weight: 800; color: #1e293b; text-decoration: none; text-transform: lowercase; display: flex; align-items: center; gap: 6px; }
+        .setor-email-box { display: inline-block; margin-top: 10px; background: white; padding: 5px 15px; border-radius: 50px; }
+        .setor-email-link { font-size: 0.9rem; font-weight: 800; color: #1e293b; text-decoration: none; display: flex; align-items: center; gap: 6px; }
 
+        .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
+        .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
+
+        /* SERVIDORES */
         .servidor-item { 
             display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
             padding: 20px; transition: background 0.2s;
         }
-        
-        @media (min-width: 768px) {
-            .servidor-item { grid-template-columns: 320px 1fr; align-items: center; }
-        }
+        @media (min-width: 768px) { .servidor-item { grid-template-columns: 320px 1fr; align-items: center; } }
 
         .servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0 0 6px 0; display: block; }
         .contato-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-top: 6px; }
-        .email-link { color: #3b82f6; text-transform: lowercase; }
+        .email-link { color: #3b82f6; }
         .whatsapp-link { color: #10b981; }
 
         /* CALENDÁRIO GRID */
@@ -92,34 +92,21 @@
             display: grid; grid-template-columns: 85px 1fr; align-items: center;
             background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px;
         }
-
         .turno-info { display: flex; flex-direction: column; text-align: center; justify-content: center; min-height: 45px; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
         .m-bg { background: #e0f2fe; color: #0369a1; }
         .t-bg { background: #fef3c7; color: #92400e; }
         .n-bg { background: #ede9fe; color: #5b21b6; }
-        .a-bg { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; } /* ESTILO PARA AFASTADO */
-        
+        .a-bg { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; } 
         .turno-hora { font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario); margin-top: 3px; }
 
         .dias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-        .dia-col { 
-            text-align: center; display: flex; flex-direction: column; 
-            align-items: center; padding: 6px 2px; border-radius: 8px;
-        }
+        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 8px; }
         .dia-numero { font-size: 1.1rem; font-weight: 900; color: var(--texto-principal); line-height: 1; }
         .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 4px; }
         
-        .status-badge { 
-            width: 36px; height: 36px; border-radius: 10px; display: flex; 
-            align-items: center; justify-content: center; font-weight: 800;
-            font-size: 1.1rem; color: white;
-        }
-
-        .dia-hoje { 
-            background: var(--brilho-hoje); 
-            box-shadow: 0 0 0 2px var(--borda-hoje); 
-        }
+        .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; }
+        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); }
 
         /* CORES STATUS */
         .c-chefia { background-color: var(--cor-c); color: #000; }
@@ -133,10 +120,6 @@
         .loader-container { padding: 80px; text-align: center; width: 100%; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* BG SETORES */
-        .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
-        .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
     </style>
 </head>
 <body>
@@ -145,23 +128,18 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
     </a>
 
-    <button id="theme-toggle" title="Mudar Tema">
-        <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-    </button>
+    <button id="theme-toggle"><svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala Geral de Servidores</h1>
-        <div id="data-atualizacao" style="font-size:0.8rem; color:var(--texto-secundario); margin-top:5px;">Sincronizando...</div>
+        <h1 class="titulo-pagina">Escala Geral de Servidores Tecnicos Administrativos em Educação (TAE)</h1>
+        <div id="data-atualizacao">Sincronizando dados...</div>
     </div>
 
-    <div id="container-legenda"></div>
-    
-    <div class="mes-container">
-        <span id="label-mes-ano" class="mes-titulo">---</span>
-    </div>
+    <div id="mes-area" class="mes-bloco"></div>
+    <div id="legenda-area" class="legenda-bloco"></div>
 
     <div id="conteudo" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="loader-container"><div class="spinner"></div><div style="color:var(--texto-secundario); font-weight:700">CARREGANDO ESCALA...</div></div>
+        <div class="loader-container"><div class="spinner"></div><div style="color:var(--texto-secundario); font-weight:700">CARREGANDO...</div></div>
     </div>
 
     <script>
@@ -169,8 +147,8 @@
         
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
-        const iconEmail = `<svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
-        const iconZap = `<svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+        const iconEmail = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+        const iconZap = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
         function formatarZap(num) {
             const l = ('' + num).replace(/\D/g, '');
@@ -181,37 +159,17 @@
             const hoje = new Date();
             const diaDaSemana = hoje.getDay();
             const diffSegunda = hoje.getDate() - diaDaSemana + (diaDaSemana === 0 ? -6 : 1);
-            
-            let dadosSemana = [];
-            let meses = new Set();
-            let anos = new Set();
-
+            let dias = []; let meses = new Set();
             for (let i = 0; i < 5; i++) {
                 const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffSegunda + i);
-                dadosSemana.push({ 
-                    numero: d.getDate().toString().padStart(2, '0'), 
-                    sigla: ['SEG', 'TER', 'QUA', 'QUI', 'SEX'][i] 
-                });
+                dias.push({ numero: d.getDate().toString().padStart(2, '0'), sigla: ['SEG', 'TER', 'QUA', 'QUI', 'SEX'][i] });
                 meses.add(d.toLocaleDateString('pt-BR', { month: 'long' }));
-                anos.add(d.getFullYear());
             }
-
-            document.getElementById('label-mes-ano').innerText = `${Array.from(meses).join(' / ')} ${Array.from(anos).join(' / ')}`;
-            return dadosSemana;
-        }
-
-        function mostrarLegenda() {
-            document.getElementById('container-legenda').innerHTML = `
-                <div class="legenda">
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px;height:20px;font-size:0.7rem">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px;height:20px;font-size:0.7rem">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px;height:20px;font-size:0.7rem">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px;height:20px;font-size:0.7rem">A</span> Afastado</div>
-                </div>`;
+            return { dias, texto: Array.from(meses).join(' / ').toUpperCase() + " " + hoje.getFullYear() };
         }
 
         async function carregarDados() {
-            const configDias = obterConfiguracaoSemana();
+            const config = obterConfiguracaoSemana();
             const hojeIdx = new Date().getDay(); 
             
             try {
@@ -221,23 +179,28 @@
                 const setoresMap = {};
                 const infoSetores = {};
 
+                // Mostrar Mês e Legenda separadamente
+                const mesArea = document.getElementById('mes-area');
+                mesArea.style.display = 'block';
+                mesArea.innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
+
+                const legArea = document.getElementById('legenda-area');
+                legArea.style.display = 'flex';
+                legArea.innerHTML = `
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:18px;height:18px;font-size:0.6rem">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:18px;height:18px;font-size:0.6rem">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:18px;height:18px;font-size:0.6rem">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:18px;height:18px;font-size:0.6rem">A</span> Afastado</div>`;
+
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
-                    if (!setoresMap[setor]) { 
-                        setoresMap[setor] = []; 
-                        infoSetores[setor] = l1[1]; 
-                    }
+                    if (!setoresMap[setor]) { setoresMap[setor] = []; infoSetores[setor] = l1[1]; }
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,11).some(d => d && d !== '-'))) {
-                            serv.turnos.push({
-                                label: idx===0?'Manhã':idx===1?'Tarde':'Noite',
-                                class: idx===0?'m-bg':idx===1?'t-bg':'n-bg',
-                                hora: linha[3],
-                                dias: linha.slice(6, 11)
-                            });
+                            serv.turnos.push({ label: idx===0?'Manhã':idx===1?'Tarde':'Noite', class: idx===0?'m-bg':idx===1?'t-bg':'n-bg', hora: linha[3], dias: linha.slice(6, 11) });
                         }
                     });
                     setoresMap[setor].push(serv);
@@ -248,21 +211,16 @@
                     let servidoresHtml = '';
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
-                            // VERIFICA SE O SERVIDOR ESTÁ AFASTADO NO TURNO TODO (SE HOUVER "A" NA LINHA)
                             const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
-                            
                             const badgeLabel = estaAfastado ? 'AFASTADO' : t.label;
                             const badgeClass = estaAfastado ? 'a-bg' : t.class;
                             const horarioHtml = estaAfastado ? '' : `<span class="turno-hora">${t.hora || '--:--'}</span>`;
 
                             return `
                             <div class="turno-linha">
-                                <div class="turno-info">
-                                    <span class="turno-badge ${badgeClass}">${badgeLabel}</span>
-                                    ${horarioHtml}
-                                </div>
+                                <div class="turno-info"><span class="turno-badge ${badgeClass}">${badgeLabel}</span>${horarioHtml}</div>
                                 <div class="dias-grid">
-                                    ${configDias.map((info, dIdx) => {
+                                    ${config.dias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
                                         const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':'vazio';
                                         return `
@@ -293,20 +251,18 @@
                                 <span class="setor-nome">${setor}</span>
                                 ${infoSetores[setor] ? `<div class="setor-email-box"><a href="mailto:${infoSetores[setor]}" class="setor-email-link">${iconEmail} ${infoSetores[setor]}</a></div>` : ''}
                             </div>
-                            <div class="lista-servidores">${servidoresHtml}</div>
+                            <div>${servidoresHtml}</div>
                         </div>`;
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
-                document.getElementById('data-atualizacao').innerText = `Atualizado às ${new Date().toLocaleTimeString()}`;
-                mostrarLegenda();
+                document.getElementById('data-atualizacao').innerText = `Sincronizado: ${new Date().toLocaleTimeString()}`;
 
             } catch (e) {
-                document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar escala.</div>";
+                document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Falha na conexão.</div>";
             }
         }
 
-        // TEMA
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         function setTheme(t) {
