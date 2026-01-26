@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Trabalho Oficial</title>
     <style>
-        /* MANTENDO SEUS ESTILOS ORIGINAIS... */
         :root {
             --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
@@ -26,37 +25,43 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* NOVO ESTILO: BOTÃO DASHBOARD */
+        /* BOTÕES FIXOS */
         .btn-dashboard {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--cor-t); /* Verde para diferenciar */
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transition: transform 0.2s, background 0.3s;
+            position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
+            border-radius: 50%; background: var(--cor-t); color: white;
+            text-decoration: none; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.2s;
         }
-        .btn-dashboard:hover { transform: scale(1.1); background: #059669; }
+        .btn-dashboard:hover { transform: scale(1.1); }
 
-        /* SEUS ESTILOS CONTINUAM ABAIXO... */
+        #theme-toggle {
+            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+            border-radius: 50%; background: var(--cor-primaria); color: white;
+            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+
+        /* HEADER E MÊS */
         .header-container { text-align: center; margin-bottom: 25px; width: 100%; }
         .titulo-pagina { color: var(--texto-principal); text-transform: uppercase; margin: 0; border-bottom: 4px solid var(--cor-primaria); padding-bottom: 8px; font-size: 1.5rem; display: inline-block; }
         
+        .mes-container { width: 100%; text-align: center; margin-bottom: 30px; }
+        .mes-titulo { 
+            font-size: 1.5rem; font-weight: 900; color: var(--texto-principal); 
+            text-transform: uppercase; border-left: 6px solid var(--cor-primaria);
+            padding: 5px 15px; display: inline-block; background: var(--bg-card);
+            border-radius: 0 8px 8px 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* LEGENDA */
         .legenda { 
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; 
-            margin-bottom: 30px; background: var(--bg-card); padding: 12px 25px; border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); animation: fadeIn 0.5s ease-in;
+            margin-bottom: 25px; background: var(--bg-card); padding: 12px 25px; border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: var(--texto-secundario); }
 
+        /* SETORES E SERVIDORES */
         .setor-container { 
             width: 100%; max-width: 950px; background: var(--bg-card); 
             border-radius: 16px; overflow: hidden; margin-bottom: 35px;
@@ -72,36 +77,38 @@
             display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
             padding: 20px; transition: background 0.2s;
         }
-        .servidor-item:last-child { border-bottom: none; }
         
         @media (min-width: 768px) {
             .servidor-item { grid-template-columns: 320px 1fr; align-items: center; }
         }
 
-        .servidor-perfil { margin-bottom: 15px; }
         .servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0 0 6px 0; display: block; }
         .contato-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-top: 6px; }
         .email-link { color: #3b82f6; text-transform: lowercase; }
         .whatsapp-link { color: #10b981; }
 
-        .logo-zap, .logo-email { width: 18px; height: 18px; flex-shrink: 0; }
-
-        .escala-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        /* CALENDÁRIO GRID */
         .turno-linha { 
             display: grid; grid-template-columns: 85px 1fr; align-items: center;
-            background: var(--bg-turno); padding: 10px; border-radius: 10px; gap: 12px;
+            background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px;
         }
 
-        .turno-info { display: flex; flex-direction: column; min-height: 40px; justify-content: center; }
-        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
+        .turno-info { display: flex; flex-direction: column; text-align: center; justify-content: center; min-height: 45px; }
+        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
         .m-bg { background: #e0f2fe; color: #0369a1; }
         .t-bg { background: #fef3c7; color: #92400e; }
         .n-bg { background: #ede9fe; color: #5b21b6; }
-        .turno-hora { font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario); text-align: center; margin-top: 3px; }
+        .a-bg { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; } /* ESTILO PARA AFASTADO */
+        
+        .turno-hora { font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario); margin-top: 3px; }
 
         .dias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 2px; }
-        .dia-sigla { font-size: 0.65rem; font-weight: 800; color: var(--texto-secundario); text-transform: uppercase; }
+        .dia-col { 
+            text-align: center; display: flex; flex-direction: column; 
+            align-items: center; padding: 6px 2px; border-radius: 8px;
+        }
+        .dia-numero { font-size: 1.1rem; font-weight: 900; color: var(--texto-principal); line-height: 1; }
+        .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 4px; }
         
         .status-badge { 
             width: 36px; height: 36px; border-radius: 10px; display: flex; 
@@ -111,10 +118,10 @@
 
         .dia-hoje { 
             background: var(--brilho-hoje); 
-            box-shadow: 0 0 0 1.5px var(--borda-hoje); 
-            border-radius: 8px; 
+            box-shadow: 0 0 0 2px var(--borda-hoje); 
         }
 
+        /* CORES STATUS */
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
@@ -122,37 +129,23 @@
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
         [data-theme="dark"] .vazio { background-color: #334155; color: #475569; }
 
-        #theme-toggle {
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-            border-radius: 50%; background: var(--cor-primaria); color: white;
-            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-            transition: transform 0.2s;
-        }
-        #theme-toggle:hover { transform: scale(1.1); }
-
-        .loader-container { padding: 80px; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid var(--border-color); border-top: 5px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        .piscando { 
-            font-weight: 800; color: var(--texto-secundario); text-transform: uppercase;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
+        /* LOADER */
+        .loader-container { padding: 80px; text-align: center; width: 100%; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* BG SETORES */
         .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
         .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
     </style>
 </head>
 <body>
 
-    <a href="graficos.html" class="btn-dashboard" title="Ver Gráficos e Estatísticas">
+    <a href="graficos.html" class="btn-dashboard" title="Ver Gráficos">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
     </a>
 
-    <button id="theme-toggle" title="Alternar Modo Escuro/Claro">
+    <button id="theme-toggle" title="Mudar Tema">
         <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
     </button>
 
@@ -162,57 +155,65 @@
     </div>
 
     <div id="container-legenda"></div>
+    
+    <div class="mes-container">
+        <span id="label-mes-ano" class="mes-titulo">---</span>
+    </div>
 
     <div id="conteudo" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="loader-container">
-            <div class="spinner"></div>
-            <div class="piscando">Carregando Escala...</div>
-        </div>
+        <div class="loader-container"><div class="spinner"></div><div style="color:var(--texto-secundario); font-weight:700">CARREGANDO ESCALA...</div></div>
     </div>
 
     <script>
-        /* MANTENDO SEU SCRIPT ORIGINAL... */
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
-
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            themeIcon.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
-            localStorage.setItem('theme', theme);
-        }
-
-        setTheme(currentTheme);
-        themeToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
-        });
-
-        const iconEmail = `<svg class="logo-email" viewBox="0 0 24 24" fill="#3b82f6" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
-        const iconZap = `<svg class="logo-zap" viewBox="0 0 24 24" fill="#10b981" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+        const iconEmail = `<svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+        const iconZap = `<svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
         function formatarZap(num) {
             const l = ('' + num).replace(/\D/g, '');
             return l.length >= 10 ? `(${l.substring(0,2)}) ${l.length===11?l.substring(2,7):l.substring(2,6)}-${l.length===11?l.substring(7):l.substring(6)}` : num;
         }
 
+        function obterConfiguracaoSemana() {
+            const hoje = new Date();
+            const diaDaSemana = hoje.getDay();
+            const diffSegunda = hoje.getDate() - diaDaSemana + (diaDaSemana === 0 ? -6 : 1);
+            
+            let dadosSemana = [];
+            let meses = new Set();
+            let anos = new Set();
+
+            for (let i = 0; i < 5; i++) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffSegunda + i);
+                dadosSemana.push({ 
+                    numero: d.getDate().toString().padStart(2, '0'), 
+                    sigla: ['SEG', 'TER', 'QUA', 'QUI', 'SEX'][i] 
+                });
+                meses.add(d.toLocaleDateString('pt-BR', { month: 'long' }));
+                anos.add(d.getFullYear());
+            }
+
+            document.getElementById('label-mes-ano').innerText = `${Array.from(meses).join(' / ')} ${Array.from(anos).join(' / ')}`;
+            return dadosSemana;
+        }
+
         function mostrarLegenda() {
             document.getElementById('container-legenda').innerHTML = `
                 <div class="legenda">
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:22px; height:22px; font-size:0.7rem; border-radius:5px;">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:22px; height:22px; font-size:0.7rem; border-radius:5px;">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:22px; height:22px; font-size:0.7rem; border-radius:5px;">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:22px; height:22px; font-size:0.7rem; border-radius:5px;">A</span> Afastado</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px;height:20px;font-size:0.7rem">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px;height:20px;font-size:0.7rem">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px;height:20px;font-size:0.7rem">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px;height:20px;font-size:0.7rem">A</span> Afastado</div>
                 </div>`;
         }
 
         async function carregarDados() {
+            const configDias = obterConfiguracaoSemana();
             const hojeIdx = new Date().getDay(); 
+            
             try {
                 const res = await fetch(url);
                 const dados = await res.json();
@@ -228,7 +229,6 @@
                         setoresMap[setor] = []; 
                         infoSetores[setor] = l1[1]; 
                     }
-                    
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,11).some(d => d && d !== '-'))) {
@@ -243,33 +243,32 @@
                     setoresMap[setor].push(serv);
                 }
 
-                let nomesSetores = Object.keys(setoresMap).sort((a, b) => a.localeCompare(b));
-
                 let htmlFinal = '';
-                nomesSetores.forEach((setor, sIdx) => {
+                Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servidoresHtml = '';
-                    setoresMap[setor].sort((a, b) => a.nome.localeCompare(b.nome));
-
-                    setoresMap[setor].forEach(serv => {
+                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
-                            const diasPreenchidos = t.dias.filter(d => d && d !== '-');
-                            const estaTotalmenteAfastado = diasPreenchidos.length > 0 && diasPreenchidos.every(d => d.toString().toUpperCase().trim() === 'A');
+                            // VERIFICA SE O SERVIDOR ESTÁ AFASTADO NO TURNO TODO (SE HOUVER "A" NA LINHA)
+                            const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
+                            
+                            const badgeLabel = estaAfastado ? 'AFASTADO' : t.label;
+                            const badgeClass = estaAfastado ? 'a-bg' : t.class;
+                            const horarioHtml = estaAfastado ? '' : `<span class="turno-hora">${t.hora || '--:--'}</span>`;
 
                             return `
                             <div class="turno-linha">
                                 <div class="turno-info">
-                                    ${!estaTotalmenteAfastado ? `
-                                        <span class="turno-badge ${t.class}">${t.label}</span>
-                                        <span class="turno-hora">${t.hora || '--:--'}</span>
-                                    ` : ''}
+                                    <span class="turno-badge ${badgeClass}">${badgeLabel}</span>
+                                    ${horarioHtml}
                                 </div>
                                 <div class="dias-grid">
-                                    ${['Seg','Ter','Qua','Qui','Sex'].map((n, dIdx) => {
+                                    ${configDias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
                                         const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':'vazio';
                                         return `
                                             <div class="dia-col ${(dIdx+1)===hojeIdx?'dia-hoje':''}">
-                                                <span class="dia-sigla">${n}</span>
+                                                <span class="dia-numero">${info.numero}</span>
+                                                <span class="dia-sigla">${info.sigla}</span>
                                                 <span class="status-badge ${cl}">${st}</span>
                                             </div>`;
                                     }).join('')}
@@ -306,6 +305,18 @@
                 document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar escala.</div>";
             }
         }
+
+        // TEMA
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            themeIcon.innerHTML = t === 'dark' ? sunIcon : moonIcon;
+            localStorage.setItem('theme', t);
+        }
+        setTheme(localStorage.getItem('theme') || 'light');
+        themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+
         carregarDados();
     </script>
 </body>
