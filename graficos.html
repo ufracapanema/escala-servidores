@@ -27,7 +27,6 @@
         .card-stat h3 { margin: 0; font-size: 0.8rem; text-transform: uppercase; color: #64748b; }
         .card-stat p { margin: 10px 0 0; font-size: 1.8rem; font-weight: 800; }
         
-        /* Cores dos Cards */
         .card-servidores { border-color: var(--primaria); }
         .card-p { border-color: var(--p-color); }
         .card-t { border-color: var(--t-color); }
@@ -42,12 +41,24 @@
         .loader { text-align: center; padding: 50px; font-weight: bold; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primaria); color: white; cursor: pointer; font-size: 1.2rem; }
+        /* Botão de Tema (Direita) */
+        #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--primaria); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; }
+        #theme-toggle:hover { transform: scale(1.1); }
+
+        /* Botão Voltar (Esquerda) */
+        .btn-voltar { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #64748b; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.2s; }
+        .btn-voltar:hover { transform: scale(1.1); background: #475569; }
     </style>
 </head>
 <body>
 
-    <button id="theme-toggle">🌓</button>
+    <a href="index.html" class="btn-voltar" title="Voltar para a Escala">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    </a>
+
+    <button id="theme-toggle" title="Alternar Modo Escuro/Claro">
+        <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+    </button>
 
     <div class="header">
         <h1>Dashboard de Gestão de Equipe</h1>
@@ -74,6 +85,27 @@
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
 
+        // --- LÓGICA DE TEMA (IGUAL AO INDEX) ---
+        const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
+        const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            themeIcon.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+            localStorage.setItem('theme', theme);
+        }
+
+        setTheme(currentTheme);
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            location.reload(); // Recarrega para redesenhar os gráficos com as novas cores
+        });
+
+        // --- LÓGICA DE DADOS ---
         async function init() {
             try {
                 const res = await fetch(url);
@@ -81,19 +113,16 @@
                 const linhas = dados.slice(1);
                 
                 const servidores = {};
-                const hoje = new Date().getDay(); // 1 (Seg) a 5 (Sex)
-                const diaIdx = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0; // Se fds, mostra segunda
+                const hoje = new Date().getDay(); 
+                const diaIdx = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0; 
                 const nomesDias = ['seg', 'ter', 'qua', 'qui', 'sex'];
 
-                // 1. Processamento de dados
                 for (let i = 0; i < linhas.length; i += 3) {
                     const nome = linhas[i][2];
                     if (!nome) continue;
-
                     if (!servidores[nome]) {
                         servidores[nome] = { seg: new Set(), ter: new Set(), qua: new Set(), qui: new Set(), sex: new Set() };
                     }
-
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach(linha => {
                         if (!linha) return;
                         const statusDias = linha.slice(6, 11);
@@ -108,13 +137,11 @@
                     });
                 }
 
-                // 2. Cálculos para os Gráficos
                 let totalGeral = Object.keys(servidores).length;
                 let volumeSemanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0] };
 
                 Object.values(servidores).forEach(serv => {
                     nomesDias.forEach((dia, idx) => {
-                        // Prioridade de contagem por dia para evitar duplicidade no gráfico
                         if (serv[dia].has('A')) volumeSemanal.A[idx]++;
                         else if (serv[dia].has('C')) volumeSemanal.C[idx]++;
                         else if (serv[dia].has('P')) volumeSemanal.P[idx]++;
@@ -122,10 +149,8 @@
                     });
                 });
 
-                // 3. Interface e Cards (Baseado no Dia Atual)
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('dash-content').style.display = 'block';
-                
                 document.getElementById('stat-total').innerText = totalGeral;
                 document.getElementById('stat-p').innerText = volumeSemanal.P[diaIdx];
                 document.getElementById('stat-t').innerText = volumeSemanal.T[diaIdx];
@@ -133,7 +158,6 @@
                 document.getElementById('stat-a').innerText = volumeSemanal.A[diaIdx];
 
                 renderCharts(volumeSemanal, diaIdx);
-
             } catch (e) {
                 console.error(e);
                 document.getElementById('loading').innerText = "Erro ao carregar dados.";
@@ -145,7 +169,6 @@
             const color = isDark ? '#f1f5f9' : '#475569';
             const diasNome = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
 
-            // Gráfico de Pizza (Apenas HOJE)
             new Chart(document.getElementById('chartPizzaHoje'), {
                 type: 'pie',
                 data: {
@@ -165,7 +188,6 @@
                 }
             });
 
-            // Gráfico de Barras (Semanal)
             new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
@@ -190,13 +212,6 @@
                 }
             });
         }
-
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            location.reload();
-        });
 
         init();
     </script>
