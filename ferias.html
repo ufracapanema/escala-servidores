@@ -3,53 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Férias</title>
+    <title>Gestão de Férias Servidores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Inter', sans-serif; }
-        .search-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .setor-title { border-left: 5px solid #0d6efd; padding-left: 15px; margin: 25px 0 15px 0; color: #212529; font-weight: 700; text-transform: uppercase; }
-        .servidor-card { background: white; border: none; border-radius: 10px; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); height: 100%; }
-        .servidor-card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .badge-dias { background-color: #e7f1ff; color: #0d6efd; font-weight: 600; font-size: 0.9rem; }
-        .data-info { font-size: 0.85rem; color: #6c757d; }
-        .highlight { color: #198754; font-weight: bold; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        /* Ajuste de simetria para a barra de pesquisa */
+        .search-container { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .setor-container { margin-bottom: 40px; }
+        
+        .setor-title { 
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        /* Padronização do tamanho dos cards */
+        .servidor-card { 
+            background: white; 
+            border: 1px solid #e9ecef;
+            border-radius: 8px; 
+            height: 100%; /* Faz todos os cards da mesma linha terem a mesma altura */
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .nome-servidor {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f1f1f1;
+            padding-bottom: 8px;
+        }
+
+        .data-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #6c757d;
+            margin-right: 5px;
+        }
+
+        .data-valor {
+            font-size: 0.95rem;
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .badge-dias {
+            background-color: #212529;
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold">Escala de Férias Servidores</h1>
-        <p class="text-muted">Controle organizado por setor e cronologia</p>
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Escala de Férias</h1>
+        <p class="text-muted">Acompanhamento de períodos por setor</p>
     </div>
 
     <div class="search-container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
-                    <input type="text" id="inputBusca" class="form-control border-start-0 shadow-none" placeholder="Buscar por nome do servidor ou setor...">
-                </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <span class="badge bg-dark" id="totalServidores">0 Servidores</span>
-            </div>
+        <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="inputBusca" class="form-control bg-light border-start-0 shadow-none" placeholder="Digite o nome do servidor ou setor para filtrar...">
         </div>
     </div>
 
     <div id="painelSetores">
-        <div class="text-center py-5">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Carregando dados da planilha...</p>
         </div>
-    </div>
 </div>
 
 <script>
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRKegsnxIiUPRWL3KMa9vgqmZJB3hCS9hSavAAYo3FYyOiegdGPoJJQOQ-vGbmumbEsNy2DUFxgDb2c/pub?output=csv';
-    let todosDados = [];
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRKegsnxIiUPRWL3KMa9vgqmZJB3hCS9hSavAAYo3FYyOiegdGPoJJQOQ-vGbmumbEsNy2DUFxgDb2c/pub?output=csv";
+    
+    // Cores fixas para cada setor
+    const coresSetores = {
+        "Administrativo": "#4e73df",
+        "TI": "#1cc88a",
+        "RH": "#f6c23e",
+        "Financeiro": "#e74a3b",
+        "Saúde": "#36b9cc",
+        "Educação": "#858796",
+        "Geral": "#5a5c69"
+    };
 
     async function carregarDados() {
         try {
@@ -57,100 +114,86 @@
             const texto = await resposta.text();
             const linhas = texto.split(/\r?\n/).filter(l => l.trim() !== "").slice(1);
 
-            todosDados = linhas.map(l => {
+            const dados = linhas.map(l => {
                 const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                const dInicio = formatarData(cols[1]);
-                const dFim = formatarData(cols[2]);
-                
                 return {
                     nome: cols[0],
-                    inicioStr: cols[1],
-                    fimStr: cols[2],
-                    inicioObj: new Date(dInicio),
-                    fimObj: new Date(dFim),
+                    inicio: cols[1],
+                    fim: cols[2],
                     setor: cols[3] || 'Geral',
-                    dias: calcularDiferenca(dInicio, dFim)
+                    dias: calcularDiferenca(formatarData(cols[1]), formatarData(cols[2])),
+                    inicioSort: new Date(formatarData(cols[1]))
                 };
             });
 
-            renderizarPainel(todosDados);
-            
-            // Evento de busca
+            renderizar(dados);
+
             document.getElementById('inputBusca').addEventListener('input', (e) => {
                 const termo = e.target.value.toLowerCase();
-                const filtrados = todosDados.filter(s => 
+                const filtrados = dados.filter(s => 
                     s.nome.toLowerCase().includes(termo) || s.setor.toLowerCase().includes(termo)
                 );
-                renderizarPainel(filtrados);
+                renderizar(filtrados);
             });
 
-        } catch (erro) {
-            document.getElementById('painelSetores').innerHTML = `<div class="alert alert-danger">Erro ao carregar: ${erro.message}</div>`;
+        } catch (e) {
+            document.getElementById('painelSetores').innerHTML = "Erro ao carregar dados.";
         }
     }
 
-    function formatarData(dataStr) {
-        if (dataStr.includes('/')) {
-            const [d, m, a] = dataStr.split('/');
-            return `${a}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-        }
-        return dataStr;
+    function formatarData(dStr) {
+        const parts = dStr.split('/');
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
 
-    function calcularDiferenca(inicio, fim) {
-        const d1 = new Date(inicio);
-        const d2 = new Date(fim);
-        const diffTime = Math.abs(d2 - d1);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o dia de início
+    function calcularDiferenca(i, f) {
+        const d1 = new Date(i);
+        const d2 = new Date(f);
+        return Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
     }
 
-    function renderizarPainel(dados) {
+    function renderizar(dados) {
         const container = document.getElementById('painelSetores');
-        document.getElementById('totalServidores').innerText = `${dados.length} Servidores`;
-        
-        if (dados.length === 0) {
-            container.innerHTML = "<p class='text-center'>Nenhum resultado encontrado.</p>";
-            return;
-        }
-
         container.innerHTML = "";
 
-        // Agrupar por Setor
-        const setores = {};
+        const agrupados = {};
         dados.forEach(s => {
-            if (!setores[s.setor]) setores[s.setor] = [];
-            setores[s.setor].push(s);
+            if (!agrupados[s.setor]) agrupados[s.setor] = [];
+            agrupados[s.setor].push(s);
         });
 
-        // Ordenar setores alfabeticamente e servidores por data inicial
-        Object.keys(setores).sort().forEach(setorNome => {
-            const servidores = setores[setorNome].sort((a, b) => a.inicioObj - b.inicioObj);
-            
-            let setorHtml = `
-                <h3 class="setor-title">${setorNome}</h3>
-                <div class="row g-3">
+        Object.keys(agrupados).sort().forEach(setor => {
+            const cor = coresSetores[setor] || coresSetores["Geral"];
+            const servidores = agrupados[setor].sort((a,b) => a.inicioSort - b.inicioSort);
+
+            let html = `
+                <div class="setor-container">
+                    <h5 class="setor-title" style="background-color: ${cor}">${setor}</h5>
+                    <div class="row g-3">
             `;
 
             servidores.forEach(s => {
-                setorHtml += `
-                    <div class="col-md-4 col-sm-6">
-                        <div class="card servidor-card p-3">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="mb-0 fw-bold text-dark">${s.nome}</h6>
-                                <span class="badge badge-dias">${s.dias} dias</span>
+                html += `
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="servidor-card">
+                            <div class="nome-servidor">${s.nome}</div>
+                            <div class="mb-2">
+                                <span class="data-label">Início:</span><span class="data-valor">${s.inicio}</span>
                             </div>
-                            <div class="data-info">
-                                <i class="bi bi-calendar-event me-1"></i> <span class="highlight">${s.inicioStr}</span> 
-                                <br> 
-                                <i class="bi bi-calendar-check me-1"></i> até <span class="highlight">${s.fimStr}</span>
+                            <div class="mb-3">
+                                <span class="data-label">Fim:</span><span class="data-valor">${s.fim}</span>
+                            </div>
+                            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Duração:</small>
+                                <span class="badge-dias">${s.dias} dias</span>
                             </div>
                         </div>
                     </div>
                 `;
             });
 
-            setorHtml += `</div>`;
-            container.innerHTML += setorHtml;
+            html += `</div></div>`;
+            container.innerHTML += html;
         });
     }
 
