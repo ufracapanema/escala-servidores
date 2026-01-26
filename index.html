@@ -6,7 +6,10 @@
     <title>Escala de Trabalho Oficial</title>
     <style>
         :root {
-            --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
+            --cor-c: #f1c40f; 
+            --cor-t: #34495e; 
+            --cor-p: #10b981; 
+            --cor-a: #ef4444; 
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
             --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
             --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
@@ -28,11 +31,10 @@
         /* BOTÕES FIXOS */
         .btn-dashboard {
             position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
-            border-radius: 50%; background: var(--cor-t); color: white;
+            border-radius: 50%; background: #10b981; color: white;
             text-decoration: none; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
         }
-        .btn-dashboard:hover { transform: scale(1.1); }
 
         #theme-toggle {
             position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
@@ -41,41 +43,52 @@
             display: flex; align-items: center; justify-content: center; z-index: 1000;
         }
 
-        /* HEADER */
+        /* HEADER E MÊS/LEGENDA */
         .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
-        .titulo-pagina { color: var(--texto-principal); text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
-        #data-atualizacao { font-size: 0.8rem; color: var(--texto-secundario); margin-top: 5px; }
-
-        /* MÊS E LEGENDA SEPARADOS */
+        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+        
         .mes-bloco { 
             margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none;
         }
-        .mes-titulo { font-size: 1.3rem; font-weight: 900; color: var(--texto-principal); text-transform: uppercase; letter-spacing: 1px; }
+        .mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 
         .legenda-bloco { 
-            display: none; flex-wrap: wrap; justify-content: center; gap: 15px; 
-            margin-bottom: 30px; background: var(--bg-card); padding: 12px 25px; border-radius: 12px;
+            display: none; flex-wrap: wrap; justify-content: center; gap: 20px; 
+            margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: var(--texto-secundario); }
+        .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
 
-        /* SETORES - CORES DE FUNDO COMO ANTES */
+        /* CABEÇALHO DO SETOR EM DUAS GRIDS */
         .setor-container { 
             width: 100%; max-width: 950px; background: var(--bg-card); 
             border-radius: 16px; overflow: hidden; margin-bottom: 35px;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        .setor-header { padding: 25px 20px; text-align: center; color: white; }
-        .setor-nome { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; display: block; }
-        .setor-email-box { display: inline-block; margin-top: 10px; background: white; padding: 5px 15px; border-radius: 50px; }
-        .setor-email-link { font-size: 0.9rem; font-weight: 800; color: #1e293b; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .setor-grid-nome { 
+            padding: 20px; text-align: center; color: white; 
+            font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+        }
 
-        .bg-0 { background-color: #1e40af; } .bg-1 { background-color: #065f46; } 
-        .bg-2 { background-color: #6b21a8; } .bg-3 { background-color: #9a3412; }
+        .setor-grid-email { 
+            padding: 12px; text-align: center;
+            display: flex; justify-content: center; align-items: center;
+        }
 
-        /* SERVIDORES */
+        .setor-email-link { 
+            font-size: 1rem; font-weight: 700; text-decoration: none; 
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* CORES DO SETOR */
+        .bg-setor-0 { background-color: #1e40af; } .bg-email-0 { background-color: #dbeafe; color: #1e40af; } 
+        .bg-setor-1 { background-color: #065f46; } .bg-email-1 { background-color: #d1fae5; color: #065f46; }
+        .bg-setor-2 { background-color: #6b21a8; } .bg-email-2 { background-color: #f3e8ff; color: #6b21a8; }
+        .bg-setor-3 { background-color: #9a3412; } .bg-email-3 { background-color: #ffedd5; color: #9a3412; }
+
+        /* SERVIDORES - RESTAURANDO ALINHAMENTO ORIGINAL */
         .servidor-item { 
             display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
             padding: 20px; transition: background 0.2s;
@@ -84,10 +97,8 @@
 
         .servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0 0 6px 0; display: block; }
         .contato-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-top: 6px; }
-        .email-link { color: #3b82f6; }
-        .whatsapp-link { color: #10b981; }
 
-        /* CALENDÁRIO GRID */
+        /* ESCALA E TURNOS */
         .turno-linha { 
             display: grid; grid-template-columns: 85px 1fr; align-items: center;
             background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px;
@@ -108,15 +119,13 @@
         .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; }
         .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); }
 
-        /* CORES STATUS */
+        /* STATUS */
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
         .a-afastado { background-color: var(--cor-a); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
-        [data-theme="dark"] .vazio { background-color: #334155; color: #475569; }
 
-        /* LOADER */
         .loader-container { padding: 80px; text-align: center; width: 100%; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -131,7 +140,7 @@
     <button id="theme-toggle"><svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala Geral de Servidores Técnicos Administrativos em Educação (TAE)</h1>
+        <h1 class="titulo-pagina">Escala Geral de Servidores</h1>
         <div id="data-atualizacao">Sincronizando dados...</div>
     </div>
 
@@ -179,18 +188,16 @@
                 const setoresMap = {};
                 const infoSetores = {};
 
-                // Mostrar Mês e Legenda separadamente
-                const mesArea = document.getElementById('mes-area');
-                mesArea.style.display = 'block';
-                mesArea.innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
+                document.getElementById('mes-area').style.display = 'block';
+                document.getElementById('mes-area').innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
 
                 const legArea = document.getElementById('legenda-area');
                 legArea.style.display = 'flex';
                 legArea.innerHTML = `
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:18px;height:18px;font-size:0.6rem">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:18px;height:18px;font-size:0.6rem">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:18px;height:18px;font-size:0.6rem">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:18px;height:18px;font-size:0.6rem">A</span> Afastado</div>`;
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:22px;height:22px;font-size:0.8rem">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:22px;height:22px;font-size:0.8rem">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:22px;height:22px;font-size:0.8rem">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:22px;height:22px;font-size:0.8rem">A</span> Afastado</div>`;
 
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
@@ -209,16 +216,17 @@
                 let htmlFinal = '';
                 Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servidoresHtml = '';
+                    const colorIdx = sIdx % 4;
+
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
                             const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
-                            const badgeLabel = estaAfastado ? 'AFASTADO' : t.label;
-                            const badgeClass = estaAfastado ? 'a-bg' : t.class;
-                            const horarioHtml = estaAfastado ? '' : `<span class="turno-hora">${t.hora || '--:--'}</span>`;
-
                             return `
                             <div class="turno-linha">
-                                <div class="turno-info"><span class="turno-badge ${badgeClass}">${badgeLabel}</span>${horarioHtml}</div>
+                                <div class="turno-info">
+                                    <span class="turno-badge ${estaAfastado ? 'a-bg' : t.class}">${estaAfastado ? 'AFASTADO' : t.label}</span>
+                                    ${!estaAfastado ? `<span class="turno-hora">${t.hora || '--:--'}</span>` : ''}
+                                </div>
                                 <div class="dias-grid">
                                     ${config.dias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
@@ -238,8 +246,8 @@
                             <div class="servidor-item">
                                 <div class="servidor-perfil">
                                     <span class="servidor-nome">${serv.nome}</span>
-                                    <a href="mailto:${serv.email}" class="contato-item email-link">${iconEmail} ${serv.email}</a>
-                                    ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" target="_blank" class="contato-item whatsapp-link">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
+                                    <a href="mailto:${serv.email}" class="contato-item" style="color:#3b82f6;">${iconEmail} ${serv.email}</a>
+                                    ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" target="_blank" class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
                                 </div>
                                 <div class="escala-wrapper">${turnosHtml}</div>
                             </div>`;
@@ -247,10 +255,13 @@
 
                     htmlFinal += `
                         <div class="setor-container">
-                            <div class="setor-header bg-${sIdx % 4}">
-                                <span class="setor-nome">${setor}</span>
-                                ${infoSetores[setor] ? `<div class="setor-email-box"><a href="mailto:${infoSetores[setor]}" class="setor-email-link">${iconEmail} ${infoSetores[setor]}</a></div>` : ''}
-                            </div>
+                            <div class="setor-grid-nome bg-setor-${colorIdx}">${setor}</div>
+                            ${infoSetores[setor] ? `
+                            <div class="setor-grid-email bg-email-${colorIdx}">
+                                <a href="mailto:${infoSetores[setor]}" class="setor-email-link" style="color: inherit;">
+                                    ${iconEmail} <span>${infoSetores[setor]}</span>
+                                </a>
+                            </div>` : ''}
                             <div>${servidoresHtml}</div>
                         </div>`;
                 });
@@ -259,10 +270,11 @@
                 document.getElementById('data-atualizacao').innerText = `Sincronizado: ${new Date().toLocaleTimeString()}`;
 
             } catch (e) {
-                document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Falha na conexão.</div>";
+                document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar dados.</div>";
             }
         }
 
+        // TEMA
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         function setTheme(t) {
