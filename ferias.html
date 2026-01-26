@@ -3,52 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Férias Ativas</title>
+    <title>Gestão de Férias Centralizada</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
-        .search-container { background: white; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 30px; }
-        .setor-title { padding: 8px 20px; border-radius: 50px; color: white; font-weight: 700; display: inline-block; margin-bottom: 20px; font-size: 0.9rem; text-transform: uppercase; }
+        
+        /* Centralização do Título e Busca */
+        .header-section { text-align: center; max-width: 800px; margin: 0 auto; }
+        
+        .search-container { 
+            background: white; 
+            padding: 15px 25px; 
+            border-radius: 50px; 
+            border: 1px solid #ddd; 
+            margin: 30px auto;
+            max-width: 700px; /* Largura fixa para a busca ficar centralizada e elegante */
+        }
+
+        /* Títulos dos setores centralizados */
+        .setor-wrapper { text-align: center; margin-bottom: 50px; }
+        
+        .setor-title { 
+            padding: 8px 25px; 
+            border-radius: 50px; 
+            color: white; 
+            font-weight: 700; 
+            display: inline-block; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
         
         /* Card do Servidor */
         .servidor-card { 
             background: white; border: 1px solid #eee; border-radius: 12px; 
-            height: 100%; padding: 20px; transition: all 0.3s ease;
+            padding: 20px; transition: all 0.3s ease;
             position: relative; overflow: hidden;
+            text-align: left; /* Conteúdo interno do card continua à esquerda */
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
-        /* Destaque para quem está de férias hoje */
         .em-ferias-hoje { 
             border: 2px solid #198754 !important; 
             box-shadow: 0 0 15px rgba(25, 135, 84, 0.2);
         }
+        
         .selo-ativo { 
             position: absolute; top: 0; right: 0; background: #198754; color: white;
             font-size: 0.65rem; padding: 4px 10px; font-weight: 800; border-bottom-left-radius: 10px;
         }
 
-        .nome-servidor { font-weight: 800; color: #2d3436; margin-bottom: 15px; font-size: 1.1rem; }
-        .data-box { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 5px; }
-        .data-label { font-size: 0.7rem; font-weight: 700; color: #636e72; text-transform: uppercase; display: block; }
-        .data-valor { font-size: 0.95rem; color: #2d3436; font-weight: 600; }
-        .badge-dias { background: #2d3436; color: white; border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; }
+        .nome-servidor { font-weight: 800; color: #2d3436; margin-bottom: 15px; font-size: 1.1rem; line-height: 1.2; }
+        .data-box { background: #f8f9fa; padding: 8px; border-radius: 6px; margin-bottom: 5px; border: 1px solid #f1f1f1; }
+        .data-label { font-size: 0.65rem; font-weight: 700; color: #636e72; text-transform: uppercase; display: block; }
+        .data-valor { font-size: 0.9rem; color: #2d3436; font-weight: 600; }
+        .badge-dias { background: #2d3436; color: white; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
-    <div class="row justify-content-center text-center mb-4">
-        <div class="col-md-8">
-            <h1 class="fw-bold text-dark">Escala de Férias Atualizada</h1>
-            <p class="text-muted">Visualizando apenas períodos vigentes ou futuros</p>
-        </div>
+    <div class="header-section">
+        <h1 class="fw-bold text-dark">Escala de Férias 2026</h1>
+        <p class="text-muted">Apenas períodos ativos ou futuros</p>
     </div>
 
     <div class="search-container">
         <div class="input-group">
             <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="inputBusca" class="form-control border-0 shadow-none" placeholder="Filtrar por nome ou setor...">
+            <input type="text" id="inputBusca" class="form-control border-0 shadow-none" placeholder="Buscar servidor ou setor...">
         </div>
     </div>
 
@@ -58,7 +86,6 @@
 <script>
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRKegsnxIiUPRWL3KMa9vgqmZJB3hCS9hSavAAYo3FYyOiegdGPoJJQOQ-vGbmumbEsNy2DUFxgDb2c/pub?output=csv";
     
-    // Leque de cores primárias e secundárias
     const lequeCores = ["#0d6efd", "#6610f2", "#6f42c1", "#d63384", "#dc3545", "#fd7e14", "#ffc107", "#198754", "#20c997", "#0dcaf0"];
     const coresAtribuidas = {};
     let corIndex = 0;
@@ -83,7 +110,7 @@
                     estaDeFerias: (hoje >= dInicio && hoje <= dFim),
                     expirado: hoje > dFim
                 };
-            }).filter(item => !item.expirado); // REMOVE O QUE JÁ PASSOU
+            }).filter(item => !item.expirado);
 
             renderizar(dados);
 
@@ -111,31 +138,38 @@
         }, {});
 
         Object.keys(grupos).sort().forEach(setor => {
-            // Atribuição dinâmica de cores do leque
             if (!coresAtribuidas[setor]) {
                 coresAtribuidas[setor] = lequeCores[corIndex % lequeCores.length];
                 corIndex++;
             }
 
             const servidores = grupos[setor].sort((a,b) => a.inicioObj - b.inicioObj);
-            let html = `<div><span class="setor-title" style="background:${coresAtribuidas[setor]}">${setor}</span><div class="row g-3 mb-5">`;
+            
+            // O segredo da centralização está no 'justify-content-center'
+            let html = `
+                <div class="setor-wrapper">
+                    <span class="setor-title" style="background:${coresAtribuidas[setor]}">${setor}</span>
+                    <div class="row g-3 justify-content-center">
+            `;
 
             servidores.forEach(s => {
                 html += `
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="servidor-card ${s.estaDeFerias ? 'em-ferias-hoje' : ''}">
+                    <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+                        <div class="servidor-card w-100 ${s.estaDeFerias ? 'em-ferias-hoje' : ''}">
                             ${s.estaDeFerias ? '<div class="selo-ativo">EM FÉRIAS AGORA</div>' : ''}
-                            <div class="nome-servidor">${s.nome}</div>
-                            <div class="data-box">
-                                <span class="data-label">Início</span>
-                                <span class="data-valor">${s.inicioStr}</span>
-                            </div>
-                            <div class="data-box">
-                                <span class="data-label">Fim</span>
-                                <span class="data-valor">${s.fimStr}</span>
+                            <div>
+                                <div class="nome-servidor">${s.nome}</div>
+                                <div class="data-box">
+                                    <span class="data-label text-start">Início</span>
+                                    <span class="data-valor d-block text-start">${s.inicioStr}</span>
+                                </div>
+                                <div class="data-box">
+                                    <span class="data-label text-start">Fim</span>
+                                    <span class="data-valor d-block text-start">${s.fimStr}</span>
+                                </div>
                             </div>
                             <div class="mt-3 d-flex justify-content-between align-items-center">
-                                <span class="text-muted small">Duração:</span>
+                                <span class="text-muted small" style="font-size: 0.7rem;">DURAÇÃO:</span>
                                 <span class="badge-dias">${s.dias} dias</span>
                             </div>
                         </div>
