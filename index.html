@@ -268,7 +268,7 @@
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
-                document.getElementById('data-atualizacao').innerText = `Sincronizado: ${new Date().toLocaleTimeString()}`;
+                document.getElementById('data-atualizacao').innerText = `Última sincronização: ${new Date().toLocaleDateString()} às ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
             } catch (e) {
                 document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar dados.</div>";
