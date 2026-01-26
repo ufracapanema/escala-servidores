@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala de Trabalho Oficial</title>
     <style>
+        /* MANTENDO SEUS ESTILOS ORIGINAIS... */
         :root {
-            /* Cores Modo Claro */
             --cor-c: #f1c40f; --cor-p: #34495e; --cor-t: #10b981; --cor-a: #ef4444; 
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
             --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
             --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
         }
 
-        /* Variáveis Modo Escuro */
         [data-theme="dark"] {
             --bg-body: #0f172a; --bg-card: #1e293b; --texto-principal: #f1f5f9;
             --texto-secundario: #94a3b8; --border-color: #334155; --bg-turno: #1e293b;
@@ -27,6 +26,27 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        /* NOVO ESTILO: BOTÃO DASHBOARD */
+        .btn-dashboard {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--cor-t); /* Verde para diferenciar */
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .btn-dashboard:hover { transform: scale(1.1); background: #059669; }
+
+        /* SEUS ESTILOS CONTINUAM ABAIXO... */
         .header-container { text-align: center; margin-bottom: 25px; width: 100%; }
         .titulo-pagina { color: var(--texto-principal); text-transform: uppercase; margin: 0; border-bottom: 4px solid var(--cor-primaria); padding-bottom: 8px; font-size: 1.5rem; display: inline-block; }
         
@@ -102,7 +122,6 @@
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
         [data-theme="dark"] .vazio { background-color: #334155; color: #475569; }
 
-        /* BOTÃO MODO NOTURNO */
         #theme-toggle {
             position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
             border-radius: 50%; background: var(--cor-primaria); color: white;
@@ -129,6 +148,10 @@
 </head>
 <body>
 
+    <a href="graficos.html" class="btn-dashboard" title="Ver Gráficos e Estatísticas">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+    </a>
+
     <button id="theme-toggle" title="Alternar Modo Escuro/Claro">
         <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
     </button>
@@ -148,13 +171,12 @@
     </div>
 
     <script>
+        /* MANTENDO SEU SCRIPT ORIGINAL... */
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
-        // Ícones do Modo Noturno
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
-        // Lógica de Troca de Tema
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         const currentTheme = localStorage.getItem('theme') || 'light';
