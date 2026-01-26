@@ -2,64 +2,144 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Férias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Férias</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    
+    <style>
+        :root { --primary-color: #2c3e50; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header-painel { background: var(--primary-color); color: white; padding: 2rem 0; margin-bottom: 2rem; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .setor-card { margin-bottom: 2rem; border-radius: 10px; overflow: hidden; border: none; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .setor-header { background: #e9ecef; font-weight: bold; color: #495057; text-transform: uppercase; letter-spacing: 1px; }
+        #calendar { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
+        .fc-event { cursor: pointer; border: none !important; padding: 2px 5px; }
+    </style>
 </head>
-<body class="bg-light p-4">
-    <div class="container">
-        <div id="status" class="alert alert-info">Conectando à planilha...</div>
-        <table class="table table-striped table-bordered bg-white shadow-sm" id="tabela" style="display:none;">
-            <thead class="table-dark" id="cabecalho"></thead>
-            <tbody id="corpo"></tbody>
-        </table>
+<body>
+
+<header class="header-painel text-center">
+    <h1>Escala de Férias 2026</h1>
+    <p>Acompanhamento Visual de Servidores</p>
+</header>
+
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-3">📅 Visão Geral (Calendário)</h3>
+            <div id="calendar"></div>
+        </div>
     </div>
 
-    <script>
-        // Use o link que baixa o arquivo "Página 1.csv"
-        const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRKegsnxIiUPRWL3KMa9vgqmZJB3hCS9hSavAAYo3FYyOiegdGPoJJQOQ-vGbmumbEsNy2DUFxgDb2c/pub?output=csv';
+    <h3 class="mb-3">🏢 Servidores por Setor</h3>
+    <div id="setores-container" class="row">
+        <div class="text-center">Carregando setores...</div>
+    </div>
+</div>
 
-        async function carregarDados() {
-            try {
-                const resposta = await fetch(url);
-                if (!resposta.ok) throw new Error("Link inválido ou planilha não publicada.");
-                
-                const textoCsv = await resposta.text();
-                
-                // Divide as linhas e remove linhas vazias
-                const linhas = textoCsv.split(/\r?\n/).filter(l => l.trim() !== "");
-                
-                // Processa cada linha removendo aspas extras
-                const matriz = linhas.map(linha => 
-                    linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim())
-                );
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-                // Monta Cabeçalho
-                const cabecalho = document.getElementById('cabecalho');
-                let htmlHeader = "<tr>";
-                matriz[0].forEach(col => htmlHeader += `<th>${col}</th>`);
-                cabecalho.innerHTML = htmlHeader + "</tr>";
+<script>
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRKegsnxIiUPRWL3KMa9vgqmZJB3hCS9hSavAAYo3FYyOiegdGPoJJQOQ-vGbmumbEsNy2DUFxgDb2c/pub?output=csv';
 
-                // Monta Corpo
-                const corpo = document.getElementById('corpo');
-                let htmlCorpo = "";
-                matriz.slice(1).forEach(linha => {
-                    htmlCorpo += "<tr>";
-                    linha.forEach(celula => htmlCorpo += `<td>${celula}</td>`);
-                    htmlCorpo += "</tr>";
-                });
-                corpo.innerHTML = htmlCorpo;
+    // Cores para os setores para diferenciar no calendário
+    const coresSetores = ['#3498db', '#e67e22', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c'];
 
-                // Ajusta visibilidade
-                document.getElementById('status').style.display = 'none';
-                document.getElementById('tabela').style.display = 'table';
+    async function carregarSistema() {
+        try {
+            const resposta = await fetch(url + "&t=" + new Date().getTime());
+            const texto = await resposta.text();
+            const linhas = texto.split(/\r?\n/).filter(l => l.trim() !== "").slice(1);
 
-            } catch (erro) {
-                document.getElementById('status').className = "alert alert-danger";
-                document.getElementById('status').innerText = "Erro: " + erro.message;
-            }
+            const dados = linhas.map(l => {
+                const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                return { nome: cols[0], inicio: formatarData(cols[1]), fim: formatarData(cols[2]), setor: cols[3] || 'Geral' };
+            });
+
+            renderizarSetores(dados);
+            renderizarCalendario(dados);
+
+        } catch (erro) {
+            console.error("Erro:", erro);
         }
+    }
 
-        carregarDados();
-    </script>
+    // Ajusta a data para o formato que o JS entende (AAAA-MM-DD)
+    function formatarData(dataStr) {
+        if (dataStr.includes('/')) {
+            const [d, m, a] = dataStr.split('/');
+            return `${a}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        }
+        return dataStr;
+    }
+
+    function renderizarSetores(dados) {
+        const container = document.getElementById('setores-container');
+        container.innerHTML = "";
+
+        // Agrupar por setor
+        const setores = {};
+        dados.forEach(item => {
+            if (!setores[item.setor]) setores[item.setor] = [];
+            setores[item.setor].push(item);
+        });
+
+        for (const setor in setores) {
+            let html = `
+                <div class="col-md-6">
+                    <div class="card setor-card">
+                        <div class="card-header setor-header">${setor}</div>
+                        <ul class="list-group list-group-flush">
+            `;
+
+            setores[setor].forEach(s => {
+                html += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ${s.nome}
+                        <small class="text-muted">${s.inicio} até ${s.fim}</small>
+                    </li>`;
+            });
+
+            html += `</ul></div></div>`;
+            container.innerHTML += html;
+        }
+    }
+
+    function renderizarCalendario(dados) {
+        const calendarEl = document.getElementById('calendar');
+        const eventos = dados.map((s, index) => {
+            // Atribui uma cor baseada no setor
+            const setorIndex = Object.keys(dados.reduce((acc, curr) => ({...acc, [curr.setor]:1}), {})).indexOf(s.setor);
+            
+            return {
+                title: `${s.nome} (${s.setor})`,
+                start: s.inicio,
+                end: ajustarDataFim(s.fim),
+                backgroundColor: coresSetores[setorIndex % coresSetores.length]
+            };
+        });
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'pt-br',
+            headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,multiMonthYear' },
+            events: eventos,
+            buttonText: { today: 'Hoje', month: 'Mês', year: 'Ano' }
+        });
+        calendar.render();
+    }
+
+    // FullCalendar exclui o último dia, então somamos 1 dia para exibição correta
+    function ajustarDataFim(dataStr) {
+        let d = new Date(dataStr);
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split('T')[0];
+    }
+
+    carregarSistema();
+</script>
+
 </body>
 </html>
