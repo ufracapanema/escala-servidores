@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Gestão - Escala Oficial</title>
+    <title>Dashboard de Gestão Operacional</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -14,16 +14,24 @@
         [data-theme="dark"] {
             --bg-body: #0f172a; --bg-card: #1e293b; --texto: #f1f5f9;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; transition: 0.3s; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
         
-        .header { text-align: center; margin-bottom: 30px; }
-        .grid-stats { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 15px; max-width: 1100px; margin: 0 auto 30px; 
+        .filters-area { 
+            max-width: 1100px; margin: 0 auto 30px; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; 
         }
-        
-        .card-stat { background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid transparent; }
+        .filter-box { 
+            background: var(--bg-card); padding: 15px; border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px;
+        }
+        select { 
+            padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; 
+            background: var(--bg-card); color: var(--texto); font-size: 1rem; cursor: pointer;
+        }
+
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 1100px; margin: 0 auto 30px; }
+        .card-stat { background: var(--bg-card); padding: 20px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .card-stat h3 { margin: 0; font-size: 0.8rem; text-transform: uppercase; color: #64748b; }
         .card-stat p { margin: 10px 0 0; font-size: 1.8rem; font-weight: 800; }
         
@@ -33,162 +41,182 @@
         .card-c { border-color: var(--c-color); }
         .card-a { border-color: var(--a-color); }
 
-        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto 40px; }
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
+        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 380px; }
+        .lista-detalhada { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
+        .coluna-p { border-top-color: var(--p-color); }
+        .coluna-t { border-top-color: var(--t-color); }
+        .coluna-c { border-top-color: var(--c-color); }
+        .coluna-a { border-top-color: var(--a-color); }
         
-        .loader { text-align: center; padding: 50px; font-weight: bold; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        /* Botão de Tema (Direita) */
-        #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--primaria); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; }
-        #theme-toggle:hover { transform: scale(1.1); }
-
-        /* Botão Voltar (Esquerda) */
-        .btn-voltar { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #64748b; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.2s; }
-        .btn-voltar:hover { transform: scale(1.1); background: #475569; }
+        .coluna-lista h4 { margin: 0 0 15px; font-size: 0.9rem; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.85rem; border-bottom: 1px solid #f1f5f9; background: #f8fafc; margin-bottom: 4px; border-radius: 4px; }
+        
+        .loader { text-align: center; padding: 50px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="btn-voltar" title="Voltar para a Escala">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-    </a>
-
-    <button id="theme-toggle" title="Alternar Modo Escuro/Claro">
-        <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-    </button>
-
     <div class="header">
-        <h1>Dashboard de Gestão de Equipe</h1>
-        <p id="data-view">Análise de ocupação e disponibilidade</p>
+        <h1>Dashboard de Gestão Operacional</h1>
+        <p>Logica de Turnos e Afastamentos Aplicada</p>
     </div>
 
-    <div id="loading" class="loader">Processando dados da escala...</div>
+    <div class="filters-area">
+        <div class="filter-box">
+            <label><strong>1. Filtrar por Turno:</strong></label>
+            <select id="select-turno">
+                <option value="todos">Todos os Turnos</option>
+                <option value="0">Turno da Manhã</option>
+                <option value="1">Turno da Tarde</option>
+                <option value="2">Turno da Noite</option>
+            </select>
+        </div>
+        <div class="filter-box">
+            <label><strong>2. Dia da Semana:</strong></label>
+            <select id="select-dia">
+                <option value="0">Segunda-feira</option>
+                <option value="1">Terça-feira</option>
+                <option value="2">Quarta-feira</option>
+                <option value="3">Quinta-feira</option>
+                <option value="4">Sexta-feira</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="loading" class="loader">Carregando dados da Escala...</div>
 
     <div id="dash-content" style="display: none;">
         <div class="grid-stats">
             <div class="card-stat card-servidores"><h3>Total Servidores</h3><p id="stat-total">0</p></div>
-            <div class="card-stat card-p"><h3>Presencial (Hoje)</h3><p id="stat-p">0</p></div>
-            <div class="card-stat card-t"><h3>Remoto (Hoje)</h3><p id="stat-t">0</p></div>
-            <div class="card-stat card-c"><h3>Chefia (Hoje)</h3><p id="stat-c">0</p></div>
-            <div class="card-stat card-a"><h3>Afastados (Hoje)</h3><p id="stat-a">0</p></div>
+            <div class="card-stat card-p"><h3>Presencial</h3><p id="stat-p">0</p></div>
+            <div class="card-stat card-t"><h3>Teletrabalho</h3><p id="stat-t">0</p></div>
+            <div class="card-stat card-c"><h3>Chefia</h3><p id="stat-c">0</p></div>
+            <div class="card-stat card-a"><h3>Afastados</h3><p id="stat-a">0</p></div>
         </div>
 
         <div class="charts-container">
             <div class="chart-box"><canvas id="chartPizzaHoje"></canvas></div>
             <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
         </div>
+
+        <div class="lista-detalhada">
+            <div class="coluna-lista coluna-p"><h4>Presencial <span id="count-p">0</span></h4><ul id="list-p"></ul></div>
+            <div class="coluna-lista coluna-t"><h4>Teletrabalho <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
+            <div class="coluna-lista coluna-c"><h4>Chefia <span id="count-c">0</span></h4><ul id="list-c"></ul></div>
+            <div class="coluna-lista coluna-a"><h4>Afastados <span id="count-a">0</span></h4><ul id="list-a"></ul></div>
+        </div>
     </div>
 
     <script>
-        const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+        let database = {}; 
+        let charts = {};
 
-        // --- LÓGICA DE TEMA (IGUAL AO INDEX) ---
-        const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
-        const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            themeIcon.innerHTML = theme === 'dark' ? sunIcon : moonIcon;
-            localStorage.setItem('theme', theme);
-        }
-
-        setTheme(currentTheme);
-        themeToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
-            location.reload(); // Recarrega para redesenhar os gráficos com as novas cores
-        });
-
-        // --- LÓGICA DE DADOS ---
         async function init() {
             try {
-                const res = await fetch(url);
-                const dados = await res.json();
-                const linhas = dados.slice(1);
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                const rows = data.slice(1);
                 
-                const servidores = {};
-                const hoje = new Date().getDay(); 
-                const diaIdx = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0; 
-                const nomesDias = ['seg', 'ter', 'qua', 'qui', 'sex'];
-
-                for (let i = 0; i < linhas.length; i += 3) {
-                    const nome = linhas[i][2];
-                    if (!nome) continue;
-                    if (!servidores[nome]) {
-                        servidores[nome] = { seg: new Set(), ter: new Set(), qua: new Set(), qui: new Set(), sex: new Set() };
+                for (let i = 0; i < rows.length; i += 3) {
+                    const nome = rows[i] ? rows[i][2] : null;
+                    if (nome && !nome.includes('@')) {
+                        database[nome] = [rows[i], rows[i+1], rows[i+2]];
                     }
-                    [linhas[i], linhas[i+1], linhas[i+2]].forEach(linha => {
-                        if (!linha) return;
-                        const statusDias = linha.slice(6, 11);
-                        statusDias.forEach((status, idx) => {
-                            if (status) {
-                                const st = status.toString().toUpperCase().trim();
-                                if (['P', 'T', 'C', 'A'].includes(st)) {
-                                    servidores[nome][nomesDias[idx]].add(st);
-                                }
-                            }
-                        });
-                    });
                 }
 
-                let totalGeral = Object.keys(servidores).length;
-                let volumeSemanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0] };
+                const hoje = new Date().getDay();
+                const diaPadrao = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
+                document.getElementById('select-dia').value = diaPadrao;
 
-                Object.values(servidores).forEach(serv => {
-                    nomesDias.forEach((dia, idx) => {
-                        if (serv[dia].has('A')) volumeSemanal.A[idx]++;
-                        else if (serv[dia].has('C')) volumeSemanal.C[idx]++;
-                        else if (serv[dia].has('P')) volumeSemanal.P[idx]++;
-                        else if (serv[dia].has('T')) volumeSemanal.T[idx]++;
-                    });
-                });
+                document.getElementById('select-turno').addEventListener('change', processar);
+                document.getElementById('select-dia').addEventListener('change', processar);
 
+                processar();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('dash-content').style.display = 'block';
-                document.getElementById('stat-total').innerText = totalGeral;
-                document.getElementById('stat-p').innerText = volumeSemanal.P[diaIdx];
-                document.getElementById('stat-t').innerText = volumeSemanal.T[diaIdx];
-                document.getElementById('stat-c').innerText = volumeSemanal.C[diaIdx];
-                document.getElementById('stat-a').innerText = volumeSemanal.A[diaIdx];
-
-                renderCharts(volumeSemanal, diaIdx);
-            } catch (e) {
-                console.error(e);
-                document.getElementById('loading').innerText = "Erro ao carregar dados.";
-            }
+            } catch (e) { document.getElementById('loading').innerText = "Erro na conexão."; }
         }
 
-        function renderCharts(vol, diaIdx) {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const color = isDark ? '#f1f5f9' : '#475569';
-            const diasNome = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+        function processar() {
+            const turnoFiltro = document.getElementById('select-turno').value;
+            const diaFiltro = parseInt(document.getElementById('select-dia').value);
+            
+            let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0] };
+            let nomesNoDia = { P: [], T: [], C: [], A: [] };
 
-            new Chart(document.getElementById('chartPizzaHoje'), {
-                type: 'pie',
-                data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado'],
-                    datasets: [{
-                        data: [vol.P[diaIdx], vol.T[diaIdx], vol.C[diaIdx], vol.A[diaIdx]],
-                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: { display: true, text: `SITUAÇÃO: ${diasNome[diaIdx].toUpperCase()}`, color: color, font: {size: 16} },
-                        legend: { position: 'bottom', labels: { color: color } }
+            Object.keys(database).forEach(nome => {
+                const blocos = database[nome];
+                
+                // NOVA LÓGICA: Verifica se há horários preenchidos em qualquer uma das 3 linhas (coluna 4/index 3)
+                const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
+
+                for (let d = 0; d < 5; d++) {
+                    let statusDoDia = new Set();
+                    
+                    blocos.forEach((linha, tIdx) => {
+                        if (!linha) return;
+
+                        // Se NÃO tem horário fixo (Afastado), ele ignora o filtro de turno e entra em todos
+                        // Se TEM horário fixo, ele respeita o filtro de turno rigorosamente
+                        const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
+
+                        if (passaFiltroTurno) {
+                            const s = linha[6 + d]?.toString().toUpperCase().trim();
+                            if (['P', 'T', 'C', 'A'].includes(s)) statusDoDia.add(s);
+                        }
+                    });
+
+                    let statusFinal = null;
+                    if (statusDoDia.has('A')) statusFinal = 'A';
+                    else if (statusDoDia.has('C')) statusFinal = 'C';
+                    else if (statusDoDia.has('P')) statusFinal = 'P';
+                    else if (statusDoDia.has('T')) statusFinal = 'T';
+
+                    if (statusFinal) {
+                        semanal[statusFinal][d]++;
+                        if (d === diaFiltro) nomesNoDia[statusFinal].push(nome);
                     }
                 }
             });
 
-            new Chart(document.getElementById('chartSemanal'), {
+            document.getElementById('stat-total').innerText = Object.keys(database).length;
+            ['p', 't', 'c', 'a'].forEach(key => {
+                const upper = key.toUpperCase();
+                document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
+                document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
+                document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
+                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
+            });
+
+            renderCharts(semanal, diaFiltro);
+        }
+
+        function renderCharts(vol, diaSel) {
+            if (charts.pizza) charts.pizza.destroy();
+            if (charts.bar) charts.bar.destroy();
+            const diasTexto = ["SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA"];
+            const ctxP = document.getElementById('chartPizzaHoje').getContext('2d');
+            charts.pizza = new Chart(ctxP, {
+                type: 'pie',
+                data: {
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado'],
+                    datasets: [{
+                        data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel]],
+                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { maintainAspectRatio: false, plugins: { title: { display: true, text: 'SITUAÇÃO: ' + diasTexto[diaSel] }, legend: { position: 'bottom' } } }
+            });
+
+            const ctxB = document.getElementById('chartSemanal').getContext('2d');
+            charts.bar = new Chart(ctxB, {
                 type: 'bar',
                 data: {
                     labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
@@ -199,20 +227,9 @@
                         { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' }
                     ]
                 },
-                options: {
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { stacked: true, ticks: { color: color } },
-                        y: { stacked: true, ticks: { color: color } }
-                    },
-                    plugins: {
-                        title: { display: true, text: 'DISTRIBUIÇÃO SEMANAL COMPLETA', color: color, font: {size: 16} },
-                        legend: { position: 'bottom', labels: { color: color } }
-                    }
-                }
+                options: { maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'bottom' } } }
             });
         }
-
         init();
     </script>
 </body>
