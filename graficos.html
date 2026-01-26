@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Gestão - Escala Oficial</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
+            --primaria: #3b82f6; --p-color: #34495e; --t-color: #10b981;
+            --a-color: #ef4444; --c-color: #f1c40f;
+        }
+        [data-theme="dark"] {
+            --bg-body: #0f172a; --bg-card: #1e293b; --texto: #f1f5f9;
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; transition: 0.3s; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .grid-stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px; max-width: 1100px; margin: 0 auto 30px; 
+        }
+        
+        .card-stat { background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid transparent; }
+        .card-stat h3 { margin: 0; font-size: 0.8rem; text-transform: uppercase; color: #64748b; }
+        .card-stat p { margin: 10px 0 0; font-size: 1.8rem; font-weight: 800; }
+        
+        /* Cores dos Cards */
+        .card-servidores { border-color: var(--primaria); }
+        .card-p { border-color: var(--p-color); }
+        .card-t { border-color: var(--t-color); }
+        .card-c { border-color: var(--c-color); }
+        .card-a { border-color: var(--a-color); }
+
+        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+        @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
+
+        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 380px; }
+        
+        .loader { text-align: center; padding: 50px; font-weight: bold; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primaria); color: white; cursor: pointer; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle">🌓</button>
+
+    <div class="header">
+        <h1>Dashboard de Gestão de Equipe</h1>
+        <p id="data-view">Análise de ocupação e disponibilidade</p>
+    </div>
+
+    <div id="loading" class="loader">Processando dados da escala...</div>
+
+    <div id="dash-content" style="display: none;">
+        <div class="grid-stats">
+            <div class="card-stat card-servidores"><h3>Total Servidores</h3><p id="stat-total">0</p></div>
+            <div class="card-stat card-p"><h3>Presencial (Hoje)</h3><p id="stat-p">0</p></div>
+            <div class="card-stat card-t"><h3>Remoto (Hoje)</h3><p id="stat-t">0</p></div>
+            <div class="card-stat card-c"><h3>Chefia (Hoje)</h3><p id="stat-c">0</p></div>
+            <div class="card-stat card-a"><h3>Afastados (Hoje)</h3><p id="stat-a">0</p></div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-box"><canvas id="chartPizzaHoje"></canvas></div>
+            <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
+        </div>
+    </div>
+
+    <script>
+        const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+
+        async function init() {
+            try {
+                const res = await fetch(url);
+                const dados = await res.json();
+                const linhas = dados.slice(1);
+                
+                const servidores = {};
+                const hoje = new Date().getDay(); // 1 (Seg) a 5 (Sex)
+                const diaIdx = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0; // Se fds, mostra segunda
+                const nomesDias = ['seg', 'ter', 'qua', 'qui', 'sex'];
+
+                // 1. Processamento de dados
+                for (let i = 0; i < linhas.length; i += 3) {
+                    const nome = linhas[i][2];
+                    if (!nome) continue;
+
+                    if (!servidores[nome]) {
+                        servidores[nome] = { seg: new Set(), ter: new Set(), qua: new Set(), qui: new Set(), sex: new Set() };
+                    }
+
+                    [linhas[i], linhas[i+1], linhas[i+2]].forEach(linha => {
+                        if (!linha) return;
+                        const statusDias = linha.slice(6, 11);
+                        statusDias.forEach((status, idx) => {
+                            if (status) {
+                                const st = status.toString().toUpperCase().trim();
+                                if (['P', 'T', 'C', 'A'].includes(st)) {
+                                    servidores[nome][nomesDias[idx]].add(st);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                // 2. Cálculos para os Gráficos
+                let totalGeral = Object.keys(servidores).length;
+                let volumeSemanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0] };
+
+                Object.values(servidores).forEach(serv => {
+                    nomesDias.forEach((dia, idx) => {
+                        // Prioridade de contagem por dia para evitar duplicidade no gráfico
+                        if (serv[dia].has('A')) volumeSemanal.A[idx]++;
+                        else if (serv[dia].has('C')) volumeSemanal.C[idx]++;
+                        else if (serv[dia].has('P')) volumeSemanal.P[idx]++;
+                        else if (serv[dia].has('T')) volumeSemanal.T[idx]++;
+                    });
+                });
+
+                // 3. Interface e Cards (Baseado no Dia Atual)
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dash-content').style.display = 'block';
+                
+                document.getElementById('stat-total').innerText = totalGeral;
+                document.getElementById('stat-p').innerText = volumeSemanal.P[diaIdx];
+                document.getElementById('stat-t').innerText = volumeSemanal.T[diaIdx];
+                document.getElementById('stat-c').innerText = volumeSemanal.C[diaIdx];
+                document.getElementById('stat-a').innerText = volumeSemanal.A[diaIdx];
+
+                renderCharts(volumeSemanal, diaIdx);
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loading').innerText = "Erro ao carregar dados.";
+            }
+        }
+
+        function renderCharts(vol, diaIdx) {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const color = isDark ? '#f1f5f9' : '#475569';
+            const diasNome = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+
+            // Gráfico de Pizza (Apenas HOJE)
+            new Chart(document.getElementById('chartPizzaHoje'), {
+                type: 'pie',
+                data: {
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado'],
+                    datasets: [{
+                        data: [vol.P[diaIdx], vol.T[diaIdx], vol.C[diaIdx], vol.A[diaIdx]],
+                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: `SITUAÇÃO: ${diasNome[diaIdx].toUpperCase()}`, color: color, font: {size: 16} },
+                        legend: { position: 'bottom', labels: { color: color } }
+                    }
+                }
+            });
+
+            // Gráfico de Barras (Semanal)
+            new Chart(document.getElementById('chartSemanal'), {
+                type: 'bar',
+                data: {
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
+                    datasets: [
+                        { label: 'Presencial', data: vol.P, backgroundColor: '#34495e' },
+                        { label: 'Teletrabalho', data: vol.T, backgroundColor: '#10b981' },
+                        { label: 'Chefia', data: vol.C, backgroundColor: '#f1c40f' },
+                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, ticks: { color: color } },
+                        y: { stacked: true, ticks: { color: color } }
+                    },
+                    plugins: {
+                        title: { display: true, text: 'DISTRIBUIÇÃO SEMANAL COMPLETA', color: color, font: {size: 16} },
+                        legend: { position: 'bottom', labels: { color: color } }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            location.reload();
+        });
+
+        init();
+    </script>
+</body>
+</html>
