@@ -3,64 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade de Horários</title>
+    <title>Grade de Escala</title>
     <style>
-        body { 
-            font-family: system-ui, -apple-system, sans-serif; 
-            background: #fff; 
-            margin: 0; 
-            padding: 10px; 
-            color: #1a1a1a;
-        }
-
+        body { font-family: sans-serif; margin: 0; padding: 15px; background: #fff; }
+        
         .grid-escala {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
+            grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
+            border: 1px solid #ccc;
             font-size: 13px;
+            max-width: 1000px;
+            margin: auto;
         }
 
         .grid-header {
-            background: #f4f4f5;
+            background: #f0f0f0;
             font-weight: bold;
             padding: 12px;
             text-align: center;
-            border-bottom: 2px solid #ddd;
-            border-right: 1px solid #ddd;
+            border-bottom: 2px solid #ccc;
+            border-right: 1px solid #ccc;
         }
 
         .grid-item {
             padding: 10px;
             border-bottom: 1px solid #eee;
-            border-right: 1px solid #eee;
+            border-right: 1px solid #ccc;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
         }
 
-        .nome { justify-content: flex-start; font-weight: 600; background: #fafafa; }
-        .total { font-weight: bold; color: #2563eb; background: #f8fafc; }
+        .nome { justify-content: flex-start; font-weight: bold; padding-left: 15px; }
+        .total { font-weight: 800; color: #000; background: #f9f9f9; }
 
         .grid-footer {
             grid-column: span 5;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            background: #27272a;
-            color: white;
+            grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
+            background: #333;
+            color: #fff;
             font-weight: bold;
         }
 
         .footer-item { padding: 12px; text-align: center; }
-
-        #loading { text-align: center; padding: 40px; color: #666; font-style: italic; }
+        #loading { text-align: center; margin-top: 50px; font-weight: bold; color: #666; }
     </style>
 </head>
 <body>
 
-    <div id="loading">Sincronizando dados da planilha...</div>
+    <div id="loading">Carregando dados da planilha...</div>
 
     <div id="grade-container" class="grid-escala" style="display: none;">
         <div class="grid-header" style="text-align:left">Servidor</div>
@@ -75,86 +68,107 @@
     </div>
 
 <script>
-    // URL com cache busting para garantir carregamento
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec?v=' + Date.now();
+    // URL idêntica ao que funcionava antes
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+    
+    let database = {};
 
-    function formatar(n) {
-        if (n === 0) return "-";
-        const h = Math.floor(n);
-        const m = Math.round((n - h) * 60);
+    // Formatação solicitada: 8h ou 8h 30m
+    function formatarH(decimal) {
+        if (decimal === 0) return "-";
+        const h = Math.floor(decimal);
+        const m = Math.round((decimal - h) * 60);
         return m === 0 ? h + "h" : h + "h " + m + "m";
     }
 
-    function calc(t) {
-        if (!t || !t.includes('|')) return 0;
+    // Lógica de cálculo do formato "14:00 | 17:00"
+    function calcular(texto) {
+        if (!texto || !texto.includes('|')) return 0;
         try {
-            const p = t.split('|').map(x => x.trim());
-            const c = (s) => { 
-                const [h, m] = s.split(':').map(Number); 
-                return (h * 60) + (m || 0); 
+            const partes = texto.split('|').map(p => p.trim());
+            const paraMin = (h) => {
+                const [hrs, mins] = h.split(':').map(Number);
+                return (hrs * 60) + (mins || 0);
             };
-            let d = c(p[1]) - c(p[0]);
-            return (d < 0 ? d + 1440 : d) / 60;
-        } catch(e) { return 0; }
+            let diff = paraMin(partes[1]) - paraMin(partes[0]);
+            if (diff < 0) diff += 1440; // Trata virada da meia-noite
+            return diff / 60;
+        } catch (e) { return 0; }
     }
 
-    async function carregar() {
+    async function init() {
         try {
-            const res = await fetch(API_URL);
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            
-            const database = {};
+            const response = await fetch(API_URL);
+            const data = await response.json();
             const rows = data.slice(1);
+            
+            // Lógica original de ler de 3 em 3 linhas (Manhã, Tarde, Noite)
             for (let i = 0; i < rows.length; i += 3) {
-                const nome = rows[i] && rows[i][2] ? rows[i][2].trim() : null;
+                const nome = rows[i] ? rows[i][2]?.trim() : null;
                 if (nome && !nome.includes('@')) {
                     database[nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
             }
 
-            // Define o dia atual (0=Seg, 4=Sex). Se for fds, mostra Segunda(0).
+            // Identifica o dia da semana atual
             const hoje = new Date().getDay();
-            const dia = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
+            const diaIndice = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
 
-            let html = "", sM = 0, sT = 0, sN = 0;
-            const nomes = Object.keys(database).sort();
-
-            nomes.forEach(n => {
-                const b = database[n];
-                const hM = calc(b[0][3]), hT = calc(b[1][3]), hN = calc(b[2][3]);
-                const total = hM + hT + hN;
-
-                if (total > 0) {
-                    sM += hM; sT += hT; sN += hN;
-                    html += `
-                        <div class="grid-item nome">${n}</div>
-                        <div class="grid-item">${b[0][3] || "-"}</div>
-                        <div class="grid-item">${b[1][3] || "-"}</div>
-                        <div class="grid-item">${b[2][3] || "-"}</div>
-                        <div class="grid-item total">${formatar(total)}</div>
-                    `;
-                }
-            });
-
-            document.getElementById('grid-corpo').innerHTML = html;
-            document.getElementById('grid-rodape').innerHTML = `
-                <div class="footer-item" style="text-align:left">TOTAIS DO DIA</div>
-                <div class="footer-item">${formatar(sM)}</div>
-                <div class="footer-item">${formatar(sT)}</div>
-                <div class="footer-item">${formatar(sN)}</div>
-                <div class="footer-item" style="background:#3b82f6">${formatar(sM+sT+sN)}</div>
-            `;
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('grade-container').style.display = 'grid';
+            processar(diaIndice);
 
         } catch (e) {
-            document.getElementById('loading').innerHTML = "⚠️ Erro na conexão. Verifique a planilha ou a internet.";
+            document.getElementById('loading').innerText = "Erro ao carregar os dados. Verifique a conexão.";
+            console.error(e);
         }
     }
 
-    carregar();
+    function processar(dia) {
+        let html = "";
+        let somaM = 0, somaT = 0, somaN = 0;
+        const nomes = Object.keys(database).sort();
+
+        nomes.forEach(n => {
+            const blocos = database[n];
+            
+            // Pega o horário da coluna 3 de cada bloco
+            const hStrM = blocos[0] ? blocos[0][3]?.toString() : "";
+            const hStrT = blocos[1] ? blocos[1][3]?.toString() : "";
+            const hStrN = blocos[2] ? blocos[2][3]?.toString() : "";
+
+            const valM = calcular(hStrM);
+            const valT = calcular(hStrT);
+            const valN = calcular(hStrN);
+            
+            const totalLinha = valM + valT + valN;
+
+            // Só mostra se tiver algum horário preenchido no dia
+            if (totalLinha > 0) {
+                somaM += valM; somaT += valT; somaN += valN;
+                
+                html += `
+                    <div class="grid-item nome">${n}</div>
+                    <div class="grid-item">${hStrM || "-"}</div>
+                    <div class="grid-item">${hStrT || "-"}</div>
+                    <div class="grid-item">${hStrN || "-"}</div>
+                    <div class="grid-item total">${formatarH(totalLinha)}</div>
+                `;
+            }
+        });
+
+        document.getElementById('grid-corpo').innerHTML = html;
+        document.getElementById('grid-rodape').innerHTML = `
+            <div class="footer-item" style="text-align:left; padding-left:15px">TOTAL DO DIA</div>
+            <div class="footer-item">${formatarH(somaM)}</div>
+            <div class="footer-item">${formatarH(somaT)}</div>
+            <div class="footer-item">${formatarH(somaN)}</div>
+            <div class="footer-item" style="background:#444">${formatarH(somaM + somaT + somaN)}</div>
+        `;
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('grade-container').style.display = 'grid';
+    }
+
+    init();
 </script>
 </body>
 </html>
