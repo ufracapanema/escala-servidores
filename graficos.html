@@ -9,7 +9,7 @@
         :root {
             --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
             --primaria: #3b82f6; --p-color: #34495e; --t-color: #10b981;
-            --a-color: #ef4444; --c-color: #f1c40f; --f-color: #64748b; /* Cor para Fora de Expediente */
+            --a-color: #ef4444; --c-color: #f1c40f; --f-color: #64748b;
             --bg-item-lista: #f8fafc; --border-item-lista: #f1f5f9;
         }
         [data-theme="dark"] {
@@ -160,7 +160,25 @@
                 
                 for (let i = 0; i < rows.length; i += 3) {
                     const nome = rows[i] ? rows[i][2] : null;
-                    if (nome && !nome.includes('@')) database[nome] = [rows[i], rows[i+1], rows[i+2]];
+                    if (nome && !nome.includes('@')) {
+                        const blocos = [rows[i], rows[i+1], rows[i+2]];
+                        
+                        // VALIDAÇÃO: Verifica se o servidor tem alguma atividade real
+                        const temAlgumHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
+                        const temAlgumStatus = blocos.some(l => {
+                            if(!l) return false;
+                            for(let d=0; d<5; d++) {
+                                let s = l[6+d]?.toString().toUpperCase().trim();
+                                if(['P','T','C','A'].includes(s)) return true;
+                            }
+                            return false;
+                        });
+
+                        // Só adiciona se tiver horário OU algum status na semana
+                        if (temAlgumHorario || temAlgumStatus) {
+                            database[nome] = blocos;
+                        }
+                    }
                 }
 
                 const agora = new Date();
@@ -185,28 +203,25 @@
         function processar() {
             const turnoFiltro = document.getElementById('select-turno').value;
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            // Incluído 'F' para Fora de Expediente
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
 
-            Object.keys(database).forEach(nome => {
+            const servidoresAtivos = Object.keys(database);
+
+            servidoresAtivos.forEach(nome => {
                 const blocos = database[nome];
                 const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
-                    let trabalhouNoTurno = false;
 
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
                         const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
 
-                        if (['P', 'T', 'C', 'A'].includes(s)) {
-                            if (passaFiltroTurno) {
-                                statusDoDia.add(s);
-                                trabalhouNoTurno = true;
-                            }
+                        if (['P', 'T', 'C', 'A'].includes(s) && passaFiltroTurno) {
+                            statusDoDia.add(s);
                         }
                     });
 
@@ -215,18 +230,14 @@
                     else if (statusDoDia.has('C')) statusFinal = 'C';
                     else if (statusDoDia.has('P')) statusFinal = 'P';
                     else if (statusDoDia.has('T')) statusFinal = 'T';
-                    
-                    // Se não tem status no turno filtrado, mas o servidor existe, ele está 'F' (Fora de Expediente)
-                    if (!statusFinal) {
-                        statusFinal = 'F';
-                    }
+                    else statusFinal = 'F'; // Se não achou status no turno, cai no Fora de Expediente
 
                     semanal[statusFinal][d]++;
                     if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
             });
 
-            document.getElementById('stat-total').innerText = Object.keys(database).length;
+            document.getElementById('stat-total').innerText = servidoresAtivos.length;
             
             ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
@@ -276,7 +287,7 @@
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: '#10b981' },
                         { label: 'Chefia', data: vol.C, backgroundColor: '#f1c40f' },
                         { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' },
-                        { label: 'Fora de Expediente', data: vol.F, backgroundColor: '#64748b' }
+                        { label: 'Fora do Turno', data: vol.F, backgroundColor: '#64748b' }
                     ]
                 },
                 options: { 
