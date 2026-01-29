@@ -3,202 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala Consolidada</title>
+    <title>Grade de Horários</title>
     <style>
-        :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --texto: #1e293b;
-            --primaria: #2563eb;
-            --border: #e2e8f0;
-            --destaque: #f1f5f9;
-        }
-
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--texto); 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: #fff; 
             margin: 0; 
-            padding: 20px; 
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; }
-
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        select { 
             padding: 10px; 
-            border-radius: 6px; 
-            border: 1px solid var(--border); 
-            font-size: 1rem;
-            outline: none;
+            color: #1a1a1a;
         }
 
-        /* Estrutura da Grade (Grid) */
         .grid-escala {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* Nome, M, T, N, Total */
-            background: var(--card);
-            border-radius: 12px;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
+            font-size: 13px;
         }
 
         .grid-header {
-            background: var(--destaque);
+            background: #f4f4f5;
             font-weight: bold;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
-            border-bottom: 2px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            border-bottom: 2px solid #ddd;
+            border-right: 1px solid #ddd;
         }
 
-        .grid-header span { font-size: 0.7rem; color: #64748b; font-weight: normal; }
-
         .grid-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            border-right: 1px solid #eee;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
         }
 
-        .nome-servidor { justify-content: flex-start; font-weight: 500; border-right: 1px solid var(--border); }
-        .total-horas { font-weight: bold; color: var(--primaria); background: var(--destaque); }
+        .nome { justify-content: flex-start; font-weight: 600; background: #fafafa; }
+        .total { font-weight: bold; color: #2563eb; background: #f8fafc; }
 
-        /* Rodapé de Totais */
         .grid-footer {
             grid-column: span 5;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            background: #1e293b;
+            background: #27272a;
             color: white;
             font-weight: bold;
         }
 
-        .footer-item { padding: 15px; text-align: center; }
+        .footer-item { padding: 12px; text-align: center; }
 
-        .loader { text-align: center; padding: 50px; font-size: 1.2rem; }
-        
-        @media (max-width: 600px) {
-            .grid-escala { font-size: 0.8rem; }
-            .grid-header span { display: none; }
-        }
+        #loading { text-align: center; padding: 40px; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h2 style="margin:0">Escala de Horários</h2>
-        <select id="select-dia">
-            <option value="0">Segunda-feira</option>
-            <option value="1">Terça-feira</option>
-            <option value="2">Quarta-feira</option>
-            <option value="3">Quinta-feira</option>
-            <option value="4">Sexta-feira</option>
-        </select>
-    </div>
-
-    <div id="loading" class="loader">⏳ Carregando dados...</div>
+    <div id="loading">Sincronizando dados da planilha...</div>
 
     <div id="grade-container" class="grid-escala" style="display: none;">
         <div class="grid-header" style="text-align:left">Servidor</div>
-        <div class="grid-header">Manhã <span>07:00 | 13:00</span></div>
-        <div class="grid-header">Tarde <span>13:00 | 19:00</span></div>
-        <div class="grid-header">Noite <span>19:00 | 01:00</span></div>
+        <div class="grid-header">Manhã</div>
+        <div class="grid-header">Tarde</div>
+        <div class="grid-header">Noite</div>
         <div class="grid-header">Total</div>
 
         <div id="grid-corpo" style="display: contents;"></div>
 
         <div class="grid-footer" id="grid-rodape"></div>
     </div>
-</div>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-    let database = {};
+    // URL com cache busting para garantir carregamento
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec?v=' + Date.now();
 
-    function formatarH(decimal) {
-        if (decimal === 0) return "-";
-        const h = Math.floor(decimal);
-        const m = Math.round((decimal - h) * 60);
-        return m === 0 ? `${h}h` : `${h}h ${m}m`;
+    function formatar(n) {
+        if (n === 0) return "-";
+        const h = Math.floor(n);
+        const m = Math.round((n - h) * 60);
+        return m === 0 ? h + "h" : h + "h " + m + "m";
     }
 
-    function calc(txt) {
-        if (!txt || !txt.includes('|')) return 0;
-        const p = txt.split('|').map(x => x.trim());
-        const conv = (s) => { 
-            const [h, m] = s.split(':').map(Number); 
-            return (h * 60) + (m || 0); 
-        };
-        let d = conv(p[1]) - conv(p[0]);
-        return (d < 0 ? d + 1440 : d) / 60;
+    function calc(t) {
+        if (!t || !t.includes('|')) return 0;
+        try {
+            const p = t.split('|').map(x => x.trim());
+            const c = (s) => { 
+                const [h, m] = s.split(':').map(Number); 
+                return (h * 60) + (m || 0); 
+            };
+            let d = c(p[1]) - c(p[0]);
+            return (d < 0 ? d + 1440 : d) / 60;
+        } catch(e) { return 0; }
     }
 
-    async function init() {
+    async function carregar() {
         try {
             const res = await fetch(API_URL);
+            if (!res.ok) throw new Error();
             const data = await res.json();
+            
+            const database = {};
             const rows = data.slice(1);
             for (let i = 0; i < rows.length; i += 3) {
-                const nome = rows[i] ? rows[i][2]?.trim() : null;
-                if (nome && !nome.includes('@')) database[nome] = [rows[i], rows[i+1], rows[i+2]];
+                const nome = rows[i] && rows[i][2] ? rows[i][2].trim() : null;
+                if (nome && !nome.includes('@')) {
+                    database[nome] = [rows[i], rows[i+1], rows[i+2]];
+                }
             }
-            document.getElementById('select-dia').addEventListener('change', montar);
-            montar();
+
+            // Define o dia atual (0=Seg, 4=Sex). Se for fds, mostra Segunda(0).
+            const hoje = new Date().getDay();
+            const dia = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
+
+            let html = "", sM = 0, sT = 0, sN = 0;
+            const nomes = Object.keys(database).sort();
+
+            nomes.forEach(n => {
+                const b = database[n];
+                const hM = calc(b[0][3]), hT = calc(b[1][3]), hN = calc(b[2][3]);
+                const total = hM + hT + hN;
+
+                if (total > 0) {
+                    sM += hM; sT += hT; sN += hN;
+                    html += `
+                        <div class="grid-item nome">${n}</div>
+                        <div class="grid-item">${b[0][3] || "-"}</div>
+                        <div class="grid-item">${b[1][3] || "-"}</div>
+                        <div class="grid-item">${b[2][3] || "-"}</div>
+                        <div class="grid-item total">${formatar(total)}</div>
+                    `;
+                }
+            });
+
+            document.getElementById('grid-corpo').innerHTML = html;
+            document.getElementById('grid-rodape').innerHTML = `
+                <div class="footer-item" style="text-align:left">TOTAIS DO DIA</div>
+                <div class="footer-item">${formatar(sM)}</div>
+                <div class="footer-item">${formatar(sT)}</div>
+                <div class="footer-item">${formatar(sN)}</div>
+                <div class="footer-item" style="background:#3b82f6">${formatar(sM+sT+sN)}</div>
+            `;
+
             document.getElementById('loading').style.display = 'none';
             document.getElementById('grade-container').style.display = 'grid';
-        } catch (e) { document.getElementById('loading').innerText = "Erro ao carregar dados."; }
+
+        } catch (e) {
+            document.getElementById('loading').innerHTML = "⚠️ Erro na conexão. Verifique a planilha ou a internet.";
+        }
     }
 
-    function montar() {
-        const dia = parseInt(document.getElementById('select-dia').value);
-        let html = "", sM = 0, sT = 0, sN = 0;
-
-        Object.keys(database).sort().forEach(nome => {
-            const blocos = database[nome];
-            let hM = calc(blocos[0][3]), hT = calc(blocos[1][3]), hN = calc(blocos[2][3]);
-            let total = hM + hT + hN;
-
-            if (total > 0) {
-                sM += hM; sT += hT; sN += hN;
-                html += `
-                    <div class="grid-item nome-servidor">${nome}</div>
-                    <div class="grid-item">${blocos[0][3] || "-"}</div>
-                    <div class="grid-item">${blocos[1][3] || "-"}</div>
-                    <div class="grid-item">${blocos[2][3] || "-"}</div>
-                    <div class="grid-item total-horas">${formatarH(total)}</div>
-                `;
-            }
-        });
-
-        document.getElementById('grid-corpo').innerHTML = html;
-        document.getElementById('grid-rodape').innerHTML = `
-            <div class="footer-item" style="text-align:left">TOTAIS</div>
-            <div class="footer-item">${formatarH(sM)}</div>
-            <div class="footer-item">${formatarH(sT)}</div>
-            <div class="footer-item">${formatarH(sN)}</div>
-            <div class="footer-item" style="background: #2563eb;">${formatarH(sM+sT+sN)}</div>
-        `;
-    }
-
-    init();
+    carregar();
 </script>
-
 </body>
 </html>
