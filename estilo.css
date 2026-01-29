@@ -1,21 +1,12 @@
 /* ============================================================
-   ESTILO DEFINITIVO E COMPLETO (estilo.css)
+   1. VARIÁVEIS GLOBAIS (CORES E TEMAS)
    ============================================================ */
-
 :root {
-    --cor-c: #f1c40f; 
-    --cor-t: #34495e; 
-    --cor-p: #10b981; 
-    --cor-a: #ef4444; 
-    --cor-primaria: #3b82f6;
-    --bg-body: #f1f5f9; 
-    --bg-card: white; 
-    --texto-principal: #1e293b;
-    --texto-secundario: #64748b; 
-    --border-color: #f1f5f9; 
-    --bg-turno: #f8fafc;
-    --brilho-hoje: #fffde7; 
-    --borda-hoje: #f1c40f;
+    --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; 
+    --cor-primaria: #3b82f6; --bg-body: #f1f5f9; --bg-card: white; 
+    --texto-principal: #1e293b; --texto-secundario: #64748b; 
+    --border-color: #f1f5f9; --bg-turno: #f8fafc;
+    --brilho-hoje: #fffde7; --borda-hoje: #f1c40f;
 }
 
 [data-theme="dark"] {
@@ -24,15 +15,109 @@
     --brilho-hoje: #172554; --borda-hoje: #3b82f6;
 }
 
-/* 1. RESET E BODY */
+/* ============================================================
+   2. ESTRUTURA BASE DA PÁGINA
+   ============================================================ */
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background-color: var(--bg-body); margin: 0; padding: 20px;
-    display: flex; flex-direction: column; align-items: center; color: var(--texto-principal);
-    transition: background-color 0.3s, color 0.3s;
+    display: flex; flex-direction: column; align-items: center; 
+    color: var(--texto-principal); transition: all 0.3s;
 }
 
-/* 2. BOTÕES FIXOS */
+.header-container { text-align: center; margin-bottom: 20px; width: 100%; max-width: 1000px; }
+.titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+
+/* ============================================================
+   3. ESTILO PARA A PLANILHA (SISTEMA DE GRID)
+   ============================================================ */
+.grid-escala {
+    display: grid; 
+    grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr; /* Nome, M, T, N, Total */
+    background: var(--bg-card); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid var(--border-color);
+    width: 100%; max-width: 1000px; margin-bottom: 35px;
+}
+
+.grid-header {
+    background: var(--bg-turno); font-weight: 900; padding: 20px 10px;
+    text-align: center; text-transform: uppercase; font-size: 0.75rem;
+    border-bottom: 2px solid var(--border-color); color: var(--texto-secundario);
+}
+
+.grid-item { 
+    padding: 15px 10px; border-bottom: 1px solid var(--border-color); 
+    display: flex; align-items: center; justify-content: center; 
+    text-align: center; font-size: 0.85rem; 
+}
+
+/* Classes específicas da linha da planilha */
+.grid-item.nome { justify-content: flex-start; font-weight: 800; padding-left: 25px; background: var(--bg-turno); }
+.grid-item.total { font-weight: 900; color: var(--cor-primaria); background: var(--bg-turno); }
+
+.grid-footer { 
+    grid-column: span 5; display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr; 
+    background: var(--texto-principal); color: white; 
+}
+.footer-item { padding: 18px; text-align: center; font-weight: 900; }
+
+/* ============================================================
+   4. ESTILO PARA DASHBOARD / CARDS (VISUALIZAÇÃO POR SETOR)
+   ============================================================ */
+.setor-container { 
+    width: 100%; max-width: 950px; background: var(--bg-card); 
+    border-radius: 16px; overflow: hidden; margin-bottom: 35px; 
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
+}
+
+.setor-grid-nome { padding: 20px; text-align: center; color: white; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
+.setor-grid-email { padding: 12px; text-align: center; display: flex; justify-content: center; }
+
+.servidor-item { 
+    display: grid; grid-template-columns: 1fr; 
+    border-bottom: 1px solid var(--border-color); padding: 20px; 
+}
+
+/* Ajuste para telas grandes nos cards */
+@media (min-width: 768px) { 
+    .servidor-item { grid-template-columns: 320px 1fr; align-items: center; } 
+}
+
+.servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0; }
+
+/* ============================================================
+   5. TURNOS, DIAS E STATUS (COMPARTILHADO)
+   ============================================================ */
+.turno-linha { 
+    display: grid; grid-template-columns: 85px 1fr; align-items: center; 
+    background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; 
+}
+
+.turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
+
+/* Escala de 5 dias dentro do card */
+.dias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+/* Bolinhas/Badges de Status */
+.status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
+
+/* Cores de Fundo Turnos */
+.m-bg { background: #e0f2fe; color: #0369a1; }
+.t-bg { background: #fef3c7; color: #92400e; }
+.n-bg { background: #ede9fe; color: #5b21b6; }
+
+/* Cores de Status P, T, C, A */
+.c-chefia { background-color: var(--cor-c); color: #000; }
+.p-presencial { background-color: var(--cor-p); }
+.t-teletrabalho { background-color: var(--cor-t); }
+.a-afastado { background-color: var(--cor-a); }
+
+.dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); border-radius: 8px; }
+
+/* ============================================================
+   6. COMPONENTES DE INTERFACE (BOTÕES E LOADERS)
+   ============================================================ */
 .btn-dashboard, .btn-voltar {
     position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
     border-radius: 50%; background: #10b981; color: white;
@@ -47,70 +132,10 @@ body {
     display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
 
-/* 3. HEADER, TÍTULOS E LEGENDAS */
-.header-container { text-align: center; margin-bottom: 20px; width: 100%; max-width: 1000px; }
-.titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
-
-.mes-bloco { 
-    margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center;
-}
-.mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-
-.legenda-bloco { 
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; 
-    margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; }
-
-/* 4. GRADE DE ESCALA (TABELA GRID) */
-.grid-escala {
-    display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
-    background: var(--bg-card); border-radius: 16px; overflow: hidden;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid var(--border-color);
-    width: 100%; max-width: 1000px; margin-bottom: 35px;
-}
-.grid-header {
-    background: var(--bg-turno); font-weight: 900; padding: 20px 10px;
-    text-align: center; text-transform: uppercase; font-size: 0.75rem;
-    border-bottom: 2px solid var(--border-color); color: var(--texto-secundario);
-}
-.grid-item { padding: 15px 10px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.85rem; }
-.grid-item.nome { justify-content: flex-start; font-weight: 800; padding-left: 25px; background: var(--bg-turno); }
-.grid-item.total { font-weight: 900; color: var(--cor-primaria); background: var(--bg-turno); }
-
-.grid-footer { grid-column: span 5; display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr; background: var(--texto-principal); color: white; }
-.footer-item { padding: 18px; text-align: center; font-weight: 900; }
-
-/* 5. CARDS DE SETOR E SERVIDOR */
-.setor-container { width: 100%; max-width: 950px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 35px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-.setor-grid-nome { padding: 20px; text-align: center; color: white; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
-.setor-grid-email { padding: 12px; text-align: center; display: flex; justify-content: center; }
-.setor-email-link { font-size: 1rem; font-weight: 700; text-decoration: none; color: inherit; }
-
-.servidor-item { display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color); padding: 20px; }
-@media (min-width: 768px) { .servidor-item { grid-template-columns: 320px 1fr; align-items: center; } }
-.servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0; }
-
-/* 6. ESCALA DE DIAS (GRID INTERNA) */
-.turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; }
-.turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
-.dias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-.dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
-.status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
-
-/* CORES DOS TURNOS E STATUS */
-.m-bg { background: #e0f2fe; color: #0369a1; }
-.t-bg { background: #fef3c7; color: #92400e; }
-.n-bg { background: #ede9fe; color: #5b21b6; }
-.c-chefia { background-color: var(--cor-c); color: #000; }
-.p-presencial { background-color: var(--cor-p); }
-.t-teletrabalho { background-color: var(--cor-t); }
-.a-afastado { background-color: var(--cor-a); }
-.dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); border-radius: 8px; }
-
-/* 7. LOADER */
 .loader-container { padding: 80px; text-align: center; width: 100%; }
-.spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
+.spinner { 
+    width: 40px; height: 40px; border: 4px solid var(--border-color); 
+    border-top: 4px solid var(--cor-primaria); border-radius: 50%; 
+    animation: spin 1s linear infinite; margin: auto; 
+}
 @keyframes spin { 100% { transform: rotate(360deg); } }
