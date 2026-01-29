@@ -10,7 +10,6 @@
             --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
             --primaria: #3b82f6; --p-color: #34495e; --t-color: #10b981;
             --a-color: #ef4444; --c-color: #f1c40f; --f-color: #64748b;
-            --h-color: #8e44ad;
             --bg-item-lista: #f8fafc; --border-item-lista: #f1f5f9;
         }
         [data-theme="dark"] {
@@ -19,17 +18,8 @@
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; transition: 0.3s; }
         
-        .header { text-align: center; margin-bottom: 20px; position: relative; }
+        .header { text-align: center; margin-bottom: 20px; }
         .update-info { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
-        
-        /* Botão da Planilha */
-        .btn-planilha {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 8px 16px; background: #10b981; color: white;
-            text-decoration: none; border-radius: 8px; font-size: 0.85rem;
-            font-weight: 600; margin-top: 10px; transition: 0.2s;
-        }
-        .btn-planilha:hover { background: #059669; transform: translateY(-2px); }
 
         #theme-toggle { 
             position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; 
@@ -50,20 +40,17 @@
         .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
         select { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-size: 1rem; cursor: pointer; }
 
-        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto 30px; }
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto 30px; }
         .card-stat { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .card-stat h3 { margin: 0; font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
         .card-stat p { margin: 10px 0 0; font-size: 1.5rem; font-weight: 800; }
-        
         .card-servidores { border-color: var(--primaria); }
-        .card-p { border-color: var(--p-color); } 
-        .card-t { border-color: var(--t-color); }
-        .card-c { border-color: var(--c-color); } 
-        .card-a { border-color: var(--a-color); }
-        .card-horas { border-color: var(--h-color); color: var(--h-color); }
+        .card-p { border-color: var(--p-color); } .card-t { border-color: var(--t-color); }
+        .card-c { border-color: var(--c-color); } .card-a { border-color: var(--a-color); }
+        .card-f { border-color: var(--f-color); }
 
         .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto 40px; }
-        @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
@@ -74,7 +61,7 @@
         
         .coluna-lista h4 { margin: 0 0 15px; font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
         .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
-        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; text-align: left; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; text-align: left; display: block; }
         .loader { text-align: center; padding: 100px 20px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
@@ -90,10 +77,6 @@
 
     <div class="header">
         <h1>Dashboard de Gestão Operacional</h1>
-        <a href="https://docs.google.com/spreadsheets/d/SEU_ID_AQUI/edit" target="_blank" class="btn-planilha">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Acessar Planilha Base
-        </a>
         <div id="timestamp" class="update-info">Sincronizando dados...</div>
     </div>
 
@@ -131,11 +114,11 @@
             <div class="card-stat card-t"><h3>Teletrabalho</h3><p id="stat-t">0</p></div>
             <div class="card-stat card-c"><h3>Chefia</h3><p id="stat-c">0</p></div>
             <div class="card-stat card-a"><h3>Afastados</h3><p id="stat-a">0</p></div>
-            <div class="card-stat card-horas"><h3>Horas Totais</h3><p id="stat-horas">0h</p></div>
+            <div class="card-stat card-f"><h3>Fora do Turno</h3><p id="stat-f">0</p></div>
         </div>
 
         <div class="charts-container">
-            <div class="chart-box"><canvas id="chartIndividual"></canvas></div>
+            <div class="chart-box"><canvas id="chartPizzaHoje"></canvas></div>
             <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
         </div>
 
@@ -149,26 +132,12 @@
     </div>
 
     <script>
-        // Mantenha seu link da API (Macros do Google) aqui:
         const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-        
         let database = {}; 
         let charts = {};
 
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
-
-        function extrairHoras(texto) {
-            if (!texto || !texto.toString().includes('-')) return 0;
-            try {
-                const partes = texto.toString().split('-');
-                const parseHora = (h) => {
-                    const [hrs, mins] = h.trim().split(':').map(Number);
-                    return hrs + (mins / 60);
-                };
-                return Math.max(0, parseHora(partes[1]) - parseHora(partes[0]));
-            } catch (e) { return 0; }
-        }
 
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
@@ -193,12 +162,25 @@
                     const nome = rows[i] ? rows[i][2] : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
-                        database[nome] = blocos;
+                        
+                        const temAlgumHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
+                        const temAlgumStatus = blocos.some(l => {
+                            if(!l) return false;
+                            for(let d=0; d<5; d++) {
+                                let s = l[6+d]?.toString().toUpperCase().trim();
+                                if(['P','T','C','A'].includes(s)) return true;
+                            }
+                            return false;
+                        });
+
+                        if (temAlgumHorario || temAlgumStatus) {
+                            database[nome] = blocos;
+                        }
                     }
                 }
 
                 const agora = new Date();
-                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString()} ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                document.getElementById('timestamp').innerText = `Última sincronização: ${agora.toLocaleDateString()} às ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
@@ -207,101 +189,94 @@
                 document.getElementById('select-dia').addEventListener('change', processar);
 
                 processar();
+
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
 
             } catch (e) { 
-                document.getElementById('loading').innerHTML = "❌ Erro ao carregar dados."; 
+                document.getElementById('loading').innerHTML = "❌ Falha ao carregar dados da planilha."; 
             }
         }
 
         function processar() {
             const turnoFiltro = document.getElementById('select-turno').value;
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
-            let totalHorasGeral = 0;
-            let horasIndividuais = [];
 
-            Object.keys(database).forEach(nome => {
+            const servidoresAtivos = Object.keys(database);
+
+            servidoresAtivos.forEach(nome => {
                 const blocos = database[nome];
-                let horasServidorHoje = 0;
-                let statusHoje = 'F';
+                const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
+
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
-                        const passaFiltroTurno = (turnoFiltro === 'todos' || turnoFiltro == tIdx);
+                        const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
 
-                        if (passaFiltroTurno) {
-                            if (['P', 'T', 'C', 'A'].includes(s)) statusDoDia.add(s);
-                            if (d === diaFiltro && linha[3]) {
-                                horasServidorHoje += extrairHoras(linha[3]);
-                            }
+                        if (['P', 'T', 'C', 'A'].includes(s) && passaFiltroTurno) {
+                            statusDoDia.add(s);
                         }
                     });
 
-                    let statusFinal = 'F';
+                    let statusFinal = null;
                     if (statusDoDia.has('A')) statusFinal = 'A';
                     else if (statusDoDia.has('C')) statusFinal = 'C';
                     else if (statusDoDia.has('P')) statusFinal = 'P';
                     else if (statusDoDia.has('T')) statusFinal = 'T';
+                    else statusFinal = 'F';
 
                     semanal[statusFinal][d]++;
-                    if (d === diaFiltro) {
-                        nomesNoDia[statusFinal].push(nome.trim());
-                        statusHoje = statusFinal;
-                    }
-                }
-                
-                if (statusHoje !== 'F' && statusHoje !== 'A') {
-                    totalHorasGeral += horasServidorHoje;
-                    horasIndividuais.push({ nome: nome.split(' ')[0], horas: horasServidorHoje });
+                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
             });
 
-            document.getElementById('stat-total').innerText = Object.keys(database).length;
-            document.getElementById('stat-horas').innerText = totalHorasGeral.toFixed(1) + 'h';
+            document.getElementById('stat-total').innerText = servidoresAtivos.length;
             
             ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
                 document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
                 document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
-                document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
-                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
+                
+                const listEl = document.getElementById(`list-${key}`);
+                listEl.innerHTML = nomesNoDia[upper].length 
+                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') 
+                    : '<li>-</li>';
             });
 
-            renderCharts(semanal, diaFiltro, horasIndividuais);
+            renderCharts(semanal, diaFiltro);
         }
 
-        function renderCharts(vol, diaSel, horasInd) {
+        function renderCharts(vol, diaSel) {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const labelColor = isDark ? '#f1f5f9' : '#475569';
-            if (charts.barInd) charts.barInd.destroy();
-            if (charts.barSem) charts.barSem.destroy();
+            if (charts.pizza) charts.pizza.destroy();
+            if (charts.bar) charts.bar.destroy();
 
-            const sortedHoras = horasInd.filter(d => d.horas > 0).sort((a,b) => b.horas - a.horas).slice(0, 15);
-
-            charts.barInd = new Chart(document.getElementById('chartIndividual'), {
-                type: 'bar',
+            charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
+                type: 'pie',
                 data: {
-                    labels: sortedHoras.map(d => d.nome),
-                    datasets: [{ label: 'Horas', data: sortedHoras.map(d => d.horas), backgroundColor: '#8e44ad', borderRadius: 5 }]
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora de Expediente'],
+                    datasets: [{
+                        data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel], vol.F[diaSel]],
+                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b'],
+                        borderWidth: 0
+                    }]
                 },
-                options: {
-                    indexAxis: 'y', maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, title: { display: true, text: 'CARGA HORÁRIA (TOP 15)', color: labelColor } },
-                    scales: {
-                        x: { ticks: { color: labelColor }, grid: { color: isDark ? '#334155' : '#e2e8f0' } },
-                        y: { ticks: { color: labelColor }, grid: { display: false } }
-                    }
+                options: { 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { color: labelColor } },
+                        title: { display: true, text: 'VISÃO DIÁRIA POR CATEGORIA', color: labelColor }
+                    } 
                 }
             });
 
-            charts.barSem = new Chart(document.getElementById('chartSemanal'), {
+            charts.bar = new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
                     labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
@@ -309,7 +284,8 @@
                         { label: 'Presencial', data: vol.P, backgroundColor: '#34495e' },
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: '#10b981' },
                         { label: 'Chefia', data: vol.C, backgroundColor: '#f1c40f' },
-                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' }
+                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' },
+                        { label: 'Fora do Turno', data: vol.F, backgroundColor: '#64748b' }
                     ]
                 },
                 options: { 
@@ -318,10 +294,7 @@
                         x: { stacked: true, ticks: { color: labelColor }, grid: { display: false } }, 
                         y: { stacked: true, ticks: { color: labelColor } } 
                     }, 
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { color: labelColor } },
-                        title: { display: true, text: 'DISTRIBUIÇÃO DA SEMANA', color: labelColor }
-                    } 
+                    plugins: { legend: { position: 'bottom', labels: { color: labelColor } } } 
                 }
             });
         }
