@@ -19,8 +19,17 @@
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; transition: 0.3s; }
         
-        .header { text-align: center; margin-bottom: 20px; }
+        .header { text-align: center; margin-bottom: 20px; position: relative; }
         .update-info { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
+        
+        /* Botão da Planilha */
+        .btn-planilha {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; background: #10b981; color: white;
+            text-decoration: none; border-radius: 8px; font-size: 0.85rem;
+            font-weight: 600; margin-top: 10px; transition: 0.2s;
+        }
+        .btn-planilha:hover { background: #059669; transform: translateY(-2px); }
 
         #theme-toggle { 
             position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; 
@@ -81,6 +90,10 @@
 
     <div class="header">
         <h1>Dashboard de Gestão Operacional</h1>
+        <a href="https://docs.google.com/spreadsheets/d/SEU_ID_AQUI/edit" target="_blank" class="btn-planilha">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Acessar Planilha Base
+        </a>
         <div id="timestamp" class="update-info">Sincronizando dados...</div>
     </div>
 
@@ -136,14 +149,15 @@
     </div>
 
     <script>
+        // Mantenha seu link da API (Macros do Google) aqui:
         const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+        
         let database = {}; 
         let charts = {};
 
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
-        // Função para calcular diferença de horas (Ex: "08:00 - 14:00" vira 6)
         function extrairHoras(texto) {
             if (!texto || !texto.toString().includes('-')) return 0;
             try {
@@ -152,9 +166,7 @@
                     const [hrs, mins] = h.trim().split(':').map(Number);
                     return hrs + (mins / 60);
                 };
-                const inicio = parseHora(partes[0]);
-                const fim = parseHora(partes[1]);
-                return Math.max(0, fim - inicio);
+                return Math.max(0, parseHora(partes[1]) - parseHora(partes[0]));
             } catch (e) { return 0; }
         }
 
@@ -181,16 +193,7 @@
                     const nome = rows[i] ? rows[i][2] : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
-                        const temAlgumHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
-                        const temAlgumStatus = blocos.some(l => {
-                            if(!l) return false;
-                            for(let d=0; d<5; d++) {
-                                let s = l[6+d]?.toString().toUpperCase().trim();
-                                if(['P','T','C','A'].includes(s)) return true;
-                            }
-                            return false;
-                        });
-                        if (temAlgumHorario || temAlgumStatus) database[nome] = blocos;
+                        database[nome] = blocos;
                     }
                 }
 
@@ -208,7 +211,7 @@
                 document.getElementById('main-container').style.display = 'block';
 
             } catch (e) { 
-                document.getElementById('loading').innerHTML = "❌ Erro ao conectar com a planilha."; 
+                document.getElementById('loading').innerHTML = "❌ Erro ao carregar dados."; 
             }
         }
 
@@ -221,24 +224,20 @@
             let totalHorasGeral = 0;
             let horasIndividuais = [];
 
-            const servidoresAtivos = Object.keys(database);
-
-            servidoresAtivos.forEach(nome => {
+            Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
                 let horasServidorHoje = 0;
-                const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
+                let statusHoje = 'F';
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
-
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
-                        const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
+                        const passaFiltroTurno = (turnoFiltro === 'todos' || turnoFiltro == tIdx);
 
                         if (passaFiltroTurno) {
                             if (['P', 'T', 'C', 'A'].includes(s)) statusDoDia.add(s);
-                            // Soma horas se for o dia selecionado
                             if (d === diaFiltro && linha[3]) {
                                 horasServidorHoje += extrairHoras(linha[3]);
                             }
@@ -252,27 +251,27 @@
                     else if (statusDoDia.has('T')) statusFinal = 'T';
 
                     semanal[statusFinal][d]++;
-                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
+                    if (d === diaFiltro) {
+                        nomesNoDia[statusFinal].push(nome.trim());
+                        statusHoje = statusFinal;
+                    }
                 }
                 
-                if (horasServidorHoje > 0) {
+                if (statusHoje !== 'F' && statusHoje !== 'A') {
                     totalHorasGeral += horasServidorHoje;
                     horasIndividuais.push({ nome: nome.split(' ')[0], horas: horasServidorHoje });
                 }
             });
 
-            // Atualiza Cards
-            document.getElementById('stat-total').innerText = servidoresAtivos.length;
+            document.getElementById('stat-total').innerText = Object.keys(database).length;
             document.getElementById('stat-horas').innerText = totalHorasGeral.toFixed(1) + 'h';
             
             ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
                 document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
                 document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
-                const listEl = document.getElementById(`list-${key}`);
-                listEl.innerHTML = nomesNoDia[upper].length 
-                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') 
-                    : '<li>-</li>';
+                document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
+                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
             });
 
             renderCharts(semanal, diaFiltro, horasIndividuais);
@@ -281,31 +280,20 @@
         function renderCharts(vol, diaSel, horasInd) {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const labelColor = isDark ? '#f1f5f9' : '#475569';
-            
             if (charts.barInd) charts.barInd.destroy();
             if (charts.barSem) charts.barSem.destroy();
 
-            // Gráfico de Horas por Servidor (Ordenado)
-            const sortedHoras = horasInd.sort((a,b) => b.horas - a.horas).slice(0, 15);
+            const sortedHoras = horasInd.filter(d => d.horas > 0).sort((a,b) => b.horas - a.horas).slice(0, 15);
 
             charts.barInd = new Chart(document.getElementById('chartIndividual'), {
                 type: 'bar',
                 data: {
                     labels: sortedHoras.map(d => d.nome),
-                    datasets: [{
-                        label: 'Horas no Dia',
-                        data: sortedHoras.map(d => d.horas),
-                        backgroundColor: '#8e44ad',
-                        borderRadius: 5
-                    }]
+                    datasets: [{ label: 'Horas', data: sortedHoras.map(d => d.horas), backgroundColor: '#8e44ad', borderRadius: 5 }]
                 },
                 options: {
-                    indexAxis: 'y',
-                    maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false },
-                        title: { display: true, text: 'CARGA HORÁRIA POR SERVIDOR (TOP 15)', color: labelColor }
-                    },
+                    indexAxis: 'y', maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'CARGA HORÁRIA (TOP 15)', color: labelColor } },
                     scales: {
                         x: { ticks: { color: labelColor }, grid: { color: isDark ? '#334155' : '#e2e8f0' } },
                         y: { ticks: { color: labelColor }, grid: { display: false } }
@@ -313,7 +301,6 @@
                 }
             });
 
-            // Gráfico Semanal Empilhado
             charts.barSem = new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
@@ -329,10 +316,10 @@
                     maintainAspectRatio: false, 
                     scales: { 
                         x: { stacked: true, ticks: { color: labelColor }, grid: { display: false } }, 
-                        y: { stacked: true, ticks: { color: labelColor }, grid: { color: isDark ? '#334155' : '#e2e8f0' } } 
+                        y: { stacked: true, ticks: { color: labelColor } } 
                     }, 
                     plugins: { 
-                        legend: { position: 'bottom', labels: { color: labelColor, boxWidth: 12 } },
+                        legend: { position: 'bottom', labels: { color: labelColor } },
                         title: { display: true, text: 'DISTRIBUIÇÃO DA SEMANA', color: labelColor }
                     } 
                 }
