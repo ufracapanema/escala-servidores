@@ -1,55 +1,58 @@
 /* ============================================================
-   ESTILO CONSOLIDADO: GRADE + STATUS + DASHBOARD
+   ARQUIVO DE ESTILO CONSOLIDADO (estilo.css)
    ============================================================ */
 
 :root {
-    /* Cores de Status (Sua Legenda) */
-    --cor-c: #f1c40f; /* Chefia */
-    --cor-t: #34495e; /* Teletrabalho */
-    --cor-p: #10b981; /* Presencial */
-    --cor-a: #ef4444; /* Afastado */
+    /* Cores de Status */
+    --cor-c: #f1c40f; 
+    --cor-t: #34495e; 
+    --cor-p: #10b981; 
+    --cor-a: #ef4444; 
     
-    /* Identidade Visual e Layout */
+    /* Variáveis de Layout e Cores */
     --cor-primaria: #3b82f6;
     --bg-body: #f1f5f9;
     --bg-card: white;
-    --bg-turno: #f8fafc;
     --texto-principal: #1e293b;
     --texto-secundario: #64748b;
-    --border-color: #e2e8f0;
+    --border-color: #f1f5f9;
+    --bg-turno: #f8fafc;
     
-    /* Destaques de Hoje */
-    --brilho-hoje: #fffde7;
+    /* Destaques */
+    --brilho-hoje: #fffde7; 
     --borda-hoje: #f1c40f;
 }
 
 [data-theme="dark"] {
-    --bg-body: #0f172a;
-    --bg-card: #1e293b;
-    --bg-turno: #1e293b;
+    --bg-body: #0f172a; 
+    --bg-card: #1e293b; 
     --texto-principal: #f1f5f9;
-    --texto-secundario: #94a3b8;
-    --border-color: #334155;
-    --brilho-hoje: #172554;
+    --texto-secundario: #94a3b8; 
+    --border-color: #334155; 
+    --bg-turno: #1e293b;
+    --brilho-hoje: #172554; 
     --borda-hoje: #3b82f6;
 }
 
-/* 1. CONFIGURAÇÕES GERAIS */
+/* 1. CONFIGURAÇÕES GERAIS DO BODY */
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: var(--bg-body);
-    margin: 0;
+    background-color: var(--bg-body); 
+    margin: 0; 
     padding: 20px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
     color: var(--texto-principal);
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* 2. BOTÕES FLUTUANTES */
+/* 2. BOTÕES FIXOS/FLUTUANTES */
 .btn-dashboard, .btn-voltar {
     position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
     border-radius: 50%; background: #10b981; color: white;
     text-decoration: none; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
 }
 
 #theme-toggle {
@@ -59,49 +62,51 @@ body {
     display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
 
-.btn-dashboard:hover, #theme-toggle:hover { transform: scale(1.1); }
-
-/* 3. ESTRUTURA DA GRADE (GRID) */
+/* 3. ESTRUTURA DA GRADE (GRID ESCALA) */
 .grid-escala {
     display: grid;
     grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
     background: var(--bg-card);
-    border-radius: 16px;
-    overflow: hidden;
+    border-radius: 16px; 
+    overflow: hidden; 
+    margin-bottom: 35px;
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-    border: 1px solid var(--border-color);
+    width: 100%;
     max-width: 1000px;
-    margin: 0 auto;
 }
 
 .grid-header {
     background: var(--bg-turno);
-    font-weight: 900;
-    padding: 18px 10px;
+    font-weight: 900; 
+    padding: 20px 10px; 
     text-align: center;
-    text-transform: uppercase;
-    font-size: 0.7rem;
+    text-transform: uppercase; 
+    font-size: 0.75rem; 
     letter-spacing: 1px;
     border-bottom: 2px solid var(--border-color);
     color: var(--texto-secundario);
 }
 
 .grid-item {
-    padding: 14px 10px;
+    padding: 15px 10px;
     border-bottom: 1px solid var(--border-color);
     display: flex; align-items: center; justify-content: center;
     text-align: center; font-size: 0.85rem;
 }
 
-.nome { 
-    justify-content: flex-start !important; 
-    font-weight: 800; padding-left: 20px !important; 
+.grid-item.nome {
+    justify-content: flex-start;
+    font-weight: 800;
+    padding-left: 25px;
     background: var(--bg-turno);
 }
 
-.total { font-weight: 900; color: var(--cor-primaria); background: var(--bg-turno); }
+.grid-item.total {
+    font-weight: 900;
+    color: var(--cor-primaria);
+    background: var(--bg-turno);
+}
 
-/* 4. RODAPÉ DE TOTAIS */
 .grid-footer {
     grid-column: span 5;
     display: grid;
@@ -109,40 +114,61 @@ body {
     background: var(--texto-principal);
     color: white;
 }
-.footer-item { padding: 18px; text-align: center; font-weight: 900; font-size: 0.85rem; }
 
-/* 5. BADGES DE STATUS E TURNOS */
-.status-badge {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; color: white;
+.footer-item { padding: 18px; text-align: center; font-weight: 900; }
+
+/* 4. COMPONENTES DE SETOR E SERVIDOR (ESTILO CARDS) */
+.setor-container { 
+    width: 100%; max-width: 950px; background: var(--bg-card); 
+    border-radius: 16px; overflow: hidden; margin-bottom: 35px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
 }
 
+.setor-grid-nome { 
+    padding: 20px; text-align: center; color: white; 
+    font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+}
+
+.setor-grid-email { padding: 12px; text-align: center; display: flex; justify-content: center; align-items: center; }
+.setor-email-link { font-size: 1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+
+/* CORES DOS SETORES */
+.bg-setor-0 { background-color: #1e40af; } .bg-email-0 { background-color: #dbeafe; color: #1e40af; } 
+.bg-setor-1 { background-color: #065f46; } .bg-email-1 { background-color: #d1fae5; color: #065f46; }
+.bg-setor-2 { background-color: #6b21a8; } .bg-email-2 { background-color: #f3e8ff; color: #6b21a8; }
+.bg-setor-3 { background-color: #9a3412; } .bg-email-3 { background-color: #ffedd5; color: #9a3412; }
+
+.servidor-item { 
+    display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
+    padding: 20px; transition: background 0.2s;
+}
+@media (min-width: 768px) { .servidor-item { grid-template-columns: 320px 1fr; align-items: center; } }
+
+.servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0 0 6px 0; display: block; }
+
+/* 5. TURNOS E BADGES */
+.turno-linha { 
+    display: grid; grid-template-columns: 85px 1fr; align-items: center;
+    background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px;
+}
+.turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
+.m-bg { background: #e0f2fe; color: #0369a1; }
+.t-bg { background: #fef3c7; color: #92400e; }
+.n-bg { background: #ede9fe; color: #5b21b6; }
+
+.status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; }
 .c-chefia { background-color: var(--cor-c); color: #000; }
 .p-presencial { background-color: var(--cor-p); }
 .t-teletrabalho { background-color: var(--cor-t); }
 .a-afastado { background-color: var(--cor-a); }
 
-.turno-badge {
-    font-size: 0.65rem; font-weight: 900; text-transform: uppercase;
-    padding: 2px 6px; border-radius: 4px;
-}
-.m-bg { background: #e0f2fe; color: #0369a1; }
-.t-bg { background: #fef3c7; color: #92400e; }
-.n-bg { background: #ede9fe; color: #5b21b6; }
-
-/* 6. CARREGAMENTO (SPINNER) */
+/* 6. LOADER / SPINNER */
 .loader-container { padding: 80px; text-align: center; width: 100%; }
-.spinner {
-    width: 40px; height: 40px; border: 4px solid var(--border-color);
-    border-top: 4px solid var(--cor-primaria); border-radius: 50%;
-    animation: spin 1s linear infinite; margin: 0 auto 15px;
-}
+.spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* 7. RESPONSIVIDADE */
+/* 7. RESPONSIVIDADE GRID */
 @media (max-width: 768px) {
     .grid-escala { grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr; }
-    .grid-header { font-size: 0.6rem; padding: 10px 4px; }
-    .nome { padding-left: 10px !important; }
+    .grid-header { padding: 12px 5px; font-size: 0.6rem; }
 }
