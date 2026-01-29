@@ -3,77 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade de Escala</title>
+    <title>Escala Consolidada - Grid</title>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 15px; background: #fff; }
+        :root {
+            --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
+            --primaria: #3b82f6; --border: #e2e8f0; --item-bg: #f8fafc;
+            --header-bg: #f1f5f9; --footer-bg: #1e293b;
+        }
+        [data-theme="dark"] {
+            --bg-body: #0f172a; --bg-card: #1e293b; --texto: #f1f5f9;
+            --border: #334155; --item-bg: #334155;
+            --header-bg: #0f172a; --footer-bg: #000000;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg-body); 
+            color: var(--texto); 
+            margin: 0; 
+            padding: 20px; 
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Botões Flutuantes */
+        .btn-flutuante {
+            position: fixed; width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s; z-index: 1000; text-decoration: none;
+        }
+        .btn-flutuante:hover { transform: scale(1.1); }
         
+        #theme-toggle { bottom: 20px; right: 20px; background: var(--primaria); color: white; }
+        .btn-voltar { bottom: 20px; left: 20px; background: #64748b; color: white; font-size: 20px; }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* Estilo da Grade */
         .grid-escala {
             display: grid;
-            grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
-            border: 1px solid #ccc;
-            font-size: 13px;
-            max-width: 1000px;
-            margin: auto;
+            grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
         }
 
         .grid-header {
-            background: #f0f0f0;
-            font-weight: bold;
-            padding: 12px;
+            background: var(--header-bg);
+            font-weight: 700;
+            padding: 18px 10px;
             text-align: center;
-            border-bottom: 2px solid #ccc;
-            border-right: 1px solid #ccc;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+            border-right: 1px solid var(--border);
+            color: #64748b;
         }
 
         .grid-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            border-right: 1px solid #ccc;
-            text-align: center;
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            font-size: 0.85rem;
         }
 
-        .nome { justify-content: flex-start; font-weight: bold; padding-left: 15px; }
-        .total { font-weight: 800; color: #000; background: #f9f9f9; }
+        .nome { 
+            justify-content: flex-start; 
+            font-weight: 600; 
+            padding-left: 20px; 
+            background: var(--item-bg);
+        }
+
+        .total { 
+            font-weight: 800; 
+            color: var(--primaria); 
+            background: var(--item-bg);
+        }
 
         .grid-footer {
             grid-column: span 5;
             display: grid;
-            grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
-            background: #333;
-            color: #fff;
+            grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+            background: var(--footer-bg);
+            color: white;
             font-weight: bold;
         }
 
-        .footer-item { padding: 12px; text-align: center; }
-        #loading { text-align: center; margin-top: 50px; font-weight: bold; color: #666; }
+        .footer-item { padding: 18px; text-align: center; font-size: 0.9rem; }
+
+        #loading { text-align: center; padding: 100px; font-weight: bold; color: #64748b; }
+        
+        /* Efeito de zebra/hover */
+        .grid-corpo-row:hover .grid-item { background-color: rgba(59, 130, 246, 0.05); }
+
+        @media (max-width: 768px) {
+            .grid-escala { grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr; font-size: 0.75rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loading">Carregando dados da planilha...</div>
+    <a href="index.html" class="btn-voltar btn-flutuante" title="Voltar">⬅</a>
 
-    <div id="grade-container" class="grid-escala" style="display: none;">
-        <div class="grid-header" style="text-align:left">Servidor</div>
-        <div class="grid-header">Manhã</div>
-        <div class="grid-header">Tarde</div>
-        <div class="grid-header">Noite</div>
-        <div class="grid-header">Total</div>
+    <button id="theme-toggle" class="btn-flutuante">🌓</button>
 
-        <div id="grid-corpo" style="display: contents;"></div>
+    <div class="container">
+        <div id="loading">⚡ Sincronizando Escala...</div>
 
-        <div class="grid-footer" id="grid-rodape"></div>
+        <div id="grade-container" class="grid-escala" style="display: none;">
+            <div class="grid-header" style="text-align:left; padding-left:20px">Servidor</div>
+            <div class="grid-header">Manhã</div>
+            <div class="grid-header">Tarde</div>
+            <div class="grid-header">Noite</div>
+            <div class="grid-header">Total</div>
+
+            <div id="grid-corpo" style="display: contents;"></div>
+
+            <div class="grid-footer" id="grid-rodape"></div>
+        </div>
     </div>
 
 <script>
-    // URL idêntica ao que funcionava antes
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-    
     let database = {};
 
-    // Formatação solicitada: 8h ou 8h 30m
+    // Alternar Tema Escuro
+    const btnTheme = document.getElementById('theme-toggle');
+    btnTheme.addEventListener('click', () => {
+        const doc = document.documentElement;
+        const novoTema = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        doc.setAttribute('data-theme', novoTema);
+        localStorage.setItem('theme', novoTema);
+    });
+
+    // Carregar preferência de tema
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
     function formatarH(decimal) {
         if (decimal === 0) return "-";
         const h = Math.floor(decimal);
@@ -81,17 +155,16 @@
         return m === 0 ? h + "h" : h + "h " + m + "m";
     }
 
-    // Lógica de cálculo do formato "14:00 | 17:00"
     function calcular(texto) {
         if (!texto || !texto.includes('|')) return 0;
         try {
-            const partes = texto.split('|').map(p => p.trim());
-            const paraMin = (h) => {
-                const [hrs, mins] = h.split(':').map(Number);
-                return (hrs * 60) + (mins || 0);
+            const p = texto.split('|').map(x => x.trim());
+            const conv = (s) => { 
+                const [h, m] = s.split(':').map(Number); 
+                return (h * 60) + (m || 0); 
             };
-            let diff = paraMin(partes[1]) - paraMin(partes[0]);
-            if (diff < 0) diff += 1440; // Trata virada da meia-noite
+            let diff = conv(p[1]) - conv(p[0]);
+            if (diff < 0) diff += 1440;
             return diff / 60;
         } catch (e) { return 0; }
     }
@@ -102,7 +175,6 @@
             const data = await response.json();
             const rows = data.slice(1);
             
-            // Lógica original de ler de 3 em 3 linhas (Manhã, Tarde, Noite)
             for (let i = 0; i < rows.length; i += 3) {
                 const nome = rows[i] ? rows[i][2]?.trim() : null;
                 if (nome && !nome.includes('@')) {
@@ -110,58 +182,50 @@
                 }
             }
 
-            // Identifica o dia da semana atual
             const hoje = new Date().getDay();
             const diaIndice = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
-
             processar(diaIndice);
 
         } catch (e) {
-            document.getElementById('loading').innerText = "Erro ao carregar os dados. Verifique a conexão.";
-            console.error(e);
+            document.getElementById('loading').innerText = "Erro ao carregar os dados.";
         }
     }
 
     function processar(dia) {
         let html = "";
-        let somaM = 0, somaT = 0, somaN = 0;
+        let sM = 0, sT = 0, sN = 0;
         const nomes = Object.keys(database).sort();
 
         nomes.forEach(n => {
-            const blocos = database[n];
-            
-            // Pega o horário da coluna 3 de cada bloco
-            const hStrM = blocos[0] ? blocos[0][3]?.toString() : "";
-            const hStrT = blocos[1] ? blocos[1][3]?.toString() : "";
-            const hStrN = blocos[2] ? blocos[2][3]?.toString() : "";
+            const b = database[n];
+            const hStrM = b[0] ? b[0][3]?.toString() : "";
+            const hStrT = b[1] ? b[1][3]?.toString() : "";
+            const hStrN = b[2] ? b[2][3]?.toString() : "";
 
-            const valM = calcular(hStrM);
-            const valT = calcular(hStrT);
-            const valN = calcular(hStrN);
-            
-            const totalLinha = valM + valT + valN;
+            const vM = calcular(hStrM);
+            const vT = calcular(hStrT);
+            const vN = calcular(hStrN);
+            const total = vM + vT + vN;
 
-            // Só mostra se tiver algum horário preenchido no dia
-            if (totalLinha > 0) {
-                somaM += valM; somaT += valT; somaN += valN;
-                
+            if (total > 0) {
+                sM += vM; sT += vT; sN += vN;
                 html += `
                     <div class="grid-item nome">${n}</div>
                     <div class="grid-item">${hStrM || "-"}</div>
                     <div class="grid-item">${hStrT || "-"}</div>
                     <div class="grid-item">${hStrN || "-"}</div>
-                    <div class="grid-item total">${formatarH(totalLinha)}</div>
+                    <div class="grid-item total">${formatarH(total)}</div>
                 `;
             }
         });
 
         document.getElementById('grid-corpo').innerHTML = html;
         document.getElementById('grid-rodape').innerHTML = `
-            <div class="footer-item" style="text-align:left; padding-left:15px">TOTAL DO DIA</div>
-            <div class="footer-item">${formatarH(somaM)}</div>
-            <div class="footer-item">${formatarH(somaT)}</div>
-            <div class="footer-item">${formatarH(somaN)}</div>
-            <div class="footer-item" style="background:#444">${formatarH(somaM + somaT + somaN)}</div>
+            <div class="footer-item" style="text-align:left; padding-left:20px">TOTAIS DO DIA</div>
+            <div class="footer-item">${formatarH(sM)}</div>
+            <div class="footer-item">${formatarH(sT)}</div>
+            <div class="footer-item">${formatarH(sN)}</div>
+            <div class="footer-item" style="background:var(--primaria)">${formatarH(sM + sT + sN)}</div>
         `;
 
         document.getElementById('loading').style.display = 'none';
