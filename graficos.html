@@ -53,13 +53,15 @@
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
+        /* Estilo da Tabela de Horas */
         .secao-horas { max-width: 1100px; margin: 0 auto 40px; background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .secao-horas h2 { font-size: 1rem; margin-bottom: 20px; text-align: center; color: var(--primaria); }
-        .tabela-horas { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .tabela-horas th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-item-lista); color: #64748b; }
-        .tabela-horas td { padding: 10px 12px; border-bottom: 1px solid var(--border-item-lista); }
-        .turno-header { background: var(--bg-item-lista); font-weight: bold; color: var(--primaria); }
-        .total-row { font-weight: 800; background: var(--bg-body); color: var(--texto); }
+        .secao-horas h2 { font-size: 1rem; margin-bottom: 15px; text-align: center; color: var(--primaria); border-bottom: 1px solid var(--border-item-lista); padding-bottom: 10px; }
+        .tabela-horas { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tabela-horas th { text-align: left; padding: 10px; border-bottom: 2px solid var(--border-item-lista); color: #64748b; }
+        .tabela-horas td { padding: 8px 10px; border-bottom: 1px solid var(--border-item-lista); }
+        .turno-row { background: var(--bg-item-lista); font-weight: bold; color: var(--primaria); }
+        .total-row { font-weight: bold; background: #e2e8f0; color: #1e293b; }
+        [data-theme="dark"] .total-row { background: #334155; color: #f1f5f9; }
 
         .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
@@ -68,7 +70,7 @@
         .coluna-f { border-top-color: var(--f-color); }
         .coluna-lista h4 { margin: 0 0 15px; font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
         .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
-        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; text-align: left; }
         .loader { text-align: center; padding: 100px 20px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
@@ -88,7 +90,7 @@
     </div>
 
     <div id="loading" class="loader">
-        <div style="margin-bottom: 20px;">⚡ Carregando informações via CSV...</div>
+        <div style="margin-bottom: 20px;">⚡ Carregando informações da Escala...</div>
         <small style="font-weight: normal; color: #64748b;">Aguarde o processamento dos dados.</small>
     </div>
 
@@ -130,20 +132,21 @@
         </div>
 
         <div class="secao-horas">
-            <h2>Detalhamento de Carga Horária (Execução Diária)</h2>
-            <table class="tabela-horas" id="tabela-corpo-horas">
+            <h2>Carga Horária Detalhada por Servidor</h2>
+            <table class="tabela-horas">
                 <thead>
                     <tr>
                         <th>Servidor</th>
-                        <th>Horário</th>
-                        <th>Horas</th>
+                        <th>Horário Registrado</th>
+                        <th style="text-align: right;">Total Horas</th>
                     </tr>
                 </thead>
-                <tbody id="lista-horas-corpo"></tbody>
+                <tbody id="corpo-tabela-horas">
+                    </tbody>
                 <tfoot>
                     <tr class="total-row">
-                        <td colspan="2">TOTAL GERAL DO DIA</td>
-                        <td id="total-horas-dia">0h</td>
+                        <td colspan="2" style="text-align: right;">SOMA TOTAL DO DIA:</td>
+                        <td id="soma-total-horas" style="text-align: right;">0.0h</td>
                     </tr>
                 </tfoot>
             </table>
@@ -159,23 +162,25 @@
     </div>
 
     <script>
-        // NOVO LINK EM FORMATO CSV
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnOntjjXa71GwzoxDsO93JPzXG2FADARUNYJUaLqps2s_kT48iYMZPcJLdwDbCMk0OW7vokD8vuF9v/pub?output=csv';
-        
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         let database = {}; 
         let charts = {};
 
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
-        function calcDiff(string) {
-            if (!string || !string.toString().includes('-')) return 0;
+        // Função para calcular horas com formato "14:00 | 17:00"
+        function calcularDiferencaHoras(texto) {
+            if (!texto || !texto.includes('|')) return 0;
             try {
-                const partes = string.split('-').map(h => {
-                    const [hrs, mins] = h.trim().split(':').map(Number);
-                    return hrs + (mins / 60);
-                });
-                return Math.max(0, partes[1] - partes[0]);
+                const partes = texto.split('|').map(p => p.trim());
+                const converterParaMinutos = (h) => {
+                    const [hrs, mins] = h.split(':').map(Number);
+                    return (hrs * 60) + mins;
+                };
+                const inicio = converterParaMinutos(partes[0]);
+                const fim = converterParaMinutos(partes[1]);
+                return (fim - inicio) / 60;
             } catch (e) { return 0; }
         }
 
@@ -192,42 +197,21 @@
             setTheme(current === 'dark' ? 'light' : 'dark');
         });
 
-        // FUNÇÃO PARA CONVERTER TEXTO CSV EM MATRIZ (ARRAY)
-        function parseCSV(text) {
-            const lines = text.split('\n');
-            return lines.map(line => {
-                // Lida com vírgulas dentro de aspas se houver
-                const row = [];
-                let curr = '', inQuotes = false;
-                for (let char of line) {
-                    if (char === '"') inQuotes = !inQuotes;
-                    else if (char === ',' && !inQuotes) { row.push(curr); curr = ''; }
-                    else curr += char;
-                }
-                row.push(curr);
-                return row;
-            });
-        }
-
         async function init() {
             try {
-                const response = await fetch(CSV_URL);
-                const text = await response.text();
-                const rows = parseCSV(text);
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                const rows = data.slice(1);
                 
-                // Pula o cabeçalho
-                const dataRows = rows.slice(1);
-                
-                for (let i = 0; i < dataRows.length; i += 3) {
-                    const nome = dataRows[i] ? dataRows[i][2]?.trim() : null;
+                for (let i = 0; i < rows.length; i += 3) {
+                    const nome = rows[i] ? rows[i][2] : null;
                     if (nome && !nome.includes('@')) {
-                        const blocos = [dataRows[i], dataRows[i+1], dataRows[i+2]];
-                        database[nome] = blocos;
+                        database[nome] = [rows[i], rows[i+1], rows[i+2]];
                     }
                 }
 
                 const agora = new Date();
-                document.getElementById('timestamp').innerText = `Sincronizado via CSV em: ${agora.toLocaleDateString()} ${agora.toLocaleTimeString()}`;
+                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString()} ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
@@ -238,11 +222,7 @@
                 processar();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
-
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('loading').innerHTML = "❌ Erro ao processar o arquivo CSV."; 
-            }
+            } catch (e) { document.getElementById('loading').innerHTML = "❌ Erro ao carregar dados."; }
         }
 
         function processar() {
@@ -250,65 +230,67 @@
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
-            let dadosHoras = [[], [], []];
-            let somaTotalGeral = 0;
+            let horasPorTurno = [[], [], []]; // Manhã, Tarde, Noite
+            let totalGeralHoras = 0;
 
             Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
-                const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
+                const temHorarioFixo = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
-                    blocos.forEach((linha, tIdx) => {
+                    blocos.forEach((linha, idx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
-                        const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
+                        const passaFiltro = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == idx);
 
-                        if (['P', 'T', 'C', 'A'].includes(s) && passaFiltroTurno) {
+                        if (['P', 'T', 'C', 'A'].includes(s) && passaFiltro) {
                             statusDoDia.add(s);
-                            if (d === diaFiltro && (turnoFiltro === 'todos' || turnoFiltro == tIdx)) {
+                            // Coleta horas se for o dia e turno selecionados
+                            if (d === diaFiltro && (turnoFiltro === 'todos' || turnoFiltro == idx)) {
                                 const hStr = linha[3]?.toString() || "";
-                                const hNum = calcDiff(hStr);
-                                if (hNum > 0) {
-                                    dadosHoras[tIdx].push({ nome, horario: hStr, valor: hNum });
-                                    somaTotalGeral += hNum;
+                                const hVal = calcularDiferencaHoras(hStr);
+                                if (hVal > 0) {
+                                    horasPorTurno[idx].push({ nome, hStr, hVal });
+                                    totalGeralHoras += hVal;
                                 }
                             }
                         }
                     });
 
-                    let statusFinal = 'F';
-                    if (statusDoDia.has('A')) statusFinal = 'A';
-                    else if (statusDoDia.has('C')) statusFinal = 'C';
-                    else if (statusDoDia.has('P')) statusFinal = 'P';
-                    else if (statusDoDia.has('T')) statusFinal = 'T';
+                    let sf = 'F';
+                    if (statusDoDia.has('A')) sf = 'A'; else if (statusDoDia.has('C')) sf = 'C';
+                    else if (statusDoDia.has('P')) sf = 'P'; else if (statusDoDia.has('T')) sf = 'T';
 
-                    semanal[statusFinal][d]++;
-                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome);
+                    semanal[sf][d]++;
+                    if (d === diaFiltro) nomesNoDia[sf].push(nome.trim());
                 }
             });
 
-            const labelsTurno = ["TURNO DA MANHÃ", "TURNO DA TARDE", "TURNO DA NOITE"];
-            let htmlHoras = "";
-            dadosHoras.forEach((listaTurno, idx) => {
-                if (listaTurno.length > 0) {
-                    htmlHoras += `<tr class="turno-header"><td colspan="3">${labelsTurno[idx]}</td></tr>`;
-                    listaTurno.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(item => {
-                        htmlHoras += `<tr><td>${item.nome}</td><td>${item.horario}</td><td>${item.valor.toFixed(1)}h</td></tr>`;
+            // Gerar Tabela de Horas
+            const labels = ["MANHÃ", "TARDE", "NOITE"];
+            let htmlTable = "";
+            horasPorTurno.forEach((lista, idx) => {
+                if (lista.length > 0) {
+                    htmlTable += `<tr class="turno-row"><td colspan="3">BLOQUO: ${labels[idx]}</td></tr>`;
+                    lista.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(item => {
+                        htmlTable += `<tr><td>${item.nome}</td><td>${item.hStr}</td><td style="text-align: right;">${item.hVal.toFixed(1)}h</td></tr>`;
                     });
                 }
             });
-            document.getElementById('lista-horas-corpo').innerHTML = htmlHoras || '<tr><td colspan="3" style="text-align:center">Sem dados.</td></tr>';
-            document.getElementById('total-horas-dia').innerText = somaTotalGeral.toFixed(1) + 'h';
+            document.getElementById('corpo-tabela-horas').innerHTML = htmlTable || '<tr><td colspan="3">Nenhum registro para este filtro.</td></tr>';
+            document.getElementById('soma-total-horas').innerText = totalGeralHoras.toFixed(1) + "h";
 
+            // Atualizar Estatísticas
             document.getElementById('stat-total').innerText = Object.keys(database).length;
-            ['p', 't', 'c', 'a', 'f'].forEach(key => {
-                const upper = key.toUpperCase();
-                document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
-                document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
-                document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
-                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
+            ['p', 't', 'c', 'a', 'f'].forEach(k => {
+                const U = k.toUpperCase();
+                document.getElementById(`stat-${k}`).innerText = semanal[U][diaFiltro];
+                document.getElementById(`count-${k}`).innerText = `(${nomesNoDia[U].length})`;
+                document.getElementById(`list-${k}`).innerHTML = nomesNoDia[U].length 
+                    ? nomesNoDia[U].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
             });
+
             renderCharts(semanal, diaFiltro);
         }
 
@@ -321,7 +303,7 @@
             charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
                 type: 'pie',
                 data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora'],
+                    labels: ['P', 'T', 'C', 'A', 'F'],
                     datasets: [{
                         data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel], vol.F[diaSel]],
                         backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b']
