@@ -5,107 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escala Consolidada - Grid</title>
     <style>
-        :root {
-            --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
-            --primaria: #3b82f6; --border: #e2e8f0; --item-bg: #f8fafc;
-            --header-bg: #f1f5f9; --footer-bg: #1e293b;
-        }
-        [data-theme="dark"] {
-            --bg-body: #0f172a; --bg-card: #1e293b; --texto: #f1f5f9;
-            --border: #334155; --item-bg: #334155;
-            --header-bg: #0f172a; --footer-bg: #000000;
-        }
+        /* ============================================================
+   ESTILO CONSOLIDADO - GESTÃO OPERACIONAL
+   ============================================================ */
 
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg-body); 
-            color: var(--texto); 
-            margin: 0; 
-            padding: 20px; 
-            transition: background 0.3s, color 0.3s;
-        }
+:root {
+    /* Paleta de Cores - Modo Claro */
+    --bg-body: #f1f5f9;
+    --bg-card: #ffffff;
+    --texto: #1e293b;
+    --texto-suave: #64748b;
+    --primaria: #3b82f6;
+    --border: #e2e8f0;
+    --item-bg: #f8fafc;
+    --header-bg: #f1f5f9;
+    --footer-bg: #1e293b;
 
-        /* Botões Flutuantes */
-        .btn-flutuante {
-            position: fixed; width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.2s; z-index: 1000; text-decoration: none;
-        }
-        .btn-flutuante:hover { transform: scale(1.1); }
-        
-        #theme-toggle { bottom: 20px; right: 20px; background: var(--primaria); color: white; }
-        .btn-voltar { bottom: 20px; left: 20px; background: #64748b; color: white; font-size: 20px; }
+    /* Cores de Status */
+    --p-color: #34495e; /* Presencial */
+    --t-color: #10b981; /* Teletrabalho */
+    --c-color: #f1c40f; /* Chefia */
+    --a-color: #ef4444; /* Afastado */
+    --f-color: #64748b; /* Fora do Turno */
+}
 
-        .container { max-width: 1100px; margin: 0 auto; }
+[data-theme="dark"] {
+    /* Paleta de Cores - Modo Escuro */
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --texto: #f1f5f9;
+    --texto-suave: #94a3b8;
+    --border: #334155;
+    --item-bg: #334155;
+    --header-bg: #0f172a;
+    --footer-bg: #000000;
+}
 
-        /* Estilo da Grade */
-        .grid-escala {
-            display: grid;
-            grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
-            background: var(--bg-card);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
-        }
+/* Configurações Gerais */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-body);
+    color: var(--texto);
+    margin: 0;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+    line-height: 1.5;
+}
 
-        .grid-header {
-            background: var(--header-bg);
-            font-weight: 700;
-            padding: 18px 10px;
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border);
-            border-right: 1px solid var(--border);
-            color: #64748b;
-        }
+/* ============================================================
+   BOTÕES FLUTUANTES (Voltar e Tema)
+   ============================================================ */
+.btn-flutuante {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+    z-index: 1000;
+    text-decoration: none;
+    font-size: 20px;
+}
 
-        .grid-item {
-            padding: 14px 10px;
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 0.85rem;
-        }
+.btn-flutuante:hover {
+    transform: scale(1.1) translateY(-2px);
+}
 
-        .nome { 
-            justify-content: flex-start; 
-            font-weight: 600; 
-            padding-left: 20px; 
-            background: var(--item-bg);
-        }
+#theme-toggle {
+    bottom: 20px;
+    right: 20px;
+    background: var(--primaria);
+    color: white;
+}
 
-        .total { 
-            font-weight: 800; 
-            color: var(--primaria); 
-            background: var(--item-bg);
-        }
+.btn-voltar {
+    bottom: 20px;
+    left: 20px;
+    background: #64748b;
+    color: white;
+}
 
-        .grid-footer {
-            grid-column: span 5;
-            display: grid;
-            grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
-            background: var(--footer-bg);
-            color: white;
-            font-weight: bold;
-        }
+/* ============================================================
+   ESTRUTURA DA GRADE (GRID SYSTEM)
+   ============================================================ */
+.grid-escala {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr; /* Nome, M, T, N, Total */
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border: 1px solid var(--border);
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        .footer-item { padding: 18px; text-align: center; font-size: 0.9rem; }
+.grid-header {
+    background: var(--header-bg);
+    font-weight: 700;
+    padding: 20px 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border);
+    color: var(--texto-suave);
+}
 
-        #loading { text-align: center; padding: 100px; font-weight: bold; color: #64748b; }
-        
-        /* Efeito de zebra/hover */
-        .grid-corpo-row:hover .grid-item { background-color: rgba(59, 130, 246, 0.05); }
+.grid-item {
+    padding: 15px 10px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
 
-        @media (max-width: 768px) {
-            .grid-escala { grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr; font-size: 0.75rem; }
-        }
+.grid-item.nome {
+    justify-content: flex-start;
+    font-weight: 600;
+    padding-left: 25px;
+    background: var(--item-bg);
+}
+
+.grid-item.total {
+    font-weight: 800;
+    color: var(--primaria);
+    background: var(--item-bg);
+}
+
+/* Efeito Zebra e Hover */
+.grid-escala > div:not(.grid-header):not(.grid-footer):hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* ============================================================
+   RODAPÉ DE TOTAIS
+   ============================================================ */
+.grid-footer {
+    grid-column: span 5;
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+    background: var(--footer-bg);
+    color: white;
+    font-weight: bold;
+}
+
+.footer-item {
+    padding: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ============================================================
+   UTILITÁRIOS E LOADING
+   ============================================================ */
+.loader {
+    text-align: center;
+    padding: 100px;
+    font-weight: bold;
+    color: var(--texto-suave);
+    font-size: 1.1rem;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Responsividade para Celulares */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .grid-escala { 
+        grid-template-columns: 1.5fr 1fr 1fr 1fr 0.8fr; 
+        font-size: 0.75rem; 
+    }
+    .grid-header { padding: 12px 5px; font-size: 0.6rem; }
+    .footer-item { padding: 12px 5px; font-size: 0.75rem; }
+}
     </style>
 </head>
 <body>
