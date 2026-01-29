@@ -21,45 +21,65 @@
         .header { text-align: center; margin-bottom: 20px; }
         .update-info { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
 
-        #main-container { display: none; }
-        .filters-area { max-width: 1200px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-size: 1rem; cursor: pointer; }
+        #theme-toggle { 
+            position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; 
+            border-radius: 50%; border: none; background: var(--primaria); color: white; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000;
+        }
 
-        /* Estilo da Tabela Consolidada */
+        #main-container { display: none; }
+        .filters-area { max-width: 1200px; margin: 0 auto 30px; display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;}
+        select { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-size: 1rem; width: 100%; max-width: 400px; cursor: pointer; }
+
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto 30px; }
+        .card-stat { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-stat h3 { margin: 0; font-size: 0.65rem; text-transform: uppercase; color: #64748b; }
+        .card-stat p { margin: 10px 0 0; font-size: 1.5rem; font-weight: 800; }
+        .card-p { border-color: var(--p-color); } .card-t { border-color: var(--t-color); }
+        .card-c { border-color: var(--c-color); } .card-a { border-color: var(--a-color); }
+
         .secao-horas { max-width: 1200px; margin: 0 auto 40px; background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto; }
-        .secao-horas h2 { font-size: 1.1rem; margin-bottom: 20px; text-align: center; color: var(--primaria); text-transform: uppercase; letter-spacing: 1px; }
-        
-        .tabela-consolidada { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 800px; }
-        .tabela-consolidada thead th { background: var(--bg-item-lista); padding: 12px; border: 1px solid var(--border-item-lista); color: var(--texto); }
+        .tabela-consolidada { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 700px; }
+        .tabela-consolidada th { background: var(--bg-item-lista); padding: 12px; border: 1px solid var(--border-item-lista); }
         .tabela-consolidada td { padding: 10px; border: 1px solid var(--border-item-lista); text-align: center; }
-        .tabela-consolidada .col-nome { text-align: left; font-weight: bold; min-width: 180px; }
-        
-        .sub-header { font-size: 0.7rem; color: #64748b; display: block; margin-top: 4px; }
+        .col-nome { text-align: left !important; font-weight: bold; }
         .total-cell { font-weight: 800; color: var(--primaria); background: var(--bg-item-lista); }
-        
-        .resumo-rodape { margin-top: 20px; padding: 15px; background: var(--bg-item-lista); border-radius: 8px; display: flex; justify-content: space-around; font-weight: bold; font-size: 0.9rem; }
+
+        .resumo-rodape { margin-top: 15px; padding: 15px; background: var(--bg-item-lista); border-radius: 8px; display: flex; justify-content: space-around; font-weight: bold; flex-wrap: wrap; gap: 10px; }
 
         .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto 40px; }
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
-        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 350px; }
+        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 350px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .loader { text-align: center; padding: 100px 20px; font-weight: bold; }
+        .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
+        .coluna-p { border-top-color: var(--p-color); } .coluna-t { border-top-color: var(--t-color); }
+        .coluna-c { border-top-color: var(--c-color); } .coluna-a { border-top-color: var(--a-color); }
+        .coluna-f { border-top-color: var(--f-color); }
+        .coluna-lista h4 { margin: 0 0 10px; font-size: 0.75rem; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
+        .coluna-lista li { padding: 6px 10px; font-size: 0.75rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); margin-bottom: 3px; border-radius: 4px; }
+
+        .loader { text-align: center; padding: 100px; font-weight: bold; }
     </style>
 </head>
 <body>
 
+    <button id="theme-toggle">🌓</button>
+
     <div class="header">
-        <h1>Dashboard de Gestão Operacional</h1>
+        <h1>Dashboard Operacional</h1>
         <div id="timestamp" class="update-info">Sincronizando...</div>
     </div>
 
-    <div id="loading" class="loader">⚡ Carregando Carga Horária...</div>
+    <div id="loading" class="loader">⚡ Processando dados da escala...</div>
 
     <div id="main-container">
         <div class="filters-area">
             <div class="filter-box">
-                <label><strong>Selecione o Dia para Análise:</strong></label>
+                <label><strong>Dia de Exibição:</strong></label><br><br>
                 <select id="select-dia">
                     <option value="0">Segunda-feira</option>
                     <option value="1">Terça-feira</option>
@@ -70,8 +90,15 @@
             </div>
         </div>
 
+        <div class="grid-stats">
+            <div class="card-stat" style="border-color: var(--primaria)"><h3>Total Servidores</h3><p id="stat-total">0</p></div>
+            <div class="card-stat card-p"><h3>Presencial</h3><p id="stat-p">0</p></div>
+            <div class="card-stat card-t"><h3>Teletrabalho</h3><p id="stat-t">0</p></div>
+            <div class="card-stat card-c"><h3>Chefia</h3><p id="stat-c">0</p></div>
+            <div class="card-stat card-a"><h3>Afastados</h3><p id="stat-a">0</p></div>
+        </div>
+
         <div class="secao-horas">
-            <h2 id="titulo-tabela">Carga Horária Diária Consolidada</h2>
             <table class="tabela-consolidada">
                 <thead>
                     <tr>
@@ -80,9 +107,9 @@
                         <th rowspan="2">Total Diário</th>
                     </tr>
                     <tr>
-                        <th>Manhã<br><span class="sub-header">07:00 | 13:00</span></th>
-                        <th>Tarde<br><span class="sub-header">13:00 | 19:00</span></th>
-                        <th>Noite<br><span class="sub-header">19:00 | 01:00</span></th>
+                        <th>Manhã (07:00 | 13:00)</th>
+                        <th>Tarde (13:00 | 19:00)</th>
+                        <th>Noite (19:00 | 01:00)</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-consolidado"></tbody>
@@ -94,6 +121,14 @@
             <div class="chart-box"><canvas id="chartPizzaHoje"></canvas></div>
             <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
         </div>
+
+        <div class="lista-detalhada">
+            <div class="coluna-lista coluna-p"><h4>P <span id="count-p">0</span></h4><ul id="list-p"></ul></div>
+            <div class="coluna-lista coluna-t"><h4>T <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
+            <div class="coluna-lista coluna-c"><h4>C <span id="count-c">0</span></h4><ul id="list-c"></ul></div>
+            <div class="coluna-lista coluna-a"><h4>A <span id="count-a">0</span></h4><ul id="list-a"></ul></div>
+            <div class="coluna-lista coluna-f"><h4>F <span id="count-f">0</span></h4><ul id="list-f"></ul></div>
+        </div>
     </div>
 
     <script>
@@ -101,27 +136,19 @@
         let database = {}; 
         let charts = {};
 
-        // Formata horas decimais para "8h 30m" ou "8h"
         function formatarHorasHumanas(decimal) {
             if (decimal === 0) return "-";
-            const horas = Math.floor(decimal);
-            const minutos = Math.round((decimal - horas) * 60);
-            if (minutos === 0) return `${horas}h`;
-            return `${horas}h ${minutos}m`;
+            const h = Math.floor(decimal);
+            const m = Math.round((decimal - h) * 60);
+            return m === 0 ? `${h}h` : `${h}h ${m}m`;
         }
 
-        function calcularDiferencaHoras(texto) {
+        function calcHoras(texto) {
             if (!texto || !texto.includes('|')) return 0;
-            try {
-                const partes = texto.split('|').map(p => p.trim());
-                const conv = (h) => { 
-                    const [hrs, mins] = h.split(':').map(Number); 
-                    return (hrs * 60) + (mins || 0); 
-                };
-                let diff = (conv(partes[1]) - conv(partes[0]));
-                if (diff < 0) diff += 1440; // Ajuste para virada de dia (noite)
-                return diff / 60;
-            } catch (e) { return 0; }
+            const p = texto.split('|').map(x => x.trim());
+            const conv = (s) => { const [h, m] = s.split(':').map(Number); return (h * 60) + (m || 0); };
+            let d = conv(p[1]) - conv(p[0]);
+            return (d < 0 ? d + 1440 : d) / 60;
         }
 
         async function init() {
@@ -129,18 +156,11 @@
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 const rows = data.slice(1);
-                
                 for (let i = 0; i < rows.length; i += 3) {
                     const nome = rows[i] ? rows[i][2]?.trim() : null;
-                    if (nome && !nome.includes('@')) {
-                        database[nome] = [rows[i], rows[i+1], rows[i+2]];
-                    }
+                    if (nome && !nome.includes('@')) database[nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
-
-                const hoje = new Date().getDay();
-                document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
                 document.getElementById('select-dia').addEventListener('change', processar);
-
                 processar();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
@@ -148,92 +168,93 @@
         }
 
         function processar() {
-            const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            const nomesOrdenados = Object.keys(database).sort();
-            
-            let htmlTable = "";
-            let somaManha = 0, somaTarde = 0, somaNoite = 0;
-            let statusContagem = { P: 0, T: 0, C: 0, A: 0, F: 0 };
+            const diaSel = parseInt(document.getElementById('select-dia').value);
+            let semanalData = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
+            let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
+            let htmlTable = "", somaM = 0, somaT = 0, somaN = 0;
 
-            nomesOrdenados.forEach(nome => {
+            Object.keys(database).sort().forEach(nome => {
                 const blocos = database[nome];
-                let hManha = 0, hTarde = 0, hNoite = 0;
-                let tManha = "-", tTarde = "-", tNoite = "-";
-                let statusFinalSet = new Set();
-
-                blocos.forEach((linha, idx) => {
-                    if (!linha) return;
-                    // Lógica de Status para Gráficos
-                    const s = linha[6 + diaFiltro]?.toString().toUpperCase().trim();
-                    if (['P','T','C','A'].includes(s)) statusFinalSet.add(s);
-
-                    // Lógica de Horas para Tabela
-                    const hStr = linha[3]?.toString().trim() || "";
-                    const hVal = calcularDiferencaHoras(hStr);
-
-                    if (idx === 0) { hManha = hVal; tManha = hStr || "-"; }
-                    if (idx === 1) { hTarde = hVal; tTarde = hStr || "-"; }
-                    if (idx === 2) { hNoite = hVal; tNoite = hStr || "-"; }
-                });
-
-                const totalServidor = hManha + hTarde + hNoite;
+                let hM = 0, hT = 0, hN = 0, tM = "-", tT = "-", tN = "-";
                 
-                // Só exibe na tabela se tiver alguma hora ou status no dia
-                if (totalServidor > 0 || statusFinalSet.size > 0) {
-                    somaManha += hManha; somaTarde += hTarde; somaNoite += hNoite;
+                // Processa a semana inteira para o gráfico de barras
+                for (let d = 0; d < 5; d++) {
+                    let statusSet = new Set();
+                    blocos.forEach((linha, idx) => {
+                        const s = linha[6 + d]?.toString().toUpperCase().trim();
+                        if (['P','T','C','A'].includes(s)) statusSet.add(s);
+                        
+                        // Dados da tabela (apenas do dia selecionado)
+                        if (d === diaSel) {
+                            const hStr = linha[3]?.toString().trim() || "";
+                            const hVal = calcHoras(hStr);
+                            if (idx === 0) { hM = hVal; tM = hStr || "-"; }
+                            if (idx === 1) { hT = hVal; tT = hStr || "-"; }
+                            if (idx === 2) { hN = hVal; tN = hStr || "-"; }
+                        }
+                    });
                     
-                    htmlTable += `
-                        <tr>
-                            <td class="col-nome">${nome}</td>
-                            <td>${tManha}</td>
-                            <td>${tTarde}</td>
-                            <td>${tNoite}</td>
-                            <td class="total-cell">${formatarHorasHumanas(totalServidor)}</td>
-                        </tr>
-                    `;
+                    let finalS = 'F';
+                    if (statusSet.has('A')) finalS = 'A'; else if (statusSet.has('C')) finalS = 'C';
+                    else if (statusSet.has('P')) finalS = 'P'; else if (statusSet.has('T')) finalS = 'T';
+                    semanalData[finalS][d]++;
+                    if (d === diaSel) nomesNoDia[finalS].push(nome);
                 }
 
-                // Contabiliza para os gráficos
-                let sf = 'F';
-                if (statusFinalSet.has('A')) sf = 'A'; 
-                else if (statusFinalSet.has('C')) sf = 'C';
-                else if (statusFinalSet.has('P')) sf = 'P'; 
-                else if (statusFinalSet.has('T')) sf = 'T';
-                statusContagem[sf]++;
+                if ((hM + hT + hN) > 0 || nomesNoDia.F.indexOf(nome) === -1) {
+                    somaM += hM; somaT += hT; somaN += hN;
+                    htmlTable += `<tr><td class="col-nome">${nome}</td><td>${tM}</td><td>${tT}</td><td>${tN}</td><td class="total-cell">${formatarHorasHumanas(hM+hT+hN)}</td></tr>`;
+                }
             });
 
             document.getElementById('corpo-consolidado').innerHTML = htmlTable;
+            document.getElementById('resumo-total').innerHTML = `<span>Manhã: ${formatarHorasHumanas(somaM)}</span><span>Tarde: ${formatarHorasHumanas(somaT)}</span><span>Noite: ${formatarHorasHumanas(somaN)}</span><span style="color:var(--primaria)">TOTAL: ${formatarHorasHumanas(somaM+somaT+somaN)}</span>`;
             
-            const totalGeral = somaManha + somaTarde + somaNoite;
-            document.getElementById('resumo-total').innerHTML = `
-                <span>Manhã: ${formatarHorasHumanas(somaManha)}</span>
-                <span>Tarde: ${formatarHorasHumanas(somaTarde)}</span>
-                <span>Noite: ${formatarHorasHumanas(somaNoite)}</span>
-                <span style="color:var(--primaria)">TOTAL GERAL: ${formatarHorasHumanas(totalGeral)}</span>
-            `;
+            // Stats e Listas
+            document.getElementById('stat-total').innerText = Object.keys(database).length;
+            ['p','t','c','a','f'].forEach(k => {
+                const U = k.toUpperCase();
+                if(document.getElementById(`stat-${k}`)) document.getElementById(`stat-${k}`).innerText = semanalData[U][diaSel];
+                document.getElementById(`count-${k}`).innerText = `(${nomesNoDia[U].length})`;
+                document.getElementById(`list-${k}`).innerHTML = nomesNoDia[U].sort().map(n => `<li>${n}</li>`).join('');
+            });
 
-            renderCharts(statusContagem);
+            renderCharts(semanalData, diaSel);
         }
 
-        function renderCharts(status) {
-            if (charts.pizza) charts.pizza.destroy();
-            charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
+        function renderCharts(sd, ds) {
+            const ctxP = document.getElementById('chartPizzaHoje');
+            const ctxB = document.getElementById('chartSemanal');
+            if (charts.p) charts.p.destroy(); if (charts.b) charts.b.destroy();
+
+            charts.p = new Chart(ctxP, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora'],
-                    datasets: [{
-                        data: [status.P, status.T, status.C, status.A, status.F],
-                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b']
-                    }]
+                    labels: ['P','T','C','A','F'],
+                    datasets: [{ data: [sd.P[ds], sd.T[ds], sd.C[ds], sd.A[ds], sd.F[ds]], backgroundColor: ['#34495e','#10b981','#f1c40f','#ef4444','#64748b'] }]
                 },
-                options: { 
-                    maintainAspectRatio: false,
-                    plugins: { title: { display: true, text: 'Distribuição de Pessoal (Dia Selecionado)' } }
-                }
+                options: { maintainAspectRatio: false, plugins: { title: { display: true, text: 'Status Hoje' } } }
             });
-            // O gráfico semanal permaneceria aqui (omitido por brevidade, mas funcional no seu código)
+
+            charts.b = new Chart(ctxB, {
+                type: 'bar',
+                data: {
+                    labels: ['Seg','Ter','Qua','Qui','Sex'],
+                    datasets: [
+                        { label: 'P', data: sd.P, backgroundColor: '#34495e' },
+                        { label: 'T', data: sd.T, backgroundColor: '#10b981' },
+                        { label: 'C', data: sd.C, backgroundColor: '#f1c40f' },
+                        { label: 'A', data: sd.A, backgroundColor: '#ef4444' }
+                    ]
+                },
+                options: { maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
+            });
         }
-        
+
+        document.getElementById('theme-toggle').onclick = () => {
+            const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        };
         init();
     </script>
 </body>
