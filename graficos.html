@@ -9,7 +9,7 @@
         :root {
             --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
             --primaria: #3b82f6; --p-color: #34495e; --t-color: #10b981;
-            --a-color: #ef4444; --c-color: #f1c40f;
+            --a-color: #ef4444; --c-color: #f1c40f; --f-color: #64748b; /* Cor para Fora de Expediente */
             --bg-item-lista: #f8fafc; --border-item-lista: #f1f5f9;
         }
         [data-theme="dark"] {
@@ -21,7 +21,6 @@
         .header { text-align: center; margin-bottom: 20px; }
         .update-info { font-size: 0.85rem; color: #64748b; margin-top: 5px; }
 
-        /* Botões Flutuantes */
         #theme-toggle { 
             position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; 
             border-radius: 50%; border: none; background: var(--primaria); color: white; 
@@ -36,51 +35,33 @@
         }
         #theme-toggle:hover, .btn-voltar:hover { transform: scale(1.1); }
 
-        /* Estrutura de Exibição */
         #main-container { display: none; }
         .filters-area { max-width: 1100px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
         select { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-size: 1rem; cursor: pointer; }
 
-        /* Grid de Estatísticas */
-        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 1100px; margin: 0 auto 30px; }
-        .card-stat { background: var(--bg-card); padding: 20px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-stat h3 { margin: 0; font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
-        .card-stat p { margin: 10px 0 0; font-size: 1.8rem; font-weight: 800; }
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto 30px; }
+        .card-stat { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-stat h3 { margin: 0; font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
+        .card-stat p { margin: 10px 0 0; font-size: 1.5rem; font-weight: 800; }
         .card-servidores { border-color: var(--primaria); }
         .card-p { border-color: var(--p-color); } .card-t { border-color: var(--t-color); }
         .card-c { border-color: var(--c-color); } .card-a { border-color: var(--a-color); }
+        .card-f { border-color: var(--f-color); }
 
         .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto 40px; }
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* LISTAS NOMINAIS (AJUSTADAS) */
-        .lista-detalhada { max-width: 1100px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
         .coluna-p { border-top-color: var(--p-color); } .coluna-t { border-top-color: var(--t-color); }
         .coluna-c { border-top-color: var(--c-color); } .coluna-a { border-top-color: var(--a-color); }
+        .coluna-f { border-top-color: var(--f-color); }
         
-        .coluna-lista h4 { margin: 0 0 15px; font-size: 0.9rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
-        
-        .coluna-lista ul { 
-            list-style: none; 
-            padding: 0; 
-            margin: 0; 
-        }
-        
-        .coluna-lista li { 
-            padding: 8px 12px; 
-            font-size: 0.85rem; 
-            border-bottom: 1px solid var(--border-item-lista); 
-            background: var(--bg-item-lista); 
-            color: var(--texto); 
-            margin-bottom: 4px; 
-            border-radius: 4px; 
-            text-align: left;
-            display: block;
-        }
-        
+        .coluna-lista h4 { margin: 0 0 15px; font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
+        .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; text-align: left; display: block; }
         .loader { text-align: center; padding: 100px 20px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
@@ -133,6 +114,7 @@
             <div class="card-stat card-t"><h3>Teletrabalho</h3><p id="stat-t">0</p></div>
             <div class="card-stat card-c"><h3>Chefia</h3><p id="stat-c">0</p></div>
             <div class="card-stat card-a"><h3>Afastados</h3><p id="stat-a">0</p></div>
+            <div class="card-stat card-f"><h3>Fora do Turno</h3><p id="stat-f">0</p></div>
         </div>
 
         <div class="charts-container">
@@ -145,6 +127,7 @@
             <div class="coluna-lista coluna-t"><h4>Teletrabalho <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
             <div class="coluna-lista coluna-c"><h4>Chefia <span id="count-c">0</span></h4><ul id="list-c"></ul></div>
             <div class="coluna-lista coluna-a"><h4>Afastados <span id="count-a">0</span></h4><ul id="list-a"></ul></div>
+            <div class="coluna-lista coluna-f"><h4>Fora do Turno <span id="count-f">0</span></h4><ul id="list-f"></ul></div>
         </div>
     </div>
 
@@ -153,7 +136,6 @@
         let database = {}; 
         let charts = {};
 
-        // Ícones do Tema
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
@@ -181,11 +163,9 @@
                     if (nome && !nome.includes('@')) database[nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
 
-                // Carimbo de data/hora
                 const agora = new Date();
                 document.getElementById('timestamp').innerText = `Última sincronização: ${agora.toLocaleDateString()} às ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
 
-                // Dia da semana automático (Seg=0)
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
 
@@ -205,22 +185,28 @@
         function processar() {
             const turnoFiltro = document.getElementById('select-turno').value;
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0] };
-            let nomesNoDia = { P: [], T: [], C: [], A: [] };
+            // Incluído 'F' para Fora de Expediente
+            let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
+            let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
 
             Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
-                // Regra: se não tem horário preenchido na coluna 4 (index 3), aparece em todos os turnos
                 const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
+                    let trabalhouNoTurno = false;
+
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
+                        const s = linha[6 + d]?.toString().toUpperCase().trim();
                         const passaFiltroTurno = (!temHorarioFixo) || (turnoFiltro === 'todos' || turnoFiltro == tIdx);
-                        if (passaFiltroTurno) {
-                            const s = linha[6 + d]?.toString().toUpperCase().trim();
-                            if (['P', 'T', 'C', 'A'].includes(s)) statusDoDia.add(s);
+
+                        if (['P', 'T', 'C', 'A'].includes(s)) {
+                            if (passaFiltroTurno) {
+                                statusDoDia.add(s);
+                                trabalhouNoTurno = true;
+                            }
                         }
                     });
 
@@ -229,29 +215,30 @@
                     else if (statusDoDia.has('C')) statusFinal = 'C';
                     else if (statusDoDia.has('P')) statusFinal = 'P';
                     else if (statusDoDia.has('T')) statusFinal = 'T';
-
-                    if (statusFinal) {
-                        semanal[statusFinal][d]++;
-                        if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
+                    
+                    // Se não tem status no turno filtrado, mas o servidor existe, ele está 'F' (Fora de Expediente)
+                    if (!statusFinal) {
+                        statusFinal = 'F';
                     }
+
+                    semanal[statusFinal][d]++;
+                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
             });
 
             document.getElementById('stat-total').innerText = Object.keys(database).length;
-            ['p', 't', 'c', 'a'].forEach(key => {
+            
+            ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
                 document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
                 document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
                 
-                // Geração da lista sem espaços e com alinhamento limpo
                 const listEl = document.getElementById(`list-${key}`);
                 listEl.innerHTML = nomesNoDia[upper].length 
-                    ? nomesNoDia[upper]
-                        .sort()
-                        .map(n => `<li>${n}</li>`)
-                        .join('') 
+                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') 
                     : '<li>-</li>';
             });
+
             renderCharts(semanal, diaFiltro);
         }
 
@@ -264,10 +251,10 @@
             charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
                 type: 'pie',
                 data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado'],
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora de Expediente'],
                     datasets: [{
-                        data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel]],
-                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444'],
+                        data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel], vol.F[diaSel]],
+                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b'],
                         borderWidth: 0
                     }]
                 },
@@ -288,7 +275,8 @@
                         { label: 'Presencial', data: vol.P, backgroundColor: '#34495e' },
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: '#10b981' },
                         { label: 'Chefia', data: vol.C, backgroundColor: '#f1c40f' },
-                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' }
+                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' },
+                        { label: 'Fora de Expediente', data: vol.F, backgroundColor: '#64748b' }
                     ]
                 },
                 options: { 
