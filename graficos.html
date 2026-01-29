@@ -53,15 +53,23 @@
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
+        /* Estilos da Nova Tabela de Horas */
+        .secao-horas { max-width: 1100px; margin: 0 auto 40px; background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .secao-horas h2 { font-size: 1rem; margin-bottom: 20px; text-align: center; color: var(--primaria); }
+        .tabela-horas { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .tabela-horas th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-item-lista); color: #64748b; }
+        .tabela-horas td { padding: 10px 12px; border-bottom: 1px solid var(--border-item-lista); }
+        .turno-header { background: var(--bg-item-lista); font-weight: bold; color: var(--primaria); }
+        .total-row { font-weight: 800; background: var(--bg-body); color: var(--texto); }
+
         .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
         .coluna-p { border-top-color: var(--p-color); } .coluna-t { border-top-color: var(--t-color); }
         .coluna-c { border-top-color: var(--c-color); } .coluna-a { border-top-color: var(--a-color); }
         .coluna-f { border-top-color: var(--f-color); }
-        
         .coluna-lista h4 { margin: 0 0 15px; font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
         .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
-        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; text-align: left; display: block; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; }
         .loader { text-align: center; padding: 100px 20px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
@@ -122,6 +130,27 @@
             <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
         </div>
 
+        <div class="secao-horas">
+            <h2>Detalhamento de Carga Horária (Execução Diária)</h2>
+            <table class="tabela-horas" id="tabela-corpo-horas">
+                <thead>
+                    <tr>
+                        <th>Servidor</th>
+                        <th>Horário</th>
+                        <th>Horas</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-horas-corpo">
+                    </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">TOTAL GERAL DO DIA</td>
+                        <td id="total-horas-dia">0h</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
         <div class="lista-detalhada">
             <div class="coluna-lista coluna-p"><h4>Presencial <span id="count-p">0</span></h4><ul id="list-p"></ul></div>
             <div class="coluna-lista coluna-t"><h4>Teletrabalho <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
@@ -138,6 +167,16 @@
 
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
+
+        // Função para converter "08:00 - 14:00" em valor decimal 6.0
+        function calcDiff(string) {
+            if (!string || !string.toString().includes('-')) return 0;
+            const partes = string.split('-').map(h => {
+                const [hrs, mins] = h.trim().split(':').map(Number);
+                return hrs + (mins / 60);
+            });
+            return Math.max(0, partes[1] - partes[0]);
+        }
 
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
@@ -162,20 +201,7 @@
                     const nome = rows[i] ? rows[i][2] : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
-                        
-                        const temAlgumHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
-                        const temAlgumStatus = blocos.some(l => {
-                            if(!l) return false;
-                            for(let d=0; d<5; d++) {
-                                let s = l[6+d]?.toString().toUpperCase().trim();
-                                if(['P','T','C','A'].includes(s)) return true;
-                            }
-                            return false;
-                        });
-
-                        if (temAlgumHorario || temAlgumStatus) {
-                            database[nome] = blocos;
-                        }
+                        database[nome] = blocos;
                     }
                 }
 
@@ -189,7 +215,6 @@
                 document.getElementById('select-dia').addEventListener('change', processar);
 
                 processar();
-
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
 
@@ -203,6 +228,10 @@
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
+            
+            // Dados para a nova tabela
+            let dadosHoras = [[], [], []]; // Turno 0, 1 e 2
+            let somaTotalGeral = 0;
 
             const servidoresAtivos = Object.keys(database);
 
@@ -220,32 +249,52 @@
 
                         if (['P', 'T', 'C', 'A'].includes(s) && passaFiltroTurno) {
                             statusDoDia.add(s);
+                            
+                            // Adiciona para a tabela de horas se for o dia selecionado
+                            if (d === diaFiltro && (turnoFiltro === 'todos' || turnoFiltro == tIdx)) {
+                                const hStr = linha[3]?.toString() || "";
+                                const hNum = calcDiff(hStr);
+                                if (hNum > 0) {
+                                    dadosHoras[tIdx].push({ nome, horario: hStr, valor: hNum });
+                                    somaTotalGeral += hNum;
+                                }
+                            }
                         }
                     });
 
-                    let statusFinal = null;
+                    let statusFinal = 'F';
                     if (statusDoDia.has('A')) statusFinal = 'A';
                     else if (statusDoDia.has('C')) statusFinal = 'C';
                     else if (statusDoDia.has('P')) statusFinal = 'P';
                     else if (statusDoDia.has('T')) statusFinal = 'T';
-                    else statusFinal = 'F';
 
                     semanal[statusFinal][d]++;
                     if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
             });
 
+            // Atualiza Tabela de Horas no HTML
+            const labelsTurno = ["TURNO DA MANHÃ", "TURNO DA TARDE", "TURNO DA NOITE"];
+            let htmlHoras = "";
+            dadosHoras.forEach((listaTurno, idx) => {
+                if (listaTurno.length > 0) {
+                    htmlHoras += `<tr class="turno-header"><td colspan="3">${labelsTurno[idx]}</td></tr>`;
+                    listaTurno.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(item => {
+                        htmlHoras += `<tr><td>${item.nome}</td><td>${item.horario}</td><td>${item.valor.toFixed(1)}h</td></tr>`;
+                    });
+                }
+            });
+            document.getElementById('lista-horas-corpo').innerHTML = htmlHoras || '<tr><td colspan="3" style="text-align:center">Nenhum registro de hora ativa.</td></tr>';
+            document.getElementById('total-horas-dia').innerText = somaTotalGeral.toFixed(1) + 'h';
+
+            // Resto do seu processamento original
             document.getElementById('stat-total').innerText = servidoresAtivos.length;
-            
             ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
                 document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
                 document.getElementById(`count-${key}`).innerText = `(${nomesNoDia[upper].length})`;
-                
-                const listEl = document.getElementById(`list-${key}`);
-                listEl.innerHTML = nomesNoDia[upper].length 
-                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') 
-                    : '<li>-</li>';
+                document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
+                    ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
             });
 
             renderCharts(semanal, diaFiltro);
