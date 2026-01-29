@@ -53,7 +53,6 @@
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* Estilos da Nova Tabela de Horas */
         .secao-horas { max-width: 1100px; margin: 0 auto 40px; background: var(--bg-card); padding: 20px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .secao-horas h2 { font-size: 1rem; margin-bottom: 20px; text-align: center; color: var(--primaria); }
         .tabela-horas { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -89,7 +88,7 @@
     </div>
 
     <div id="loading" class="loader">
-        <div style="margin-bottom: 20px;">⚡ Carregando informações da Escala...</div>
+        <div style="margin-bottom: 20px;">⚡ Carregando informações via CSV...</div>
         <small style="font-weight: normal; color: #64748b;">Aguarde o processamento dos dados.</small>
     </div>
 
@@ -140,8 +139,7 @@
                         <th>Horas</th>
                     </tr>
                 </thead>
-                <tbody id="lista-horas-corpo">
-                    </tbody>
+                <tbody id="lista-horas-corpo"></tbody>
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="2">TOTAL GERAL DO DIA</td>
@@ -161,21 +159,24 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
+        // NOVO LINK EM FORMATO CSV
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnOntjjXa71GwzoxDsO93JPzXG2FADARUNYJUaLqps2s_kT48iYMZPcJLdwDbCMk0OW7vokD8vuF9v/pub?output=csv';
+        
         let database = {}; 
         let charts = {};
 
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
-        // Função para converter "08:00 - 14:00" em valor decimal 6.0
         function calcDiff(string) {
             if (!string || !string.toString().includes('-')) return 0;
-            const partes = string.split('-').map(h => {
-                const [hrs, mins] = h.trim().split(':').map(Number);
-                return hrs + (mins / 60);
-            });
-            return Math.max(0, partes[1] - partes[0]);
+            try {
+                const partes = string.split('-').map(h => {
+                    const [hrs, mins] = h.trim().split(':').map(Number);
+                    return hrs + (mins / 60);
+                });
+                return Math.max(0, partes[1] - partes[0]);
+            } catch (e) { return 0; }
         }
 
         function setTheme(theme) {
@@ -191,22 +192,42 @@
             setTheme(current === 'dark' ? 'light' : 'dark');
         });
 
+        // FUNÇÃO PARA CONVERTER TEXTO CSV EM MATRIZ (ARRAY)
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            return lines.map(line => {
+                // Lida com vírgulas dentro de aspas se houver
+                const row = [];
+                let curr = '', inQuotes = false;
+                for (let char of line) {
+                    if (char === '"') inQuotes = !inQuotes;
+                    else if (char === ',' && !inQuotes) { row.push(curr); curr = ''; }
+                    else curr += char;
+                }
+                row.push(curr);
+                return row;
+            });
+        }
+
         async function init() {
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                const rows = data.slice(1);
+                const response = await fetch(CSV_URL);
+                const text = await response.text();
+                const rows = parseCSV(text);
                 
-                for (let i = 0; i < rows.length; i += 3) {
-                    const nome = rows[i] ? rows[i][2] : null;
+                // Pula o cabeçalho
+                const dataRows = rows.slice(1);
+                
+                for (let i = 0; i < dataRows.length; i += 3) {
+                    const nome = dataRows[i] ? dataRows[i][2]?.trim() : null;
                     if (nome && !nome.includes('@')) {
-                        const blocos = [rows[i], rows[i+1], rows[i+2]];
+                        const blocos = [dataRows[i], dataRows[i+1], dataRows[i+2]];
                         database[nome] = blocos;
                     }
                 }
 
                 const agora = new Date();
-                document.getElementById('timestamp').innerText = `Última sincronização: ${agora.toLocaleDateString()} às ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                document.getElementById('timestamp').innerText = `Sincronizado via CSV em: ${agora.toLocaleDateString()} ${agora.toLocaleTimeString()}`;
 
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
@@ -219,7 +240,8 @@
                 document.getElementById('main-container').style.display = 'block';
 
             } catch (e) { 
-                document.getElementById('loading').innerHTML = "❌ Falha ao carregar dados da planilha."; 
+                console.error(e);
+                document.getElementById('loading').innerHTML = "❌ Erro ao processar o arquivo CSV."; 
             }
         }
 
@@ -228,20 +250,15 @@
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
-            
-            // Dados para a nova tabela
-            let dadosHoras = [[], [], []]; // Turno 0, 1 e 2
+            let dadosHoras = [[], [], []];
             let somaTotalGeral = 0;
 
-            const servidoresAtivos = Object.keys(database);
-
-            servidoresAtivos.forEach(nome => {
+            Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
                 const temHorarioFixo = blocos.some(linha => linha && linha[3] && linha[3].toString().trim() !== "");
 
                 for (let d = 0; d < 5; d++) {
                     let statusDoDia = new Set();
-
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
@@ -249,8 +266,6 @@
 
                         if (['P', 'T', 'C', 'A'].includes(s) && passaFiltroTurno) {
                             statusDoDia.add(s);
-                            
-                            // Adiciona para a tabela de horas se for o dia selecionado
                             if (d === diaFiltro && (turnoFiltro === 'todos' || turnoFiltro == tIdx)) {
                                 const hStr = linha[3]?.toString() || "";
                                 const hNum = calcDiff(hStr);
@@ -269,11 +284,10 @@
                     else if (statusDoDia.has('T')) statusFinal = 'T';
 
                     semanal[statusFinal][d]++;
-                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
+                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome);
                 }
             });
 
-            // Atualiza Tabela de Horas no HTML
             const labelsTurno = ["TURNO DA MANHÃ", "TURNO DA TARDE", "TURNO DA NOITE"];
             let htmlHoras = "";
             dadosHoras.forEach((listaTurno, idx) => {
@@ -284,11 +298,10 @@
                     });
                 }
             });
-            document.getElementById('lista-horas-corpo').innerHTML = htmlHoras || '<tr><td colspan="3" style="text-align:center">Nenhum registro de hora ativa.</td></tr>';
+            document.getElementById('lista-horas-corpo').innerHTML = htmlHoras || '<tr><td colspan="3" style="text-align:center">Sem dados.</td></tr>';
             document.getElementById('total-horas-dia').innerText = somaTotalGeral.toFixed(1) + 'h';
 
-            // Resto do seu processamento original
-            document.getElementById('stat-total').innerText = servidoresAtivos.length;
+            document.getElementById('stat-total').innerText = Object.keys(database).length;
             ['p', 't', 'c', 'a', 'f'].forEach(key => {
                 const upper = key.toUpperCase();
                 document.getElementById(`stat-${key}`).innerText = semanal[upper][diaFiltro];
@@ -296,7 +309,6 @@
                 document.getElementById(`list-${key}`).innerHTML = nomesNoDia[upper].length 
                     ? nomesNoDia[upper].sort().map(n => `<li>${n}</li>`).join('') : '<li>-</li>';
             });
-
             renderCharts(semanal, diaFiltro);
         }
 
@@ -309,20 +321,13 @@
             charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
                 type: 'pie',
                 data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora de Expediente'],
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora'],
                     datasets: [{
                         data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel], vol.F[diaSel]],
-                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b'],
-                        borderWidth: 0
+                        backgroundColor: ['#34495e', '#10b981', '#f1c40f', '#ef4444', '#64748b']
                     }]
                 },
-                options: { 
-                    maintainAspectRatio: false, 
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { color: labelColor } },
-                        title: { display: true, text: 'VISÃO DIÁRIA POR CATEGORIA', color: labelColor }
-                    } 
-                }
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: labelColor } } } }
             });
 
             charts.bar = new Chart(document.getElementById('chartSemanal'), {
@@ -333,18 +338,10 @@
                         { label: 'Presencial', data: vol.P, backgroundColor: '#34495e' },
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: '#10b981' },
                         { label: 'Chefia', data: vol.C, backgroundColor: '#f1c40f' },
-                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' },
-                        { label: 'Fora do Turno', data: vol.F, backgroundColor: '#64748b' }
+                        { label: 'Afastado', data: vol.A, backgroundColor: '#ef4444' }
                     ]
                 },
-                options: { 
-                    maintainAspectRatio: false, 
-                    scales: { 
-                        x: { stacked: true, ticks: { color: labelColor }, grid: { display: false } }, 
-                        y: { stacked: true, ticks: { color: labelColor } } 
-                    }, 
-                    plugins: { legend: { position: 'bottom', labels: { color: labelColor } } } 
-                }
+                options: { maintainAspectRatio: false, scales: { x: { stacked: true, ticks: { color: labelColor } }, y: { stacked: true, ticks: { color: labelColor } } } }
             });
         }
         init();
