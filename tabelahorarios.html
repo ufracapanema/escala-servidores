@@ -38,7 +38,6 @@
             align-items: center;
         }
 
-        /* BOTÕES FLUTUANTES */
         .btn-flutuante {
             position: fixed; bottom: 20px; width: 50px; height: 50px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -48,12 +47,10 @@
         .btn-graficos { left: 80px; background: var(--cor-graficos); color: white; }
         #theme-toggle { right: 20px; background: var(--cor-primaria); color: white; }
 
-        /* HEADER */
         .header-container { text-align: center; margin-bottom: 30px; width: 100%; max-width: 1000px; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.5rem; font-weight: 900; }
         #loading { font-weight: bold; margin-top: 10px; color: var(--cor-primaria); }
 
-        /* GRID DA TABELA */
         .container { width: 100%; max-width: 1000px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         
         .grid-escala {
@@ -72,6 +69,19 @@
             text-align: center;
         }
 
+        /* ESTILO DO SUBTITULO DE SETOR */
+        .grid-setor-row {
+            grid-column: 1 / -1;
+            background: var(--cor-primaria);
+            color: white;
+            padding: 8px 20px;
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
         .grid-item {
             padding: 12px 15px;
             border-bottom: 1px solid var(--border-color);
@@ -82,10 +92,19 @@
             font-weight: 600;
         }
 
-        .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); }
+        .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 30px; }
         .grid-item.total { background: var(--bg-body); font-weight: 900; color: var(--cor-primaria); }
 
-        /* RODAPÉ TOTAIS */
+        /* LINHA DE SOMA DO SETOR */
+        .grid-soma-setor {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1.2fr) 1fr;
+            background: rgba(59, 130, 246, 0.05);
+            border-bottom: 2px solid var(--cor-primaria);
+        }
+        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.85rem; text-align: center; color: var(--cor-primaria); }
+
         .grid-footer { display: contents; }
         .footer-item {
             background: var(--header-bg);
@@ -99,6 +118,7 @@
         @media (max-width: 600px) {
             .grid-escala { grid-template-columns: 1.5fr repeat(3, 1fr) 0.8fr; font-size: 0.7rem; }
             .grid-header, .grid-item, .footer-item { padding: 8px 4px; font-size: 0.75rem; }
+            .grid-item.nome { padding-left: 10px; }
         }
     </style>
 </head>
@@ -140,7 +160,6 @@
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
     let database = {};
 
-    // Configuração de Ícones e Tema
     const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
     const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
@@ -157,7 +176,7 @@
     });
 
     function formatarH(decimal) {
-        if (!decimal || decimal === 0) return "-";
+        if (!decimal || decimal <= 0) return "-";
         const h = Math.floor(decimal);
         const m = Math.round((decimal - h) * 60);
         return m === 0 ? h + "h" : h + "h " + m + "m";
@@ -183,10 +202,13 @@
             const data = await response.json();
             const rows = data.slice(1);
             
+            database = {};
             for (let i = 0; i < rows.length; i += 3) {
                 const nome = rows[i] ? rows[i][2]?.trim() : null;
+                const setor = rows[i] ? rows[i][0]?.trim() || "OUTROS" : "OUTROS";
                 if (nome && !nome.includes('@')) {
-                    database[nome] = [rows[i], rows[i+1], rows[i+2]];
+                    if (!database[setor]) database[setor] = {};
+                    database[setor][nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
             }
             processar();
@@ -197,39 +219,62 @@
 
     function processar() {
         let html = "";
-        let sM = 0, sT = 0, sN = 0;
-        const nomes = Object.keys(database).sort();
+        let totalGeralM = 0, totalGeralT = 0, totalGeralN = 0;
+        
+        const setoresSorted = Object.keys(database).sort();
 
-        nomes.forEach(n => {
-            const b = database[n];
-            const hStrM = b[0] ? b[0][3]?.toString() : "";
-            const hStrT = b[1] ? b[1][3]?.toString() : "";
-            const hStrN = b[2] ? b[2][3]?.toString() : "";
+        setoresSorted.forEach(setor => {
+            let setorM = 0, setorT = 0, setorN = 0;
+            let temServidorAtivo = false;
+            let setorHtml = `<div class="grid-setor-row"><span>SETOR: ${setor}</span></div>`;
+            let servidoresHtml = "";
 
-            const vM = calcular(hStrM);
-            const vT = calcular(hStrT);
-            const vN = calcular(hStrN);
-            const total = vM + vT + vN;
+            const nomes = Object.keys(database[setor]).sort();
+            nomes.forEach(n => {
+                const b = database[setor][n];
+                const hStrM = b[0] ? b[0][3]?.toString() : "";
+                const hStrT = b[1] ? b[1][3]?.toString() : "";
+                const hStrN = b[2] ? b[2][3]?.toString() : "";
 
-            if (total > 0) {
-                sM += vM; sT += vT; sN += vN;
-                html += `
-                    <div class="grid-item nome">${n}</div>
-                    <div class="grid-item">${hStrM || "-"}</div>
-                    <div class="grid-item">${hStrT || "-"}</div>
-                    <div class="grid-item">${hStrN || "-"}</div>
-                    <div class="grid-item total">${formatarH(total)}</div>
+                const vM = calcular(hStrM);
+                const vT = calcular(hStrT);
+                const vN = calcular(hStrN);
+                const total = vM + vT + vN;
+
+                if (total > 0) {
+                    temServidorAtivo = true;
+                    setorM += vM; setorT += vT; setorN += vN;
+                    servidoresHtml += `
+                        <div class="grid-item nome">${n}</div>
+                        <div class="grid-item">${hStrM || "-"}</div>
+                        <div class="grid-item">${hStrT || "-"}</div>
+                        <div class="grid-item">${hStrN || "-"}</div>
+                        <div class="grid-item total">${formatarH(total)}</div>
+                    `;
+                }
+            });
+
+            if (temServidorAtivo) {
+                totalGeralM += setorM; totalGeralT += setorT; totalGeralN += setorN;
+                html += setorHtml + servidoresHtml + `
+                    <div class="grid-soma-setor">
+                        <div class="item-soma" style="text-align:left; padding-left:20px">Σ TOTAL ${setor}</div>
+                        <div class="item-soma">${formatarH(setorM)}</div>
+                        <div class="item-soma">${formatarH(setorT)}</div>
+                        <div class="item-soma">${formatarH(setorN)}</div>
+                        <div class="item-soma" style="background:rgba(59,130,246,0.1)">${formatarH(setorM + setorT + setorN)}</div>
+                    </div>
                 `;
             }
         });
 
         document.getElementById('grid-corpo').innerHTML = html;
         document.getElementById('grid-rodape').innerHTML = `
-            <div class="footer-item" style="text-align:left; padding-left:20px">TOTAIS DO DIA</div>
-            <div class="footer-item">${formatarH(sM)}</div>
-            <div class="footer-item">${formatarH(sT)}</div>
-            <div class="footer-item">${formatarH(sN)}</div>
-            <div class="footer-item" style="background:var(--cor-primaria)">${formatarH(sM + sT + sN)}</div>
+            <div class="footer-item" style="text-align:left; padding-left:20px">TOTAIS GERAIS (CAMPUS)</div>
+            <div class="footer-item">${formatarH(totalGeralM)}</div>
+            <div class="footer-item">${formatarH(totalGeralT)}</div>
+            <div class="footer-item">${formatarH(totalGeralN)}</div>
+            <div class="footer-item" style="background:var(--cor-primaria)">${formatarH(totalGeralM + totalGeralT + totalGeralN)}</div>
         `;
 
         document.getElementById('loading').style.display = 'none';
