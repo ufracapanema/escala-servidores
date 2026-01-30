@@ -66,7 +66,6 @@
             text-align: center;
         }
 
-        /* CABEÇALHO DO SETOR */
         .grid-setor-row {
             grid-column: 1 / -1;
             padding: 12px 20px;
@@ -75,7 +74,6 @@
             text-transform: uppercase;
             color: white;
             letter-spacing: 1px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
         .grid-item {
@@ -91,12 +89,11 @@
         .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 30px; }
         .grid-item.total { background: rgba(0,0,0,0.02); font-weight: 900; color: var(--cor-primaria); }
 
-        /* LINHA DE SUBTOTAL (Restaurada para o estilo original do prompt anterior) */
         .grid-soma-setor {
             grid-column: 1 / -1;
             display: grid;
             grid-template-columns: 2fr repeat(3, 1.2fr) 1fr;
-            background: rgba(59, 130, 246, 0.05); /* Cor original do subtotal */
+            background: rgba(59, 130, 246, 0.05);
             border-bottom: 2px solid var(--cor-primaria);
         }
         .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.8rem; text-align: center; color: var(--cor-primaria); }
@@ -153,23 +150,13 @@
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
     
-    // Paleta oficial extraída do portal de escala servidores
-    const CORES_SETORES = [
-        '#2c3e50', // Marinho
-        '#16a085', // Verde Água
-        '#2980b9', // Azul Royal
-        '#8e44ad', // Roxo
-        '#27ae60', // Verde Esmeralda
-        '#f39c12', // Laranja
-        '#7f8c8d'  // Cinza
-    ];
-
-    const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
-    const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
+    const CORES_SETORES = ['#2c3e50', '#16a085', '#2980b9', '#8e44ad', '#27ae60', '#f39c12', '#7f8c8d'];
 
     function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        document.getElementById('theme-icon').innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+        document.getElementById('theme-icon').innerHTML = theme === 'dark' ? 
+            `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">` : 
+            `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
         localStorage.setItem('theme', theme);
     }
 
@@ -178,24 +165,27 @@
         setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
 
-    function formatarH(decimal) {
-        if (!decimal || decimal <= 0) return "-";
-        const h = Math.floor(decimal);
-        const m = Math.round((decimal - h) * 60);
+    // Modificado para somar minutos e evitar erros decimais
+    function formatarH(minutosTotais) {
+        if (!minutosTotais || minutosTotais <= 0) return "-";
+        const h = Math.floor(minutosTotais / 60);
+        const m = Math.round(minutosTotais % 60);
         return m === 0 ? h + "h" : h + "h " + m + "m";
     }
 
-    function calcular(texto) {
+    function calcularMinutos(texto) {
         if (!texto || !texto.includes('|')) return 0;
         try {
             const p = texto.split('|').map(x => x.trim());
             const conv = (s) => { 
-                const [h, m] = s.split(':').map(Number); 
-                return (h * 60) + (m || 0); 
+                const parts = s.split(':');
+                const h = parseInt(parts[0]);
+                const m = parseInt(parts[1]) || 0;
+                return (h * 60) + m; 
             };
             let diff = conv(p[1]) - conv(p[0]);
-            if (diff < 0) diff += 1440;
-            return diff / 60;
+            if (diff < 0) diff += 1440; // Trata virada da noite
+            return diff;
         } catch (e) { return 0; }
     }
 
@@ -238,12 +228,12 @@
                 const hStrT = b[1] ? b[1][3]?.toString() : "";
                 const hStrN = b[2] ? b[2][3]?.toString() : "";
 
-                const vM = calcular(hStrM);
-                const vT = calcular(hStrT);
-                const vN = calcular(hStrN);
-                const total = vM + vT + vN;
+                const vM = calcularMinutos(hStrM);
+                const vT = calcularMinutos(hStrT);
+                const vN = calcularMinutos(hStrN);
+                const totalServidor = vM + vT + vN;
 
-                if (total > 0) {
+                if (totalServidor > 0) {
                     temServidorAtivo = true;
                     setorM += vM; setorT += vT; setorN += vN;
                     servidoresHtml += `
@@ -251,7 +241,7 @@
                         <div class="grid-item">${hStrM || "-"}</div>
                         <div class="grid-item">${hStrT || "-"}</div>
                         <div class="grid-item">${hStrN || "-"}</div>
-                        <div class="grid-item total">${formatarH(total)}</div>
+                        <div class="grid-item total">${formatarH(totalServidor)}</div>
                     `;
                 }
             });
