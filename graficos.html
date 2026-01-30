@@ -7,13 +7,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            /* Cores sincronizadas com a index */
+            /* Cores padrão do site */
             --cor-c: #f1c40f; 
             --cor-t: #34495e; 
             --cor-p: #10b981; 
             --cor-a: #ef4444; 
             --cor-f: #64748b;
-            --cor-primaria: #3b82f6;
+            --primaria: #3b82f6;
 
             --bg-body: #f1f5f9; --bg-card: white; --texto: #1e293b;
             --bg-item-lista: #f8fafc; --border-item-lista: #f1f5f9;
@@ -24,112 +24,103 @@
             --bg-item-lista: #334155; --border-item-lista: #475569;
         }
 
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg-body); color: var(--texto); 
-            margin: 0; padding: 20px; transition: 0.3s; 
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-body); color: var(--texto); margin: 0; padding: 20px; transition: 0.3s; }
         
         .header { text-align: center; margin-bottom: 20px; }
-        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
-        .update-info { font-size: 0.85rem; color: #64748b; margin-top: 10px; font-weight: bold; }
+        .update-info { font-size: 0.85rem; color: #64748b; margin-top: 5px; font-weight: bold; }
 
         /* BOTÕES FLUTUANTES */
         #theme-toggle { 
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; 
-            border-radius: 50%; border: none; background: var(--cor-primaria); color: white; 
+            position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; 
+            border-radius: 50%; border: none; background: var(--primaria); color: white; 
             cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; transition: 0.2s;
         }
         .btn-voltar { 
-            position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; 
+            position: fixed; bottom: 20px; left: 20px; width: 55px; height: 55px; 
             border-radius: 50%; background: #64748b; color: white; text-decoration: none; 
             display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; transition: 0.2s;
         }
-        /* Botão para voltar à escala */
-        .btn-escala { 
-            position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px; 
-            border-radius: 50%; background: var(--cor-p); color: white; text-decoration: none; 
+        .btn-tabela { 
+            position: fixed; bottom: 20px; left: 85px; width: 55px; height: 55px; 
+            border-radius: 50%; background: #6366f1; color: white; text-decoration: none; 
             display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; transition: 0.2s;
         }
+        #theme-toggle:hover, .btn-voltar:hover, .btn-tabela:hover { transform: scale(1.1); }
 
-        #main-container { display: none; width: 100%; max-width: 1200px; margin: 0 auto; }
-        
-        .filters-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-weight: 600; }
+        #main-container { display: none; }
 
-        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
-        .card-stat { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border-bottom: 5px solid transparent; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .card-stat h3 { margin: 0; font-size: 0.7rem; text-transform: uppercase; color: #64748b; font-weight: 800; }
-        .card-stat p { margin: 8px 0 0; font-size: 1.8rem; font-weight: 900; }
+        /* COMBOBOX - Voltando ao estilo original solicitado */
+        .filters-area { max-width: 1100px; margin: 0 auto 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .filter-box { background: var(--bg-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: var(--bg-card); color: var(--texto); font-size: 1rem; cursor: pointer; }
+
+        /* CARDS E GRÁFICOS */
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; max-width: 1200px; margin: 0 auto 30px; }
+        .card-stat { background: var(--bg-card); padding: 15px; border-radius: 16px; text-align: center; border-bottom: 4px solid transparent; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-stat h3 { margin: 0; font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
+        .card-stat p { margin: 10px 0 0; font-size: 1.5rem; font-weight: 800; }
         
-        /* Cores dos Cards */
-        .card-servidores { border-color: var(--cor-primaria); }
-        .card-p { border-color: var(--cor-p); } 
-        .card-t { border-color: var(--cor-t); }
-        .card-c { border-color: var(--cor-c); } 
-        .card-a { border-color: var(--cor-a); }
+        .card-servidores { border-color: var(--primaria); }
+        .card-p { border-color: var(--cor-p); } .card-t { border-color: var(--cor-t); }
+        .card-c { border-color: var(--cor-c); } .card-a { border-color: var(--cor-a); }
         .card-f { border-color: var(--cor-f); }
 
-        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 40px; }
-        @media (min-width: 992px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
-        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .charts-container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1100px; margin: 0 auto 40px; }
+        @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
+        .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 380px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .lista-detalhada { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 100px; }
-        .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 5px solid; }
-        .coluna-p { border-top-color: var(--cor-p); } 
-        .coluna-t { border-top-color: var(--cor-t); }
-        .coluna-c { border-top-color: var(--cor-c); } 
-        .coluna-a { border-top-color: var(--cor-a); }
+        .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
+        .coluna-p { border-top-color: var(--cor-p); } .coluna-t { border-top-color: var(--cor-t); }
+        .coluna-c { border-top-color: var(--cor-c); } .coluna-a { border-top-color: var(--cor-a); }
         .coluna-f { border-top-color: var(--cor-f); }
         
-        .coluna-lista h4 { margin: 0 0 15px; font-size: 0.85rem; text-transform: uppercase; font-weight: 800; display: flex; justify-content: space-between; }
+        .coluna-lista h4 { margin: 0 0 15px; font-size: 0.8rem; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--texto); }
         .coluna-lista ul { list-style: none; padding: 0; margin: 0; }
-        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; font-weight: 600; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); margin-bottom: 5px; border-radius: 6px; }
+        .coluna-lista li { padding: 8px 12px; font-size: 0.8rem; border-bottom: 1px solid var(--border-item-lista); background: var(--bg-item-lista); color: var(--texto); margin-bottom: 4px; border-radius: 4px; }
         
-        .loader { text-align: center; padding: 100px 20px; font-weight: bold; }
+        .loader { text-align: center; padding: 100px 20px; font-weight: bold; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="btn-voltar" title="Início">
+    <a href="index.html" class="btn-voltar" title="Voltar à Escala">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
     </a>
 
-    <a href="index.html" class="btn-escala" title="Ver Escala Completa">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    <a href="tabelahorarios.html" class="btn-tabela" title="Ver Tabela">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
     </a>
 
-    <button id="theme-toggle">
+    <button id="theme-toggle" title="Alternar Tema">
         <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
     </button>
 
     <div class="header">
-        <h1 class="titulo-pagina">Gestão Operacional de Servidores</h1>
+        <h1>Dashboard de Gestão Operacional</h1>
         <div id="timestamp" class="update-info">Sincronizando dados...</div>
     </div>
 
     <div id="loading" class="loader">
-        <div style="margin-bottom: 20px; font-size: 1.5rem;">⚡ Carregando Dashboard...</div>
-        <small style="color: #64748b;">Processando dados da escala técnica.</small>
+        <div style="margin-bottom: 20px;">⚡ Processando informações da Escala...</div>
     </div>
 
     <div id="main-container">
         <div class="filters-area">
             <div class="filter-box">
-                <label><strong>1. Filtrar por Turno:</strong></label>
+                <label><strong>1. Turno:</strong></label>
                 <select id="select-turno">
                     <option value="todos">Todos os Turnos</option>
-                    <option value="0">Manhã</option>
-                    <option value="1">Tarde</option>
-                    <option value="2">Noite</option>
+                    <option value="0">Turno da Manhã</option>
+                    <option value="1">Turno da Tarde</option>
+                    <option value="2">Turno da Noite</option>
                 </select>
             </div>
             <div class="filter-box">
-                <label><strong>2. Visualizar Dia:</strong></label>
+                <label><strong>2. Dia da Semana:</strong></label>
                 <select id="select-dia">
                     <option value="0">Segunda-feira</option>
                     <option value="1">Terça-feira</option>
@@ -141,12 +132,12 @@
         </div>
 
         <div class="grid-stats">
-            <div class="card-stat card-servidores"><h3>Total TAEs</h3><p id="stat-total">0</p></div>
+            <div class="card-stat card-servidores"><h3>Servidores Ativos</h3><p id="stat-total">0</p></div>
             <div class="card-stat card-p"><h3>Presencial</h3><p id="stat-p">0</p></div>
             <div class="card-stat card-t"><h3>Teletrabalho</h3><p id="stat-t">0</p></div>
             <div class="card-stat card-c"><h3>Chefia</h3><p id="stat-c">0</p></div>
             <div class="card-stat card-a"><h3>Afastados</h3><p id="stat-a">0</p></div>
-            <div class="card-stat card-f"><h3>Inativos</h3><p id="stat-f">0</p></div>
+            <div class="card-stat card-f"><h3>Fora do Turno</h3><p id="stat-f">0</p></div>
         </div>
 
         <div class="charts-container">
@@ -159,7 +150,7 @@
             <div class="coluna-lista coluna-t"><h4>Teletrabalho <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
             <div class="coluna-lista coluna-c"><h4>Chefia <span id="count-c">0</span></h4><ul id="list-c"></ul></div>
             <div class="coluna-lista coluna-a"><h4>Afastados <span id="count-a">0</span></h4><ul id="list-a"></ul></div>
-            <div class="coluna-lista coluna-f"><h4>Inativos <span id="count-f">0</span></h4><ul id="list-f"></ul></div>
+            <div class="coluna-lista coluna-f"><h4>Fora do Turno <span id="count-f">0</span></h4><ul id="list-f"></ul></div>
         </div>
     </div>
 
@@ -194,12 +185,26 @@
                     const nome = rows[i] ? rows[i][2] : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
-                        database[nome] = blocos;
+                        
+                        // LÓGICA DE FILTRAGEM: Verifica se tem horário OU letras (P, T, C, A)
+                        const temHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
+                        const temStatus = blocos.some(l => {
+                            if(!l) return false;
+                            for(let d=0; d<5; d++) {
+                                let s = l[6+d]?.toString().toUpperCase().trim();
+                                if(['P','T','C','A'].includes(s)) return true;
+                            }
+                            return false;
+                        });
+
+                        if (temHorario || temStatus) {
+                            database[nome] = blocos;
+                        }
                     }
                 }
 
                 const agora = new Date();
-                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString()} às ${agora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString()} às ${agora.toLocaleTimeString()}`;
 
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
@@ -212,7 +217,7 @@
                 document.getElementById('main-container').style.display = 'block';
 
             } catch (e) { 
-                document.getElementById('loading').innerHTML = "❌ Erro ao conectar com a base de dados."; 
+                document.getElementById('loading').innerHTML = "❌ Erro ao carregar dados."; 
             }
         }
 
@@ -222,35 +227,42 @@
             let semanal = { P: [0,0,0,0,0], T: [0,0,0,0,0], C: [0,0,0,0,0], A: [0,0,0,0,0], F: [0,0,0,0,0] };
             let nomesNoDia = { P: [], T: [], C: [], A: [], F: [] };
 
-            Object.keys(database).forEach(nome => {
+            const servidoresValidos = Object.keys(database);
+
+            servidoresValidos.forEach(nome => {
                 const blocos = database[nome];
+                
                 for (let d = 0; d < 5; d++) {
-                    let statusDoDia = new Set();
+                    let statusEncontrado = new Set();
                     blocos.forEach((linha, tIdx) => {
                         if (!linha) return;
                         const s = linha[6 + d]?.toString().toUpperCase().trim();
-                        if (['P', 'T', 'C', 'A'].includes(s)) {
-                            if (turnoFiltro === 'todos' || turnoFiltro == tIdx) statusDoDia.add(s);
+                        
+                        // Filtro de turno: se for 'todos' ou se o índice do bloco bater com o selecionado
+                        if (turnoFiltro === 'todos' || turnoFiltro == tIdx) {
+                            if (['P', 'T', 'C', 'A'].includes(s)) statusEncontrado.add(s);
                         }
                     });
 
-                    let finalS = 'F';
-                    if (statusDoDia.has('A')) finalS = 'A';
-                    else if (statusDoDia.has('C')) finalS = 'C';
-                    else if (statusDoDia.has('P')) finalS = 'P';
-                    else if (statusDoDia.has('T')) finalS = 'T';
+                    let statusFinal = 'F';
+                    if (statusEncontrado.has('A')) statusFinal = 'A';
+                    else if (statusEncontrado.has('C')) statusFinal = 'C';
+                    else if (statusEncontrado.has('P')) statusFinal = 'P';
+                    else if (statusEncontrado.has('T')) statusFinal = 'T';
 
-                    semanal[finalS][d]++;
-                    if (d === diaFiltro) nomesNoDia[finalS].push(nome.trim());
+                    semanal[statusFinal][d]++;
+                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
             });
 
-            document.getElementById('stat-total').innerText = Object.keys(database).length;
-            ['p', 't', 'c', 'a', 'f'].forEach(k => {
-                const U = k.toUpperCase();
-                document.getElementById(`stat-${k}`).innerText = semanal[U][diaFiltro];
-                document.getElementById(`count-${k}`).innerText = `(${nomesNoDia[U].length})`;
-                document.getElementById(`list-${k}`).innerHTML = nomesNoDia[U].sort().map(n => `<li>${n}</li>`).join('') || '<li>-</li>';
+            document.getElementById('stat-total').innerText = servidoresValidos.length;
+            ['P', 'T', 'C', 'A', 'F'].forEach(k => {
+                const keyLow = k.toLowerCase();
+                document.getElementById(`stat-${keyLow}`).innerText = semanal[k][diaFiltro];
+                document.getElementById(`count-${keyLow}`).innerText = `(${nomesNoDia[k].length})`;
+                document.getElementById(`list-${keyLow}`).innerHTML = nomesNoDia[k].length 
+                    ? nomesNoDia[k].sort().map(n => `<li>${n}</li>`).join('') 
+                    : '<li>-</li>';
             });
 
             renderCharts(semanal, diaFiltro);
@@ -259,27 +271,26 @@
         function renderCharts(vol, diaSel) {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const textCol = isDark ? '#f1f5f9' : '#475569';
-            // Cores baseadas na escala
-            const colors = ['#10b981', '#34495e', '#f1c40f', '#ef4444', '#64748b'];
+            const cores = ['#10b981', '#34495e', '#f1c40f', '#ef4444', '#64748b'];
 
             if (charts.pizza) charts.pizza.destroy();
             if (charts.bar) charts.bar.destroy();
 
             charts.pizza = new Chart(document.getElementById('chartPizzaHoje'), {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
-                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Inativo'],
+                    labels: ['Presencial', 'Teletrabalho', 'Chefia', 'Afastado', 'Fora do Turno'],
                     datasets: [{
                         data: [vol.P[diaSel], vol.T[diaSel], vol.C[diaSel], vol.A[diaSel], vol.F[diaSel]],
-                        backgroundColor: colors,
+                        backgroundColor: cores,
                         borderWidth: 0
                     }]
                 },
                 options: { 
                     maintainAspectRatio: false, 
                     plugins: { 
-                        legend: { position: 'bottom', labels: { color: textCol, font: { weight: 'bold' } } },
-                        title: { display: true, text: 'DISTRIBUIÇÃO NO DIA SELECIONADO', color: textCol, font: { size: 14, weight: '900' } }
+                        legend: { position: 'bottom', labels: { color: textCol } },
+                        title: { display: true, text: 'VISÃO DIÁRIA', color: textCol }
                     } 
                 }
             });
@@ -287,24 +298,21 @@
             charts.bar = new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
-                    labels: ['SEG', 'TER', 'QUA', 'QUI', 'SEX'],
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
                     datasets: [
-                        { label: 'Presencial', data: vol.P, backgroundColor: colors[0] },
-                        { label: 'Teletrabalho', data: vol.T, backgroundColor: colors[1] },
-                        { label: 'Chefia', data: vol.C, backgroundColor: colors[2] },
-                        { label: 'Afastado', data: vol.A, backgroundColor: colors[3] }
+                        { label: 'Presencial', data: vol.P, backgroundColor: cores[0] },
+                        { label: 'Teletrabalho', data: vol.T, backgroundColor: cores[1] },
+                        { label: 'Chefia', data: vol.C, backgroundColor: cores[2] },
+                        { label: 'Afastado', data: vol.A, backgroundColor: cores[3] }
                     ]
                 },
                 options: { 
                     maintainAspectRatio: false, 
                     scales: { 
-                        x: { stacked: true, ticks: { color: textCol, font: { weight: 'bold' } } }, 
+                        x: { stacked: true, ticks: { color: textCol } }, 
                         y: { stacked: true, ticks: { color: textCol } } 
                     },
-                    plugins: { 
-                        legend: { position: 'bottom', labels: { color: textCol } },
-                        title: { display: true, text: 'OCUPAÇÃO SEMANAL ACUMULADA', color: textCol, font: { size: 14, weight: '900' } }
-                    } 
+                    plugins: { legend: { position: 'bottom', labels: { color: textCol } } } 
                 }
             });
         }
