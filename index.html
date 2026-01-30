@@ -36,6 +36,14 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
         }
 
+        /* NOVO BOTÃO TABELA */
+        .btn-tabela {
+            position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px;
+            border-radius: 50%; background: #6366f1; color: white;
+            text-decoration: none; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+        }
+
         #theme-toggle {
             position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
             border-radius: 50%; background: var(--cor-primaria); color: white;
@@ -58,9 +66,17 @@
             margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
+        
+        /* Ajuste solicitado: Legendas Quadradas */
         .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
+        .legenda-item .status-badge { 
+            border-radius: 8px !important; /* Quadrado combinando com os horários */
+            width: 24px !important; 
+            height: 24px !important; 
+            font-size: 0.8rem !important;
+        }
 
-        /* CABEÇALHO DO SETOR EM DUAS GRIDS */
+        /* CABEÇALHO DO SETOR */
         .setor-container { 
             width: 100%; max-width: 950px; background: var(--bg-card); 
             border-radius: 16px; overflow: hidden; margin-bottom: 35px;
@@ -88,7 +104,7 @@
         .bg-setor-2 { background-color: #6b21a8; } .bg-email-2 { background-color: #f3e8ff; color: #6b21a8; }
         .bg-setor-3 { background-color: #9a3412; } .bg-email-3 { background-color: #ffedd5; color: #9a3412; }
 
-        /* SERVIDORES - RESTAURANDO ALINHAMENTO ORIGINAL */
+        /* SERVIDORES */
         .servidor-item { 
             display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
             padding: 20px; transition: background 0.2s;
@@ -137,12 +153,16 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
     </a>
 
+    <a href="tabelahorarios.html" class="btn-tabela" title="Ver Tabela de Horários">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+    </a>
+
     <button id="theme-toggle"><svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
 
     <div class="header-container">
         <h1 class="titulo-pagina">Escala dos Servidores Técnicos Administrativos em Educação (TAE)</h1>
-        <h2 class="titulo-pagina">Campus Capanema</h2></h1>
-        <div id="data-atualizacao">Sincronizando dados...</div>
+        <h2 class="titulo-pagina">Campus Capanema</h2>
+        <div id="data-atualizacao" style="font-weight: bold; margin-top: 10px; color: var(--texto-secundario);">Sincronizando dados...</div>
     </div>
 
     <div id="mes-area" class="mes-bloco"></div>
@@ -195,10 +215,10 @@
                 const legArea = document.getElementById('legenda-area');
                 legArea.style.display = 'flex';
                 legArea.innerHTML = `
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:22px;height:22px;font-size:0.8rem">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:22px;height:22px;font-size:0.8rem">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:22px;height:22px;font-size:0.8rem">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:22px;height:22px;font-size:0.8rem">A</span> Afastado</div>`;
+                    <div class="legenda-item"><span class="status-badge p-presencial">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado">A</span> Afastado</div>`;
 
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
@@ -268,7 +288,12 @@
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
-                document.getElementById('data-atualizacao').innerText = `Sincronizado: ${new Date().toLocaleTimeString()}`;
+
+                // ATUALIZAÇÃO DA DATA E HORA DE SINCRONIZAÇÃO
+                const agora = new Date();
+                const dataF = agora.toLocaleDateString('pt-BR');
+                const horaF = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${dataF} às ${horaF}`;
 
             } catch (e) {
                 document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar dados.</div>";
