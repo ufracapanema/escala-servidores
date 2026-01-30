@@ -8,11 +8,9 @@
         :root {
             --cor-primaria: #3b82f6;
             --cor-graficos: #10b981;
-            --cor-tabela: #6366f1;
             --bg-body: #f1f5f9;
             --bg-card: white;
             --texto: #1e293b;
-            --texto-secundario: #64748b;
             --border-color: #e2e8f0;
             --header-bg: #34495e;
         }
@@ -21,7 +19,6 @@
             --bg-body: #0f172a;
             --bg-card: #1e293b;
             --texto: #f1f5f9;
-            --texto-secundario: #94a3b8;
             --border-color: #334155;
             --header-bg: #1e293b;
         }
@@ -69,17 +66,15 @@
             text-align: center;
         }
 
-        /* ESTILO DO SUBTITULO DE SETOR */
+        /* CABEÇALHO DO SETOR COM COR DINÂMICA */
         .grid-setor-row {
             grid-column: 1 / -1;
-            background: var(--cor-primaria);
-            color: white;
-            padding: 8px 20px;
+            padding: 10px 20px;
             font-weight: 900;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            display: flex;
-            justify-content: space-between;
+            color: white;
+            letter-spacing: 1px;
         }
 
         .grid-item {
@@ -88,24 +83,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
         .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 30px; }
-        .grid-item.total { background: var(--bg-body); font-weight: 900; color: var(--cor-primaria); }
+        .grid-item.total { background: rgba(0,0,0,0.02); font-weight: 900; color: var(--cor-primaria); }
 
-        /* LINHA DE SOMA DO SETOR */
+        /* LINHA DE SUBTOTAL */
         .grid-soma-setor {
             grid-column: 1 / -1;
             display: grid;
             grid-template-columns: 2fr repeat(3, 1.2fr) 1fr;
-            background: rgba(59, 130, 246, 0.05);
-            border-bottom: 2px solid var(--cor-primaria);
+            background: rgba(0,0,0,0.04);
+            border-bottom: 2px solid #cbd5e1;
         }
-        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.85rem; text-align: center; color: var(--cor-primaria); }
+        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.8rem; text-align: center; color: var(--texto); }
 
-        .grid-footer { display: contents; }
         .footer-item {
             background: var(--header-bg);
             color: white;
@@ -116,8 +110,7 @@
         }
 
         @media (max-width: 600px) {
-            .grid-escala { grid-template-columns: 1.5fr repeat(3, 1fr) 0.8fr; font-size: 0.7rem; }
-            .grid-header, .grid-item, .footer-item { padding: 8px 4px; font-size: 0.75rem; }
+            .grid-escala { grid-template-columns: 1.5fr repeat(3, 1fr) 0.8fr; }
             .grid-item.nome { padding-left: 10px; }
         }
     </style>
@@ -152,13 +145,15 @@
 
             <div id="grid-corpo" style="display: contents;"></div>
 
-            <div class="grid-footer" id="grid-rodape"></div>
+            <div id="grid-rodape" style="display: contents;"></div>
         </div>
     </div>
 
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-    let database = {};
+    
+    // Paleta de cores para os setores
+    const CORES_SETORES = ['#2563eb', '#7c3aed', '#db2777', '#059669', '#d97706', '#475569', '#be185d'];
 
     const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
     const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
@@ -171,8 +166,7 @@
 
     setTheme(localStorage.getItem('theme') || 'light');
     document.getElementById('theme-toggle').addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        setTheme(isDark ? 'light' : 'dark');
+        setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
 
     function formatarH(decimal) {
@@ -202,36 +196,35 @@
             const data = await response.json();
             const rows = data.slice(1);
             
-            database = {};
+            let database = {};
             for (let i = 0; i < rows.length; i += 3) {
                 const nome = rows[i] ? rows[i][2]?.trim() : null;
-                const setor = rows[i] ? rows[i][0]?.trim() || "OUTROS" : "OUTROS";
+                const setor = rows[i] ? rows[i][0]?.trim() || "DIVERSOS" : "DIVERSOS";
                 if (nome && !nome.includes('@')) {
                     if (!database[setor]) database[setor] = {};
                     database[setor][nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
             }
-            processar();
+            processar(database);
         } catch (e) {
             document.getElementById('loading').innerText = "❌ Erro ao carregar dados.";
         }
     }
 
-    function processar() {
+    function processar(db) {
         let html = "";
         let totalGeralM = 0, totalGeralT = 0, totalGeralN = 0;
-        
-        const setoresSorted = Object.keys(database).sort();
+        const setoresSorted = Object.keys(db).sort();
 
-        setoresSorted.forEach(setor => {
+        setoresSorted.forEach((setor, index) => {
             let setorM = 0, setorT = 0, setorN = 0;
             let temServidorAtivo = false;
-            let setorHtml = `<div class="grid-setor-row"><span>SETOR: ${setor}</span></div>`;
             let servidoresHtml = "";
+            const corSetor = CORES_SETORES[index % CORES_SETORES.length];
 
-            const nomes = Object.keys(database[setor]).sort();
+            const nomes = Object.keys(db[setor]).sort();
             nomes.forEach(n => {
-                const b = database[setor][n];
+                const b = db[setor][n];
                 const hStrM = b[0] ? b[0][3]?.toString() : "";
                 const hStrT = b[1] ? b[1][3]?.toString() : "";
                 const hStrN = b[2] ? b[2][3]?.toString() : "";
@@ -256,13 +249,15 @@
 
             if (temServidorAtivo) {
                 totalGeralM += setorM; totalGeralT += setorT; totalGeralN += setorN;
-                html += setorHtml + servidoresHtml + `
+                html += `
+                    <div class="grid-setor-row" style="background:${corSetor}">${setor}</div>
+                    ${servidoresHtml}
                     <div class="grid-soma-setor">
-                        <div class="item-soma" style="text-align:left; padding-left:20px">Σ TOTAL ${setor}</div>
+                        <div class="item-soma" style="text-align:left; padding-left:20px; color:${corSetor}">SUBTOTAL</div>
                         <div class="item-soma">${formatarH(setorM)}</div>
                         <div class="item-soma">${formatarH(setorT)}</div>
                         <div class="item-soma">${formatarH(setorN)}</div>
-                        <div class="item-soma" style="background:rgba(59,130,246,0.1)">${formatarH(setorM + setorT + setorN)}</div>
+                        <div class="item-soma" style="font-weight:900">${formatarH(setorM + setorT + setorN)}</div>
                     </div>
                 `;
             }
@@ -270,7 +265,7 @@
 
         document.getElementById('grid-corpo').innerHTML = html;
         document.getElementById('grid-rodape').innerHTML = `
-            <div class="footer-item" style="text-align:left; padding-left:20px">TOTAIS GERAIS (CAMPUS)</div>
+            <div class="footer-item" style="text-align:left; padding-left:20px">TOTAIS GERAIS</div>
             <div class="footer-item">${formatarH(totalGeralM)}</div>
             <div class="footer-item">${formatarH(totalGeralT)}</div>
             <div class="footer-item">${formatarH(totalGeralN)}</div>
