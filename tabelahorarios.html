@@ -3,24 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escalas</title>
-    <link rel="stylesheet" href="estilo.css">
-    
+    <title>Tabela de Horários - TAE</title>
+    <style>
+        :root {
+            --cor-primaria: #3b82f6;
+            --cor-graficos: #10b981;
+            --cor-tabela: #6366f1;
+            --bg-body: #f1f5f9;
+            --bg-card: white;
+            --texto: #1e293b;
+            --texto-secundario: #64748b;
+            --border-color: #e2e8f0;
+            --header-bg: #34495e;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --texto: #f1f5f9;
+            --texto-secundario: #94a3b8;
+            --border-color: #334155;
+            --header-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--texto);
+            margin: 0;
+            padding: 20px;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÕES FLUTUANTES */
+        .btn-flutuante {
+            position: fixed; bottom: 20px; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; border: none; cursor: pointer;
+        }
+        .btn-voltar { left: 20px; background: #64748b; color: white; }
+        .btn-graficos { left: 80px; background: var(--cor-graficos); color: white; }
+        #theme-toggle { right: 20px; background: var(--cor-primaria); color: white; }
+
+        /* HEADER */
+        .header-container { text-align: center; margin-bottom: 30px; width: 100%; max-width: 1000px; }
+        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.5rem; font-weight: 900; }
+        #loading { font-weight: bold; margin-top: 10px; color: var(--cor-primaria); }
+
+        /* GRID DA TABELA */
+        .container { width: 100%; max-width: 1000px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        .grid-escala {
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1.2fr) 1fr;
+            width: 100%;
+        }
+
+        .grid-header {
+            background: var(--header-bg);
+            color: white;
+            padding: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .grid-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); }
+        .grid-item.total { background: var(--bg-body); font-weight: 900; color: var(--cor-primaria); }
+
+        /* RODAPÉ TOTAIS */
+        .grid-footer { display: contents; }
+        .footer-item {
+            background: var(--header-bg);
+            color: white;
+            padding: 15px;
+            font-weight: 900;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid-escala { grid-template-columns: 1.5fr repeat(3, 1fr) 0.8fr; font-size: 0.7rem; }
+            .grid-header, .grid-item, .footer-item { padding: 8px 4px; font-size: 0.75rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <a href="index.html" class="btn-voltar btn-flutuante" title="Voltar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></a>
+    <a href="index.html" class="btn-voltar btn-flutuante" title="Início">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    </a>
 
-    <button id="theme-toggle" class="btn-flutuante"><svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
+    <a href="graficos.html" class="btn-graficos btn-flutuante" title="Ver Gráficos">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+    </a>
 
-        <div class="header-container">
-        <h1 class="titulo-pagina">Tabela de Horarios de Atendimento Servidores Técnicos Administrativos em Educação (TAE)</h1>
-        <h2 class="titulo-pagina">Campus Capanema</h2>
-        <div id="loading">Sincronizando dados...</div>
+    <button id="theme-toggle" class="btn-flutuante">
+        <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+    </button>
+
+    <div class="header-container">
+        <h1 class="titulo-pagina">Tabela de Carga Horária Diária</h1>
+        <h2 class="titulo-pagina" style="font-size: 1.1rem; opacity: 0.8;">Campus Capanema</h2>
+        <div id="loading">⚡ Sincronizando dados da nuvem...</div>
     </div>
 
     <div class="container">
-  
         <div id="grade-container" class="grid-escala" style="display: none;">
             <div class="grid-header" style="text-align:left; padding-left:20px">Servidor</div>
             <div class="grid-header">Manhã</div>
@@ -38,22 +140,24 @@
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
     let database = {};
 
-    // Alternar Tema Escuro
-    const btnTheme = document.getElementById('theme-toggle');
-    btnTheme.addEventListener('click', () => {
-        const doc = document.documentElement;
-        const novoTema = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        doc.setAttribute('data-theme', novoTema);
-        localStorage.setItem('theme', novoTema);
-    });
+    // Configuração de Ícones e Tema
+    const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
+    const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
 
-    // Carregar preferência de tema
-    if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('theme-icon').innerHTML = theme === 'dark' ? sunIcon : moonIcon;
+        localStorage.setItem('theme', theme);
     }
 
+    setTheme(localStorage.getItem('theme') || 'light');
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(isDark ? 'light' : 'dark');
+    });
+
     function formatarH(decimal) {
-        if (decimal === 0) return "-";
+        if (!decimal || decimal === 0) return "-";
         const h = Math.floor(decimal);
         const m = Math.round((decimal - h) * 60);
         return m === 0 ? h + "h" : h + "h " + m + "m";
@@ -85,17 +189,13 @@
                     database[nome] = [rows[i], rows[i+1], rows[i+2]];
                 }
             }
-
-            const hoje = new Date().getDay();
-            const diaIndice = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
-            processar(diaIndice);
-
+            processar();
         } catch (e) {
-            document.getElementById('loading').innerText = "Erro ao carregar os dados.";
+            document.getElementById('loading').innerText = "❌ Erro ao carregar dados.";
         }
     }
 
-    function processar(dia) {
+    function processar() {
         let html = "";
         let sM = 0, sT = 0, sN = 0;
         const nomes = Object.keys(database).sort();
@@ -129,7 +229,7 @@
             <div class="footer-item">${formatarH(sM)}</div>
             <div class="footer-item">${formatarH(sT)}</div>
             <div class="footer-item">${formatarH(sN)}</div>
-            <div class="footer-item" style="background:var(--primaria)">${formatarH(sM + sT + sN)}</div>
+            <div class="footer-item" style="background:var(--cor-primaria)">${formatarH(sM + sT + sN)}</div>
         `;
 
         document.getElementById('loading').style.display = 'none';
