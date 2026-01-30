@@ -66,15 +66,16 @@
             text-align: center;
         }
 
-        /* CABEÇALHO DO SETOR COM COR DINÂMICA */
+        /* CABEÇALHO DO SETOR */
         .grid-setor-row {
             grid-column: 1 / -1;
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-weight: 900;
             font-size: 0.85rem;
             text-transform: uppercase;
             color: white;
             letter-spacing: 1px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
         .grid-item {
@@ -90,15 +91,15 @@
         .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 30px; }
         .grid-item.total { background: rgba(0,0,0,0.02); font-weight: 900; color: var(--cor-primaria); }
 
-        /* LINHA DE SUBTOTAL */
+        /* LINHA DE SUBTOTAL (Restaurada para o estilo original do prompt anterior) */
         .grid-soma-setor {
             grid-column: 1 / -1;
             display: grid;
             grid-template-columns: 2fr repeat(3, 1.2fr) 1fr;
-            background: rgba(0,0,0,0.04);
-            border-bottom: 2px solid #cbd5e1;
+            background: rgba(59, 130, 246, 0.05); /* Cor original do subtotal */
+            border-bottom: 2px solid var(--cor-primaria);
         }
-        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.8rem; text-align: center; color: var(--texto); }
+        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.8rem; text-align: center; color: var(--cor-primaria); }
 
         .footer-item {
             background: var(--header-bg);
@@ -152,8 +153,16 @@
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
     
-    // Paleta de cores para os setores
-    const CORES_SETORES = ['#2563eb', '#7c3aed', '#db2777', '#059669', '#d97706', '#475569', '#be185d'];
+    // Paleta oficial extraída do portal de escala servidores
+    const CORES_SETORES = [
+        '#2c3e50', // Marinho
+        '#16a085', // Verde Água
+        '#2980b9', // Azul Royal
+        '#8e44ad', // Roxo
+        '#27ae60', // Verde Esmeralda
+        '#f39c12', // Laranja
+        '#7f8c8d'  // Cinza
+    ];
 
     const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
     const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
@@ -253,7 +262,7 @@
                     <div class="grid-setor-row" style="background:${corSetor}">${setor}</div>
                     ${servidoresHtml}
                     <div class="grid-soma-setor">
-                        <div class="item-soma" style="text-align:left; padding-left:20px; color:${corSetor}">SUBTOTAL</div>
+                        <div class="item-soma" style="text-align:left; padding-left:20px">SUBTOTAL</div>
                         <div class="item-soma">${formatarH(setorM)}</div>
                         <div class="item-soma">${formatarH(setorT)}</div>
                         <div class="item-soma">${formatarH(setorN)}</div>
