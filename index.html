@@ -98,11 +98,9 @@
             display: flex; align-items: center; gap: 8px;
         }
 
-        /* CORES DO SETOR */
-        .bg-setor-0 { background-color: #1e40af; } .bg-email-0 { background-color: #dbeafe; color: #1e40af; } 
-        .bg-setor-1 { background-color: #065f46; } .bg-email-1 { background-color: #d1fae5; color: #065f46; }
-        .bg-setor-2 { background-color: #6b21a8; } .bg-email-2 { background-color: #f3e8ff; color: #6b21a8; }
-        .bg-setor-3 { background-color: #9a3412; } .bg-email-3 { background-color: #ffedd5; color: #9a3412; }
+        /* CORES DO SETOR - Removidas as classes fixas para usar a lógica dinâmica */
+        .setor-grid-nome { background-color: var(--cor-setor); }
+        .setor-grid-email { background-color: var(--cor-email-bg); color: var(--cor-setor); }
 
         /* SERVIDORES */
         .servidor-item { 
@@ -235,9 +233,19 @@
                 }
 
                 let htmlFinal = '';
-                Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
+                const setoresArray = Object.keys(setoresMap).sort();
+                
+                setoresArray.forEach((setor, sIdx) => {
                     let servidoresHtml = '';
-                    const colorIdx = sIdx % 4;
+                    
+                    // LÓGICA DINÂMICA DE CORES: Gera tons diferentes para cada setor
+                    // Distribuímos os 360 graus do círculo cromático pelo número de setores
+                    const hue = (sIdx * (360 / (setoresArray.length || 1))) % 360;
+                    const corSetor = `hsl(${hue}, 70%, 35%)`; // Cor forte para o cabeçalho
+                    const corEmailBg = `hsl(${hue}, 80%, 95%)`; // Tom muito claro para o fundo do email
+                    
+                    // Aplica as cores via variável CSS inline para o container do setor
+                    const estiloCores = `style="--cor-setor: ${corSetor}; --cor-email-bg: ${corEmailBg};"`;
 
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => {
@@ -275,10 +283,10 @@
                     });
 
                     htmlFinal += `
-                        <div class="setor-container">
-                            <div class="setor-grid-nome bg-setor-${colorIdx}">${setor}</div>
+                        <div class="setor-container" ${estiloCores}>
+                            <div class="setor-grid-nome">${setor}</div>
                             ${infoSetores[setor] ? `
-                            <div class="setor-grid-email bg-email-${colorIdx}">
+                            <div class="setor-grid-email">
                                 <a href="mailto:${infoSetores[setor]}" class="setor-email-link" style="color: inherit;">
                                     ${iconEmail} <span>${infoSetores[setor]}</span>
                                 </a>
@@ -286,7 +294,6 @@
                             <div>${servidoresHtml}</div>
                         </div>`;
                 });
-
                 document.getElementById('conteudo').innerHTML = htmlFinal;
 
                 // ATUALIZAÇÃO DA DATA E HORA DE SINCRONIZAÇÃO
