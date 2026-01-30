@@ -150,10 +150,24 @@
                 const data = await response.json();
                 const rows = data.slice(1);
                 for (let i = 0; i < rows.length; i += 3) {
-                    const nome = rows[i] ? rows[i][2] : null;
+                    const nome = rows[i] ? rows[i][2]?.trim() : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
-                        database[nome] = blocos;
+                        
+                        // Lógica de filtragem: garante que o servidor só entre no DB se tiver algo útil
+                        const temHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
+                        const temLetra = blocos.some(l => {
+                            if(!l) return false;
+                            for(let d=0; d<5; d++) {
+                                let s = l[6+d]?.toString().toUpperCase().trim();
+                                if(['P','T','C','A'].includes(s)) return true;
+                            }
+                            return false;
+                        });
+
+                        if (temHorario || temLetra) {
+                            database[nome] = blocos;
+                        }
                     }
                 }
                 document.getElementById('timestamp').innerText = `Atualizado: ${new Date().toLocaleTimeString()}`;
@@ -175,15 +189,13 @@
 
             Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
-                
-                // Checa se está afastado em qualquer turno do dia d
                 const isAfastadoNoDia = (d) => blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
 
                 for (let d = 0; d < 5; d++) {
                     let statusFinal = 'F';
                     
                     if (isAfastadoNoDia(d)) {
-                        statusFinal = 'A'; // Afastado ganha prioridade total em todos os turnos
+                        statusFinal = 'A'; 
                     } else {
                         let statusEncontrado = new Set();
                         blocos.forEach((linha, tIdx) => {
