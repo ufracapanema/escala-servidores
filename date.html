@@ -6,113 +6,205 @@
     <title>Escala de Trabalho Oficial</title>
     <style>
         :root {
-            --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; 
+            --cor-c: #f1c40f; 
+            --cor-t: #34495e; 
+            --cor-p: #10b981; 
+            --cor-a: #ef4444; 
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
             --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
-            --texto-secundario: #64748b; --border-color: #e2e8f0; --bg-turno: #f8fafc;
+            --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
         }
+
         [data-theme="dark"] {
             --bg-body: #0f172a; --bg-card: #1e293b; --texto-principal: #f1f5f9;
-            --texto-secundario: #94a3b8; --border-color: #334155; --bg-turno: #0f172a;
+            --texto-secundario: #94a3b8; --border-color: #334155; --bg-turno: #1e293b;
+            --brilho-hoje: #172554; --borda-hoje: #3b82f6;
         }
 
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-body); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--texto-principal); transition: 0.3s; }
-        
-        .filtro-container { background: var(--bg-card); padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--border-color); }
-        .filtro-container input { padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--texto-principal); font-weight: 600; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-body); margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; color: var(--texto-principal);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* BOTÕES FIXOS */
+        .btn-dashboard {
+            position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
+            border-radius: 50%; background: #10b981; color: white;
+            text-decoration: none; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+        }
+
+        .btn-tabela {
+            position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px;
+            border-radius: 50%; background: #6366f1; color: white;
+            text-decoration: none; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;
+        }
+
+        #theme-toggle {
+            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+            border-radius: 50%; background: var(--cor-primaria); color: white;
+            border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
 
         .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
-        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.4rem; font-weight: 900; }
+        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
         
-        .mes-bloco { margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
-        .mes-titulo { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; }
+        .mes-bloco { 
+            margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none;
+        }
+        .mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 
-        .setor-container { width: 100%; max-width: 950px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-        .setor-grid-nome { padding: 15px; text-align: center; color: white; font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
-        .setor-grid-email { padding: 8px; text-align: center; font-size: 0.9rem; font-weight: 600; }
-
-        .servidor-item { display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color); padding: 20px; gap: 15px; }
-        @media (min-width: 768px) { .servidor-item { grid-template-columns: 280px 1fr; align-items: center; } }
+        .legenda-bloco { 
+            display: none; flex-wrap: wrap; justify-content: center; gap: 20px; 
+            margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
         
-        .servidor-nome { font-size: 1.15rem; font-weight: 800; color: var(--texto-principal); margin-bottom: 5px; display: block; }
-        .contato-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
+        .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; color: var(--texto-principal); }
+        .legenda-item .status-badge { 
+            border-radius: 8px !important; 
+            width: 24px !important; 
+            height: 24px !important; 
+            font-size: 0.8rem !important;
+        }
 
-        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; }
-        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
-        .m-bg { background: #e0f2fe; color: #0369a1; } .t-bg { background: #fef3c7; color: #92400e; } .n-bg { background: #ede9fe; color: #5b21b6; }
-        .turno-hora { font-size: 0.7rem; font-weight: 700; color: var(--texto-secundario); display: block; text-align: center; margin-top: 3px; }
+        .setor-container { 
+            width: 100%; max-width: 950px; background: var(--bg-card); 
+            border-radius: 16px; overflow: hidden; margin-bottom: 35px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
 
-        .dias-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .dia-numero { font-size: 1rem; font-weight: 900; }
-        .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; }
-        .status-badge { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; color: white; }
-        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); border-radius: 8px; }
+        .setor-grid-nome { 
+            padding: 20px; text-align: center; color: white; 
+            font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+        }
 
-        /* Estilo da mensagem interna */
-        .msg-sem-expediente { grid-column: span 5; text-align: center; color: var(--cor-a); font-weight: 800; font-size: 0.95rem; text-transform: uppercase; padding: 10px; border: 1px dashed var(--cor-a); border-radius: 8px; background: rgba(239, 68, 68, 0.05); }
+        .setor-grid-email { 
+            padding: 12px; text-align: center;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .setor-email-link { 
+            font-size: 1rem; font-weight: 700; text-decoration: none; 
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .bg-setor-0 { background-color: #1e40af; } .bg-email-0 { background-color: #dbeafe; color: #1e40af; } 
+        .bg-setor-1 { background-color: #065f46; } .bg-email-1 { background-color: #d1fae5; color: #065f46; }
+        .bg-setor-2 { background-color: #6b21a8; } .bg-email-2 { background-color: #f3e8ff; color: #6b21a8; }
+        .bg-setor-3 { background-color: #9a3412; } .bg-email-3 { background-color: #ffedd5; color: #9a3412; }
+
+        .servidor-item { 
+            display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--border-color);
+            padding: 20px; transition: background 0.2s;
+        }
+        @media (min-width: 768px) { .servidor-item { grid-template-columns: 320px 1fr; align-items: center; } }
+
+        .servidor-nome { font-size: 1.25rem; font-weight: 800; color: var(--texto-principal); margin: 0 0 6px 0; display: block; }
+        .contato-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem; font-weight: 600; margin-top: 6px; }
+
+        .turno-linha { 
+            display: grid; grid-template-columns: 85px 1fr; align-items: center;
+            background: var(--bg-turno); padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px;
+        }
+        .turno-info { display: flex; flex-direction: column; text-align: center; justify-content: center; min-height: 45px; }
+        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; }
+        .m-bg { background: #e0f2fe; color: #0369a1; }
+        .t-bg { background: #fef3c7; color: #92400e; }
+        .n-bg { background: #ede9fe; color: #5b21b6; }
+        .a-bg { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; } 
+        .turno-hora { font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario); margin-top: 3px; }
+
+        /* Alterado para 7 colunas para caber a semana toda */
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border-radius: 8px; }
+        .dia-numero { font-size: 1.1rem; font-weight: 900; color: var(--texto-principal); line-height: 1; }
+        .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 4px; }
+        
+        .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white; }
+        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); }
 
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
         .a-afastado { background-color: var(--cor-a); }
-        .vazio { background-color: #cbd5e1; color: #64748b; }
+        .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
-        .loader { padding: 50px; text-align: center; font-weight: bold; }
+        .loader-container { padding: 80px; text-align: center; width: 100%; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
+    <a href="graficos.html" class="btn-dashboard" title="Ver Gráficos">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+    </a>
+
+    <a href="tabelahorarios.html" class="btn-tabela" title="Ver Tabela de Horários">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+    </a>
+
+    <button id="theme-toggle"><svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
+
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala dos Servidores - Campus Capanema</h1>
-        <div id="data-atualizacao" style="margin-top: 5px; font-size: 0.9rem; color: var(--texto-secundario);">Sincronizando...</div>
+        <h1 class="titulo-pagina">Escala dos Servidores Técnicos Administrativos em Educação (TAE)</h1>
+        <h2 class="titulo-pagina">Campus Capanema</h2>
+        <div id="data-atualizacao" style="font-weight: bold; margin-top: 10px; color: var(--texto-secundario);">Sincronizando dados...</div>
     </div>
 
-    <div class="filtro-container">
-        <label>📅 Testar Data:</label>
-        <input type="date" id="data-teste">
-    </div>
-
-    <div id="mes-area" class="mes-bloco" style="display:none"></div>
+    <div id="mes-area" class="mes-bloco"></div>
+    <div id="legenda-area" class="legenda-bloco"></div>
 
     <div id="conteudo" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="loader">CARREGANDO ESCALA...</div>
+        <div class="loader-container"><div class="spinner"></div><div style="color:var(--texto-secundario); font-weight:700">CARREGANDO...</div></div>
     </div>
 
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
-        function obterConfiguracaoSemana(dataBase = new Date()) {
-            const hoje = new Date(dataBase);
-            hoje.setMinutes(hoje.getMinutes() + hoje.getTimezoneOffset());
+        const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
+        const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
+        const iconEmail = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+        const iconZap = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+        function formatarZap(num) {
+            const l = ('' + num).replace(/\D/g, '');
+            return l.length >= 10 ? `(${l.substring(0,2)}) ${l.length===11?l.substring(2,7):l.substring(2,6)}-${l.length===11?l.substring(7):l.substring(6)}` : num;
+        }
+
+        // FUNÇÃO ATUALIZADA PARA DOMINGO E SÁBADO
+        function obterConfiguracaoSemana() {
+            const hoje = new Date();
             const diaDaSemana = hoje.getDay(); 
+            const diffDomingo = hoje.getDate() - diaDaSemana;
+            
+            let dias = []; 
+            let meses = new Set();
+            const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
 
-            // Mesmo no FDS, calculamos a semana para mostrar os números dos dias (opcional)
-            // ou apenas retornamos o status de FDS
-            const isFDS = (diaDaSemana === 0 || diaDaSemana === 6);
-            const nomeDiaFDS = diaDaSemana === 0 ? "Dom" : "Sab";
-            const diaNumeroFDS = hoje.getDate().toString().padStart(2, '0');
-
-            const diffSegunda = hoje.getDate() - diaDaSemana + (diaDaSemana === 0 ? -6 : 1);
-            let dias = []; let meses = new Set();
-            for (let i = 0; i < 5; i++) {
-                const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffSegunda + i);
-                dias.push({ numero: d.getDate().toString().padStart(2, '0'), sigla: ['SEG', 'TER', 'QUA', 'QUI', 'SEX'][i] });
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffDomingo + i);
+                dias.push({ 
+                    numero: d.getDate().toString().padStart(2, '0'), 
+                    sigla: siglas[i] 
+                });
                 meses.add(d.toLocaleDateString('pt-BR', { month: 'long' }));
             }
-
             return { 
-                isFDS, 
-                mensagemFDS: `No dia ${diaNumeroFDS} ${nomeDiaFDS}, não há expediente.`,
                 dias, 
-                texto: Array.from(meses).join(' / ').toUpperCase() + " " + hoje.getFullYear(),
-                diaSelecionado: hoje.getDate()
+                texto: Array.from(meses).join(' / ').toUpperCase() + " " + hoje.getFullYear() 
             };
         }
 
-        async function carregarDados(dataParaTeste = new Date()) {
-            const config = obterConfiguracaoSemana(dataParaTeste);
-            const conteudoDiv = document.getElementById('conteudo');
+        async function carregarDados() {
+            const config = obterConfiguracaoSemana();
+            const hojeIdx = new Date().getDay(); // 0 (Dom) a 6 (Sáb)
             
             try {
                 const res = await fetch(url);
@@ -124,6 +216,14 @@
                 document.getElementById('mes-area').style.display = 'block';
                 document.getElementById('mes-area').innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
 
+                const legArea = document.getElementById('legenda-area');
+                legArea.style.display = 'flex';
+                legArea.innerHTML = `
+                    <div class="legenda-item"><span class="status-badge p-presencial">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado">A</span> Afastado</div>`;
+
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
@@ -132,12 +232,13 @@
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
-                        if (linha && (linha[3] || linha.slice(6,11).some(d => d && d !== '-'))) {
+                        if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
+                            // linha.slice(6, 13) pega os 7 dias se estiverem na planilha
                             serv.turnos.push({ 
                                 label: idx===0?'Manhã':idx===1?'Tarde':'Noite', 
                                 class: idx===0?'m-bg':idx===1?'t-bg':'n-bg', 
                                 hora: linha[3], 
-                                dias: linha.slice(6, 11) 
+                                dias: linha.slice(6, 13) 
                             });
                         }
                     });
@@ -147,36 +248,29 @@
                 let htmlFinal = '';
                 Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servidoresHtml = '';
-                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
-                        
-                        let turnosHtml = serv.turnos.map(t => {
-                            let gridConteudo = '';
-                            
-                            if (config.isFDS) {
-                                // Se for FIM DE SEMANA, mostra a mensagem no lugar da grade
-                                gridConteudo = `<div class="msg-sem-expediente">${config.mensagemFDS}</div>`;
-                            } else {
-                                // Se for dia útil, mostra os dias normalmente
-                                gridConteudo = config.dias.map((info, dIdx) => {
-                                    const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
-                                    const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':'vazio';
-                                    const ehHoje = parseInt(info.numero) === config.diaSelecionado;
-                                    return `
-                                        <div class="dia-col ${ehHoje ? 'dia-hoje' : ''}">
-                                            <span class="dia-sigla">${info.sigla}</span>
-                                            <span class="dia-numero">${info.numero}</span>
-                                            <span class="status-badge ${cl}">${st}</span>
-                                        </div>`;
-                                }).join('');
-                            }
+                    const colorIdx = sIdx % 4;
 
+                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
+                        let turnosHtml = serv.turnos.map(t => {
+                            const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
                             return `
                             <div class="turno-linha">
                                 <div class="turno-info">
-                                    <span class="turno-badge ${t.class}">${t.label}</span>
-                                    <span class="turno-hora">${t.hora || '--:--'}</span>
+                                    <span class="turno-badge ${estaAfastado ? 'a-bg' : t.class}">${estaAfastado ? 'AFASTADO' : t.label}</span>
+                                    ${!estaAfastado ? `<span class="turno-hora">${t.hora || '--:--'}</span>` : ''}
                                 </div>
-                                <div class="dias-grid">${gridConteudo}</div>
+                                <div class="dias-grid">
+                                    ${config.dias.map((info, dIdx) => {
+                                        const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
+                                        const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':'vazio';
+                                        return `
+                                            <div class="dia-col ${dIdx===hojeIdx?'dia-hoje':''}">
+                                                <span class="dia-numero">${info.numero}</span>
+                                                <span class="dia-sigla">${info.sigla}</span>
+                                                <span class="status-badge ${cl}">${st}</span>
+                                            </div>`;
+                                    }).join('')}
+                                </div>
                             </div>`;
                         }).join('');
 
@@ -184,32 +278,48 @@
                             <div class="servidor-item">
                                 <div class="servidor-perfil">
                                     <span class="servidor-nome">${serv.nome}</span>
-                                    <a href="mailto:${serv.email}" class="contato-item" style="color:#3b82f6;">📧 ${serv.email}</a>
-                                    ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" target="_blank" class="contato-item" style="color:#10b981;">💬 WhatsApp</a>` : ''}
+                                    <a href="mailto:${serv.email}" class="contato-item" style="color:#3b82f6;">${iconEmail} ${serv.email}</a>
+                                    ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" target="_blank" class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
                                 </div>
-                                <div>${turnosHtml}</div>
+                                <div class="escala-wrapper">${turnosHtml}</div>
                             </div>`;
                     });
 
                     htmlFinal += `
                         <div class="setor-container">
-                            <div class="setor-grid-nome bg-setor-${sIdx%4}">${setor}</div>
-                            ${infoSetores[setor] ? `<div class="setor-grid-email bg-email-${sIdx%4}">📧 Setor: ${infoSetores[setor]}</div>` : ''}
+                            <div class="setor-grid-nome bg-setor-${colorIdx}">${setor}</div>
+                            ${infoSetores[setor] ? `
+                            <div class="setor-grid-email bg-email-${colorIdx}">
+                                <a href="mailto:${infoSetores[setor]}" class="setor-email-link" style="color: inherit;">
+                                    ${iconEmail} <span>${infoSetores[setor]}</span>
+                                </a>
+                            </div>` : ''}
                             <div>${servidoresHtml}</div>
                         </div>`;
                 });
 
-                conteudoDiv.innerHTML = htmlFinal;
-                document.getElementById('data-atualizacao').innerText = `Data base: ${dataParaTeste.toLocaleDateString('pt-BR')}`;
+                document.getElementById('conteudo').innerHTML = htmlFinal;
+
+                const agora = new Date();
+                const dataF = agora.toLocaleDateString('pt-BR');
+                const horaF = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${dataF} às ${horaF}`;
 
             } catch (e) {
-                conteudoDiv.innerHTML = "<div class='loader' style='color:red'>Erro ao carregar escala.</div>";
+                document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar dados.</div>";
             }
         }
 
-        document.getElementById('data-teste').addEventListener('change', (e) => carregarDados(new Date(e.target.value)));
-        const inputData = document.getElementById('data-teste');
-        inputData.value = new Date().toISOString().split('T')[0];
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            themeIcon.innerHTML = t === 'dark' ? sunIcon : moonIcon;
+            localStorage.setItem('theme', t);
+        }
+        setTheme(localStorage.getItem('theme') || 'light');
+        themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+
         carregarDados();
     </script>
 </body>
