@@ -138,6 +138,55 @@
         .loader-container { padding: 80px; text-align: center; width: 100%; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* AJUSTE PARA RESPONSIVIDADE MOBILE (7 DIAS) */
+@media (max-width: 600px) {
+    body {
+        padding: 10px; /* Reduz margem lateral do corpo */
+    }
+
+    .setor-container {
+        margin-bottom: 20px;
+    }
+
+    .turno-linha {
+        grid-template-columns: 60px 1fr; /* Reduz largura da coluna Manhã/Tarde */
+        padding: 8px 4px;
+        gap: 4px;
+    }
+
+    .turno-badge {
+        font-size: 0.55rem;
+        padding: 2px 4px;
+    }
+
+    .dias-grid {
+        gap: 3px; /* Espaço mínimo entre os dias */
+    }
+
+    .dia-numero {
+        font-size: 0.9rem;
+    }
+
+    .dia-sigla {
+        font-size: 0.5rem;
+    }
+
+    .status-badge {
+        width: 28px; /* Reduz de 36px para 28px para caber os 7 */
+        height: 28px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+
+    .servidor-item {
+        padding: 15px 10px;
+    }
+
+    .servidor-nome {
+        font-size: 1.1rem;
+    }
+}
     </style>
 </head>
 <body>
