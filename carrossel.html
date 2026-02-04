@@ -8,6 +8,7 @@
         :root {
             --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; --cor-d: #64748b;
             --cor-primaria: #2563eb; --bg-body: #0f172a; --bg-card: #ffffff;
+            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; /* Cores do destaque de hoje */
             --texto-principal: #1e293b; --texto-secundario: #64748b;
             --border-color: #e2e8f0; --bg-turno: #f8fafc;
         }
@@ -50,7 +51,8 @@
         .a-bg { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; }
 
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 5px 2px; border-radius: 8px; }
+        .dia-col.hoje { background-color: var(--brilho-hoje); border: 2px solid var(--borda-hoje); transform: scale(1.05); }
         .dia-numero { font-size: 1.1rem; font-weight: 900; color: #1e293b; line-height: 1; }
         .dia-sigla { font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
         .status-badge { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: white; }
@@ -59,13 +61,11 @@
         .c-chefia { background-color: var(--cor-c); color: #000; } .a-afastado { background-color: var(--cor-a); }
         .d-descanso { background-color: var(--cor-d); } .vazio { background-color: #f1f5f9; color: #cbd5e1; }
 
-        /* RODAPÉ E LEGENDAS */
         .footer-tv { background: #0f172a; padding: 15px 30px; color: white; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .legenda-container { display: flex; gap: 15px; }
-        .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 700; }
+        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; }
         .legenda-item .status-badge { width: 24px; height: 24px; font-size: 0.75rem; border-radius: 5px; }
 
-        /* BARRA DE PROGRESSO */
         #progress-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 8px; background: rgba(255,255,255,0.1); z-index: 1000; }
         #progress-bar { height: 100%; background: #60a5fa; width: 0%; }
 
@@ -103,12 +103,17 @@
 
         function obterConfiguracaoSemana() {
             const hoje = new Date();
-            const diffDomingo = hoje.getDate() - hoje.getDay();
+            const diaSemanaAtual = hoje.getDay();
+            const diffDomingo = hoje.getDate() - diaSemanaAtual;
             let dias = []; let meses = new Set();
             const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
             for (let i = 0; i < 7; i++) {
                 const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffDomingo + i);
-                dias.push({ numero: d.getDate().toString().padStart(2, '0'), sigla: siglas[i] });
+                dias.push({ 
+                    numero: d.getDate().toString().padStart(2, '0'), 
+                    sigla: siglas[i],
+                    eHoje: (i === diaSemanaAtual) // Marca se é o dia de hoje
+                });
                 meses.add(d.toLocaleDateString('pt-BR', { month: 'long' }));
             }
             return { dias, texto: Array.from(meses).join(' / ').toUpperCase() + " " + hoje.getFullYear() };
@@ -147,33 +152,41 @@
                 }
 
                 let htmlFinal = '';
-                Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
-                    let servidoresHtml = '';
-                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
-                        let turnosHtml = serv.turnos.map(t => {
-                            const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
-                            return `<div class="turno-linha">
-                                <div class="turno-info"><div class="turno-badge ${estaAfastado ? 'a-bg' : t.class}">${estaAfastado ? 'AFASTADO' : t.label}</div><div style="font-size:0.7rem; font-weight:800; text-align:center;">${t.hora || '--:--'}</div></div>
-                                <div class="dias-grid">${config.dias.map((info, dIdx) => {
-                                    const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
-                                    const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':st==='D'?'d-descanso':'vazio';
-                                    return `<div class="dia-col"><span class="dia-numero">${info.numero}</span><span class="dia-sigla">${info.sigla}</span><span class="status-badge ${cl}">${st}</span></div>`;
-                                }).join('')}</div>
+                const listaSetoresOrdenada = Object.keys(setoresMap).sort();
+
+                listaSetoresOrdenada.forEach((setor, sIdx) => {
+                    const servidoresSetor = setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome));
+                    
+                    for (let i = 0; i < servidoresSetor.length; i += 2) {
+                        const grupoServidores = servidoresSetor.slice(i, i + 2);
+                        let servidoresHtml = '';
+
+                        grupoServidores.forEach(serv => {
+                            let turnosHtml = serv.turnos.map(t => {
+                                const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
+                                return `<div class="turno-linha">
+                                    <div class="turno-info"><div class="turno-badge ${estaAfastado ? 'a-bg' : t.class}">${estaAfastado ? 'AFASTADO' : t.label}</div><div style="font-size:0.7rem; font-weight:800; text-align:center;">${t.hora || '--:--'}</div></div>
+                                    <div class="dias-grid">${config.dias.map((info, dIdx) => {
+                                        const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
+                                        const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':st==='D'?'d-descanso':'vazio';
+                                        return `<div class="dia-col ${info.eHoje ? 'hoje' : ''}"><span class="dia-numero">${info.numero}</span><span class="dia-sigla">${info.sigla}</span><span class="status-badge ${cl}">${st}</span></div>`;
+                                    }).join('')}</div>
+                                </div>`;
+                            }).join('');
+
+                            servidoresHtml += `<div class="servidor-item">
+                                <div><span class="servidor-nome">${serv.nome}</span><div class="contato-item" style="color:#2563eb;">${iconEmail} ${serv.email}</div>
+                                ${serv.zap ? `<div class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</div>` : ''}</div>
+                                <div>${turnosHtml}</div>
                             </div>`;
-                        }).join('');
+                        });
 
-                        servidoresHtml += `<div class="servidor-item">
-                            <div><span class="servidor-nome">${serv.nome}</span><div class="contato-item" style="color:#2563eb;">${iconEmail} ${serv.email}</div>
-                            ${serv.zap ? `<div class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</div>` : ''}</div>
-                            <div>${turnosHtml}</div>
+                        htmlFinal += `<div class="setor-container">
+                            <div class="setor-grid-nome bg-setor-${sIdx%4}">${setor}</div>
+                            ${infoSetores[setor] ? `<div class="setor-grid-email bg-email-${sIdx%4}">${iconEmail} ${infoSetores[setor]}</div>` : ''}
+                            <div>${servidoresHtml}</div>
                         </div>`;
-                    });
-
-                    htmlFinal += `<div class="setor-container">
-                        <div class="setor-grid-nome bg-setor-${sIdx%4}">${setor}</div>
-                        ${infoSetores[setor] ? `<div class="setor-grid-email bg-email-${sIdx%4}">${iconEmail} ${infoSetores[setor]}</div>` : ''}
-                        <div>${servidoresHtml}</div>
-                    </div>`;
+                    }
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
@@ -193,7 +206,6 @@
                 cards.forEach(c => c.classList.remove('active'));
                 cards[idx].classList.add('active');
                 
-                // Reiniciar barra de progresso
                 bar.style.transition = 'none';
                 bar.style.width = '0%';
                 
