@@ -93,13 +93,11 @@
             <div class="filter-box">
                 <label><strong>2. Dia da Semana:</strong></label>
                 <select id="select-dia">
-                    <option value="0">Domingo</option>
-                    <option value="1">Segunda-feira</option>
-                    <option value="2">Terça-feira</option>
-                    <option value="3">Quarta-feira</option>
-                    <option value="4">Quinta-feira</option>
-                    <option value="5">Sexta-feira</option>
-                    <option value="6">Sábado</option>
+                    <option value="0">Segunda-feira</option>
+                    <option value="1">Terça-feira</option>
+                    <option value="2">Quarta-feira</option>
+                    <option value="3">Quinta-feira</option>
+                    <option value="4">Sexta-feira</option>
                 </select>
             </div>
         </div>
@@ -156,10 +154,11 @@
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
                         
+                        // Lógica de filtragem: garante que o servidor só entre no DB se tiver algo útil
                         const temHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
                         const temLetra = blocos.some(l => {
                             if(!l) return false;
-                            for(let d=0; d<7; d++) { // Aumentado para 7 dias
+                            for(let d=0; d<5; d++) {
                                 let s = l[6+d]?.toString().toUpperCase().trim();
                                 if(['P','T','C','A'].includes(s)) return true;
                             }
@@ -171,14 +170,9 @@
                         }
                     }
                 }
-
-                const agora = new Date();
-                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString('pt-BR')} às ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}:${agora.getSeconds().toString().padStart(2, '0')}`;
-                                
-                // Ajuste para pegar o dia correto (0=Dom, 6=Sáb)
+                document.getElementById('timestamp').innerText = `Atualizado: ${new Date().toLocaleTimeString()}`;
                 const hoje = new Date().getDay();
-                document.getElementById('select-dia').value = hoje;
-                
+                document.getElementById('select-dia').value = (hoje >= 1 && hoje <= 5) ? hoje - 1 : 0;
                 document.getElementById('select-turno').addEventListener('change', processar);
                 document.getElementById('select-dia').addEventListener('change', processar);
                 processar();
@@ -190,15 +184,14 @@
         function processar() {
             const turnoFiltro = document.getElementById('select-turno').value;
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            // Inicializa arrays com 7 posições
-            let semanal = { P:[0,0,0,0,0,0,0], T:[0,0,0,0,0,0,0], C:[0,0,0,0,0,0,0], A:[0,0,0,0,0,0,0], F:[0,0,0,0,0,0,0] };
+            let semanal = { P:[0,0,0,0,0], T:[0,0,0,0,0], C:[0,0,0,0,0], A:[0,0,0,0,0], F:[0,0,0,0,0] };
             let nomesNoDia = { P:[], T:[], C:[], A:[], F:[] };
 
             Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
                 const isAfastadoNoDia = (d) => blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
 
-                for (let d = 0; d < 7; d++) { // Loop de 7 dias
+                for (let d = 0; d < 5; d++) {
                     let statusFinal = 'F';
                     
                     if (isAfastadoNoDia(d)) {
@@ -254,7 +247,7 @@
             charts.bar = new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
-                    labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'], // Legendas atualizadas
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
                     datasets: [
                         { label: 'Presencial', data: vol.P, backgroundColor: cores[0] },
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: cores[1] },
