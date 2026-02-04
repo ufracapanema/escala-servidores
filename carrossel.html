@@ -5,78 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Escala TAE - Campus Capanema</title>
     <style>
-        :root {
-            --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; --cor-d: #94a3b8;
-            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
-            --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
-            --texto-secundario: #64748b; --border-color: #f1f5f9;
-            --m-bg: #e0f2fe; --m-text: #0369a1;
-            --t-bg: #fef3c7; --t-text: #92400e;
-            --n-bg: #ede9fe; --n-text: #5b21b6;
-        }
+    :root {
+        --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; --cor-d: #94a3b8;
+        --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
+        --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
+        --texto-secundario: #64748b; --border-color: #f1f5f9;
+        --m-bg: #e0f2fe; --m-text: #0369a1;
+        --t-bg: #fef3c7; --t-text: #92400e;
+        --n-bg: #ede9fe; --n-text: #5b21b6;
+    }
 
-        * { box-sizing: border-box; }
-        body, html { height: 100%; margin: 0; overflow: hidden; background-color: var(--bg-body); }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column; padding: 10px; color: var(--texto-principal); }
+    * { box-sizing: border-box; }
+    body, html { height: 100%; margin: 0; overflow: hidden; background-color: var(--bg-body); }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column; padding: 10px; color: var(--texto-principal); }
 
-        /* CABEÇALHO PRINCIPAL */
-        .header-main { text-align: center; margin-bottom: 5px; }
-        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
-        
-        .top-info-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 15px; margin-bottom: 10px; }
-        .mes-badge { background: var(--bg-card); padding: 8px 25px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    /* CABEÇALHO PRINCIPAL */
+    .header-main { text-align: center; margin-bottom: 5px; }
+    .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+    
+    .top-info-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 15px; margin-bottom: 10px; }
+    .mes-badge { background: var(--bg-card); padding: 8px 25px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        /* LEGENDAS COMPLETAS */
-        .legenda-bloco { display: flex; gap: 15px; background: var(--bg-card); padding: 10px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; }
-        .legenda-badge-min { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; }
+    /* LEGENDAS COMPLETAS */
+    .legenda-bloco { display: flex; gap: 15px; background: var(--bg-card); padding: 10px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; }
+    .legenda-badge-min { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: 900; }
 
-        /* SETORES E CORES DE CABEÇALHO */
-        #conteudo { flex: 1; display: flex; justify-content: center; width: 100%; }
-        .setor-container { display: none; width: 99vw; height: 100%; background: var(--bg-card); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 0.4s ease-out; }
-        .setor-container.active { display: flex; flex-direction: column; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* SETORES E CORES DE CABEÇALHO */
+    #conteudo { flex: 1; display: flex; justify-content: center; width: 100%; }
+    .setor-container { display: none; width: 99vw; height: 100%; background: var(--bg-card); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 0.4s ease-out; }
+    .setor-container.active { display: flex; flex-direction: column; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .setor-header { padding: 15px; text-align: center; color: white !important; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; }
-        .bg-setor-0 { background-color: #1e40af !important; } 
-        .bg-setor-1 { background-color: #065f46 !important; } 
-        .bg-setor-2 { background-color: #6b21a8 !important; } 
-        .bg-setor-3 { background-color: #9a3412 !important; }
+    .setor-header { padding: 15px; text-align: center; color: white !important; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; }
+    
+    /* CORES DINÂMICAS DOS SETORES */
+    .bg-setor-0 { background-color: #1e40af !important; } 
+    .bg-setor-1 { background-color: #065f46 !important; } 
+    .bg-setor-2 { background-color: #6b21a8 !important; } 
+    .bg-setor-3 { background-color: #9a3412 !important; }
 
-        .setor-email-info { padding: 8px; text-align: center; font-weight: 800; font-size: 1rem; border-bottom: 1px solid #eee; color: #2563eb; background: #f0f7ff; }
+    /* BARRA DE E-MAIL DO SETOR (PRETO) */
+    .setor-email-info { padding: 10px; text-align: center; font-weight: 800; font-size: 1.1rem; border-bottom: 1px solid #eee; color: #000000 !important; background: #f0f7ff; }
 
-        /* SERVIDORES E TURNOS */
-        .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid #edf2f7; padding: 15px 30px; align-items: center; }
-        .servidor-nome { font-size: 1.35rem; font-weight: 800; display: block; }
-        .contato-info { font-size: 0.85rem; font-weight: 700; color: #2563eb; margin-top: 4px; }
-        .whatsapp-info { color: #10b981 !important; }
+    /* SERVIDORES E TURNOS */
+    .servidor-item { display: grid; grid-template-columns: 350px 1fr; border-bottom: 1px solid #edf2f7; padding: 15px 30px; align-items: center; }
+    .servidor-nome { font-size: 1.5rem; font-weight: 800; display: block; margin-bottom: 5px; }
+    
+    /* CONTATOS AUMENTADOS */
+    .contato-info { font-size: 1.1rem; font-weight: 700; color: #2563eb; margin-top: 4px; }
+    .whatsapp-info { color: #10b981 !important; font-size: 1.2rem !important; }
 
-        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: #f8fafc; padding: 8px; border-radius: 12px; gap: 15px; margin-bottom: 6px; }
-        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 4px; border-radius: 5px; text-align: center; }
-        .m-bg { background-color: var(--m-bg); color: var(--m-text); }
-        .t-bg { background-color: var(--t-bg); color: var(--t-text); }
-        .n-bg { background-color: var(--n-bg); color: var(--n-text); }
+    /* TURNOS */
+    .turno-linha { display: grid; grid-template-columns: 95px 1fr; align-items: center; background: #f8fafc; padding: 10px; border-radius: 12px; gap: 15px; margin-bottom: 6px; }
+    .turno-badge { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; padding: 5px; border-radius: 5px; text-align: center; }
+    .m-bg { background-color: var(--m-bg); color: var(--m-text); }
+    .t-bg { background-color: var(--t-bg); color: var(--t-text); }
+    .n-bg { background-color: var(--n-bg); color: var(--n-text); }
+    
+    /* HORÁRIO DO TURNO AUMENTADO */
+    .turno-hora-texto { font-size: 1rem !important; font-weight: 900; text-align: center; margin-top: 5px; color: var(--texto-principal); }
 
-        /* GRID DIAS (ESTILO ORIGINAL) */
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 4px; border-radius: 10px; }
-        .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 2px; }
-        .dia-numero { font-size: 1.1rem; font-weight: 900; line-height: 1; }
-        
-        .status-badge { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.15rem; color: white; margin-top: 4px; }
-        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 3px var(--borda-hoje); z-index: 1; }
+    /* GRID DIAS (NÚMERO EM CIMA, SIGLA EMBAIXO) */
+    .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+    .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 5px; border-radius: 10px; }
+    
+    .dia-numero { font-size: 1.3rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+    .dia-sigla { font-size: 0.75rem; font-weight: 800; color: var(--texto-secundario); text-transform: uppercase; }
+    
+    .status-badge { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; color: white; margin-top: 6px; }
+    
+    /* DESTAQUE HOJE */
+    .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 4px var(--borda-hoje); z-index: 1; transform: scale(1.02); }
 
-        .c-chefia { background-color: var(--cor-c); color: #000; }
-        .p-presencial { background-color: var(--cor-p); }
-        .t-teletrabalho { background-color: var(--cor-t); }
-        .a-afastado { background-color: var(--cor-a); }
-        .d-descanso { background-color: var(--cor-d); }
-        .vazio { background-color: #e2e8f0; color: #94a3b8; }
+    /* CORES STATUS */
+    .c-chefia { background-color: var(--cor-c); color: #000; }
+    .p-presencial { background-color: var(--cor-p); }
+    .t-teletrabalho { background-color: var(--cor-t); }
+    .a-afastado { background-color: var(--cor-a); }
+    .d-descanso { background-color: var(--cor-d); }
+    .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .spinner { width: 80px; height: 80px; border: 8px solid #ddd; border-top: 8px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-    </style>
+    /* LOADER */
+    #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+    .spinner { width: 80px; height: 80px; border: 8px solid #ddd; border-top: 8px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
     <div id="loader"><div class="spinner"></div><h2 style="margin-top:20px; font-weight: 900;">ATUALIZANDO ESCALAS...</h2></div>
