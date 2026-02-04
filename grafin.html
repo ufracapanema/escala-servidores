@@ -171,9 +171,10 @@
                         }
                     }
                 }
-                
-                document.getElementById('timestamp').innerText = `Sincronizado: ${new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric'às hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
-                
+
+                const agora = new Date();
+                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString('pt-BR')} às ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}:${agora.getSeconds().toString().padStart(2, '0')}`;
+                                
                 // Ajuste para pegar o dia correto (0=Dom, 6=Sáb)
                 const hoje = new Date().getDay();
                 document.getElementById('select-dia').value = hoje;
