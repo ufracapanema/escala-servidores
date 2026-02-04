@@ -7,113 +7,112 @@
     <style>
         :root {
             --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; --cor-d: #94a3b8;
-            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
-            --bg-body: #0f172a; /* Fundo escuro para destacar a TV */
+            --cor-primaria: #2563eb;
+            --bg-body: #0f172a;
             --bg-card: #ffffff;
-            --texto-principal: #1e293b;
             --m-bg: #e0f2fe; --m-text: #0369a1;
             --t-bg: #fef3c7; --t-text: #92400e;
             --n-bg: #ede9fe; --n-text: #5b21b6;
         }
 
-        * { box-sizing: border-box; }
-        body, html { height: 100vh; margin: 0; overflow: hidden; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg-body); color: white; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { height: 100vh; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); color: white; }
 
-        /* HEADER E BARRA SUPERIOR */
-        .header-main { padding: 10px; text-align: center; background: rgba(255,255,255,0.05); }
-        .titulo-pagina { margin: 0; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        /* HEADER COMPACTO */
+        .header-main { padding: 8px; text-align: center; background: rgba(255,255,255,0.03); }
+        .titulo-pagina { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 
-        .top-info-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
-        .mes-badge { background: var(--cor-primaria); color: white; padding: 8px 20px; border-radius: 8px; font-weight: 900; font-size: 1.2rem; }
+        .top-info-bar { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px; }
+        .mes-badge { background: var(--cor-primaria); padding: 5px 15px; border-radius: 6px; font-weight: 800; font-size: 1rem; }
 
-        .legenda-bloco { display: flex; gap: 12px; background: white; padding: 10px; border-radius: 8px; color: #1e293b; }
-        .legenda-item { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; font-weight: 800; }
-        .leg-min { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; }
+        .legenda-bloco { display: flex; gap: 10px; background: white; padding: 6px 12px; border-radius: 6px; color: #1e293b; }
+        .legenda-item { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 800; }
+        .leg-min { width: 16px; height: 16px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; }
 
-        /* CONTAINER PRINCIPAL */
-        #conteudo { height: calc(100vh - 140px); display: flex; justify-content: center; padding: 0 15px 15px 15px; }
+        /* CONTAINER DINÂMICO */
+        #conteudo { height: calc(100vh - 110px); padding: 0 10px 10px; }
 
         .setor-container { 
             display: none; width: 100%; height: 100%; background: var(--bg-card); 
-            border-radius: 15px; overflow: hidden; flex-direction: column;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            animation: slideIn 0.5s ease;
+            border-radius: 12px; overflow: hidden; flex-direction: column;
+            animation: fadeIn 0.4s ease;
         }
         .setor-container.active { display: flex; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* CABEÇALHO DO SETOR */
-        .setor-header { padding: 15px; font-size: 2rem; font-weight: 900; text-align: center; text-transform: uppercase; color: white; }
+        .setor-header { padding: 10px; font-size: 1.6rem; font-weight: 900; text-align: center; color: white; text-transform: uppercase; }
         .bg-setor-0 { background: #1e40af; } .bg-setor-1 { background: #065f46; } .bg-setor-2 { background: #6b21a8; } .bg-setor-3 { background: #9a3412; }
 
-        .setor-email-info { background: #f8fafc; color: #000; text-align: center; padding: 8px; font-weight: 800; font-size: 1.1rem; border-bottom: 2px solid #e2e8f0; }
+        .setor-email-info { background: #f8fafc; color: #000; text-align: center; padding: 6px; font-weight: 800; font-size: 1rem; border-bottom: 1px solid #e2e8f0; }
 
-        /* GRID DE SERVIDORES */
-        .servidores-wrapper { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        /* GRID SERVIDORES COM AUTO-AJUSTE */
+        .servidores-wrapper { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start;
+        }
         
         .servidor-row { 
-            display: grid; grid-template-columns: 350px 1fr; 
-            border-bottom: 1px solid #e2e8f0; padding: 10px 20px; align-items: center;
-            color: var(--texto-principal);
+            display: grid; grid-template-columns: 280px 1fr; 
+            border-bottom: 1px solid #f1f5f9; padding: 6px 15px; align-items: center;
+            color: #1e293b; flex: 1; /* Faz as linhas dividirem o espaço igualmente */
         }
 
-        .servidor-info .nome { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin: 0; }
-        .servidor-info .email { color: #2563eb; font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
-        .servidor-info .zap { color: #10b981; font-size: 1.2rem; font-weight: 800; margin-top: 2px; }
+        .servidor-info .nome { font-size: 1.2rem; font-weight: 800; color: #0f172a; line-height: 1.1; }
+        .servidor-info .email { color: #2563eb; font-size: 0.9rem; font-weight: 700; margin-top: 2px; }
+        .servidor-info .zap { color: #10b981; font-size: 1rem; font-weight: 800; }
 
         /* TURNOS E CALENDÁRIO */
         .turno-box { 
-            display: grid; grid-template-columns: 100px 1fr; gap: 15px; 
-            background: #f1f5f9; margin: 5px 0; padding: 10px; border-radius: 10px; align-items: center;
+            display: grid; grid-template-columns: 85px 1fr; gap: 10px; 
+            background: #f8fafc; margin: 2px 0; padding: 4px 8px; border-radius: 8px; align-items: center;
         }
 
-        .turno-label { text-align: center; }
-        .badge { padding: 4px; border-radius: 4px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; display: block; }
-        .hora { font-size: 1rem; font-weight: 900; margin-top: 5px; display: block; color: #334155; }
+        /* Lógica para AFASTADOS: Esconde labels se for status 'A' */
+        .afastado-row { grid-template-columns: 1fr !important; background: #fff1f2; border: 1px solid #fecaca; }
+        .afastado-row .turno-label { display: none; }
 
-        /* DIAS INVERTIDOS */
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .dia-item { text-align: center; padding: 5px; border-radius: 8px; transition: 0.3s; }
-        .n-dia { font-size: 1.3rem; font-weight: 900; display: block; line-height: 1; }
-        .s-dia { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; }
+        .turno-label { text-align: center; border-right: 1px solid #e2e8f0; padding-right: 5px; }
+        .badge { padding: 2px; border-radius: 4px; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; }
+        .hora { font-size: 0.8rem; font-weight: 900; margin-top: 2px; color: #475569; }
+
+        /* DIAS (INVERTIDOS: NUMERO GRANDE CIMA) */
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; width: 100%; }
+        .dia-item { text-align: center; }
+        .n-dia { font-size: 1.1rem; font-weight: 900; color: #1e293b; display: block; }
+        .s-dia { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; }
         
         .status { 
-            width: 42px; height: 42px; margin: 5px auto 0; border-radius: 10px; 
+            width: 32px; height: 32px; margin: 2px auto 0; border-radius: 6px; 
             display: flex; align-items: center; justify-content: center; 
-            font-size: 1.2rem; font-weight: 900; color: white;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            font-size: 1rem; font-weight: 900; color: white;
         }
 
-        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 3px var(--borda-hoje); transform: scale(1.05); }
+        .dia-hoje { background: #fffde7; outline: 2px solid #f1c40f; border-radius: 6px; }
 
         /* STATUS COLORS */
-        .P { background: var(--cor-p); } .T { background: var(--cor-t); } .C { background: var(--cor-c); color: #000; } .A { background: var(--cor-a); } .D { background: var(--cor-d); }
-        .vazio { background: #cbd5e1; color: #94a3b8; }
+        .P { background: var(--cor-p); } .T { background: var(--cor-t); } .C { background: var(--cor-c); color: #000; } 
+        .A { background: var(--cor-a); } .D { background: var(--cor-d); }
+        .vazio { background: #e2e8f0; color: #cbd5e1; }
 
-        /* LOADER CENTRAL */
-        #loader { position: fixed; inset: 0; background: var(--bg-body); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
-        .spinner { width: 80px; height: 80px; border: 8px solid #1e293b; border-top-color: var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="spinner"></div><h2 style="margin-top:20px">SINCRONIZANDO PAINEL...</h2></div>
-
     <header class="header-main">
-        <h1 class="titulo-pagina">Monitoramento de Escala TAE - Campus Capanema</h1>
+        <h1 class="titulo-pagina">Escala TAE - Campus Capanema</h1>
     </header>
 
     <div class="top-info-bar">
-        <div id="mes-area" class="mes-badge">CARREGANDO...</div>
+        <div id="mes-area" class="mes-badge">--</div>
         <div class="legenda-bloco">
             <div class="legenda-item"><div class="leg-min P">P</div> Presencial</div>
             <div class="legenda-item"><div class="leg-min T">T</div> Teletrabalho</div>
             <div class="legenda-item"><div class="leg-min C">C</div> Chefia</div>
             <div class="legenda-item"><div class="leg-min A">A</div> Afastado</div>
-            <div class="legenda-item"><div class="leg-min D">D</div> Descanso</div>
         </div>
-        <div id="data-atualizacao" style="font-weight: 800; font-size: 0.9rem; opacity: 0.8;">--:--:--</div>
+        <div id="data-atualizacao" style="font-size: 0.8rem; opacity: 0.7;">--</div>
     </div>
 
     <main id="conteudo"></main>
@@ -121,12 +120,6 @@
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         let indiceSetor = 0;
-        let timerCarrossel;
-
-        function formatarZap(n) {
-            const l = ('' + n).replace(/\D/g, '');
-            return l.length >= 10 ? `(${l.substring(0,2)}) ${l.length===11?l.substring(2,7):l.substring(2,6)}-${l.length===11?l.substring(7):l.substring(6)}` : n;
-        }
 
         async function buscarDados() {
             const hoje = new Date();
@@ -149,7 +142,7 @@
                     const l = linhas[i];
                     if (!l || !l[0]) continue;
                     const setor = l[0].trim();
-                    if (!setoresMap[setor]) setoresMap[setor] = { email: l[1], servidores: [] };
+                    if (!setoresMap[setor]) setoresMap[setor] = { email: l[1], servs: [] };
                     
                     const serv = { nome: l[2], email: l[4], zap: l[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((lin, idx) => {
@@ -162,15 +155,19 @@
                             });
                         }
                     });
-                    setoresMap[setor].servidores.push(serv);
+                    setoresMap[setor].servs.push(serv);
                 }
 
                 let html = '';
                 Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servHtml = '';
-                    setoresMap[setor].servidores.forEach(serv => {
-                        let turnosHtml = serv.turnos.map(t => `
-                            <div class="turno-box">
+                    setoresMap[setor].servs.forEach(serv => {
+                        let turnosHtml = serv.turnos.map(t => {
+                            // Verifica se é uma linha de AFASTADO (A) para simplificar o layout
+                            const isAfastadoGeral = t.dias.every(d => d === 'A');
+                            
+                            return `
+                            <div class="turno-box ${isAfastadoGeral ? 'afastado-row' : ''}">
                                 <div class="turno-label">
                                     <span class="badge ${t.classe}">${t.label}</span>
                                     <span class="hora">${t.hora || '--'}</span>
@@ -178,22 +175,22 @@
                                 <div class="dias-grid">
                                     ${t.dias.map((st, dIdx) => {
                                         const status = st ? st.toString().toUpperCase() : '-';
-                                        const isHoje = dIdx === hojeIdx;
-                                        return `<div class="dia-item ${isHoje?'dia-hoje':''}">
+                                        return `<div class="dia-item ${dIdx===hojeIdx?'dia-hoje':''}">
                                             <span class="n-dia">${diasSemana[dIdx].num}</span>
                                             <span class="s-dia">${diasSemana[dIdx].sigla}</span>
                                             <div class="status ${status!==' ' && status!=='-' ? status : 'vazio'}">${status!==' ' ? status : '-'}</div>
                                         </div>`;
                                     }).join('')}
                                 </div>
-                            </div>`).join('');
+                            </div>`;
+                        }).join('');
 
                         servHtml += `
                         <div class="servidor-row">
                             <div class="servidor-info">
                                 <p class="nome">${serv.nome}</p>
                                 <p class="email">${serv.email}</p>
-                                ${serv.zap ? `<p class="zap">${formatarZap(serv.zap)}</p>` : ''}
+                                ${serv.zap ? `<p class="zap">${serv.zap}</p>` : ''}
                             </div>
                             <div class="turnos-wrapper">${turnosHtml}</div>
                         </div>`;
@@ -209,16 +206,13 @@
 
                 document.getElementById('mes-area').innerText = hoje.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase();
                 document.getElementById('conteudo').innerHTML = html;
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('data-atualizacao').innerText = `Última Sincronização: ${new Date().toLocaleTimeString()}`;
                 iniciarCarrossel();
-            } catch (e) { console.error("Erro:", e); }
+            } catch (e) { console.error(e); }
         }
 
         function iniciarCarrossel() {
             const c = document.querySelectorAll('.setor-container');
             if (c.length === 0) return;
-            if (timerCarrossel) clearInterval(timerCarrossel);
             const alternar = () => {
                 c.forEach(el => el.classList.remove('active'));
                 if (indiceSetor >= c.length) indiceSetor = 0;
@@ -226,11 +220,10 @@
                 indiceSetor++;
             };
             alternar();
-            timerCarrossel = setInterval(alternar, 12000); 
+            setInterval(alternar, 12000); 
         }
 
         buscarDados();
-        setInterval(buscarDados, 600000);
     </script>
 </body>
 </html>
