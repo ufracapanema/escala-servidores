@@ -29,6 +29,20 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        /* ANIMAÇÃO PARA O CARROSSEL */
+        .setor-container { 
+            display: none; /* Escondido por padrão, o JS mostrará um por vez */
+            animation: fadeIn 0.8s;
+            width: 100%; max-width: 950px; background: var(--bg-card); 
+            border-radius: 16px; overflow: hidden; margin-bottom: 35px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* BOTÕES FIXOS */
         .btn-dashboard {
             position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px;
@@ -72,12 +86,6 @@
             width: 24px !important; 
             height: 24px !important; 
             font-size: 0.8rem !important;
-        }
-
-        .setor-container { 
-            width: 100%; max-width: 950px; background: var(--bg-card); 
-            border-radius: 16px; overflow: hidden; margin-bottom: 35px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         .setor-grid-nome { 
@@ -133,25 +141,25 @@
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
         .a-afastado { background-color: var(--cor-a); }
-        .d-descanso { background-color: var(--cor-d); } /* Nova classe CSS */
+        .d-descanso { background-color: var(--cor-d); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
         .loader-container { padding: 80px; text-align: center; width: 100%; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-@media (max-width: 600px) {
-    body { padding: 10px; }
-    .setor-container { margin-bottom: 20px; }
-    .turno-linha { grid-template-columns: 60px 1fr; padding: 8px 4px; gap: 4px; }
-    .turno-badge { font-size: 0.55rem; padding: 2px 4px; }
-    .dias-grid { gap: 3px; }
-    .dia-numero { font-size: 0.9rem; }
-    .dia-sigla { font-size: 0.5rem; }
-    .status-badge { width: 28px; height: 28px; font-size: 0.9rem; border-radius: 6px; }
-    .servidor-item { padding: 15px 10px; }
-    .servidor-nome { font-size: 1.1rem; }
-}
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .setor-container { margin-bottom: 20px; }
+            .turno-linha { grid-template-columns: 60px 1fr; padding: 8px 4px; gap: 4px; }
+            .turno-badge { font-size: 0.55rem; padding: 2px 4px; }
+            .dias-grid { gap: 3px; }
+            .dia-numero { font-size: 0.9rem; }
+            .dia-sigla { font-size: 0.5rem; }
+            .status-badge { width: 28px; height: 28px; font-size: 0.9rem; border-radius: 6px; }
+            .servidor-item { padding: 15px 10px; }
+            .servidor-nome { font-size: 1.1rem; }
+        }
     </style>
 </head>
 <body>
@@ -215,6 +223,27 @@
             };
         }
 
+        // --- NOVA FUNÇÃO DO CARROSSEL ---
+        let carrosselInterval;
+        function iniciarCarrossel() {
+            const setores = document.querySelectorAll('.setor-container');
+            if (setores.length === 0) return;
+
+            let indiceAtual = 0;
+            
+            // Função para trocar o setor
+            const proximoSetor = () => {
+                setores.forEach(s => s.style.display = 'none'); // Esconde todos
+                setores[indiceAtual].style.display = 'block';   // Mostra o atual
+                indiceAtual = (indiceAtual + 1) % setores.length;
+            };
+
+            // Limpa intervalo anterior se existir e inicia novo
+            if(carrosselInterval) clearInterval(carrosselInterval);
+            proximoSetor(); 
+            carrosselInterval = setInterval(proximoSetor, 12000); // 12 segundos
+        }
+
         async function carregarDados() {
             const config = obterConfiguracaoSemana();
             const hojeIdx = new Date().getDay();
@@ -231,7 +260,6 @@
 
                 const legArea = document.getElementById('legenda-area');
                 legArea.style.display = 'flex';
-                // LEGENDA ATUALIZADA AQUI:
                 legArea.innerHTML = `
                     <div class="legenda-item"><span class="status-badge p-presencial">P</span> Presencial</div>
                     <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> Teletrabalho</div>
@@ -276,7 +304,6 @@
                                 <div class="dias-grid">
                                     ${config.dias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
-                                        // LÓGICA DE CLASSE ATUALIZADA AQUI:
                                         const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':st==='D'?'d-descanso':'vazio';
                                         return `
                                             <div class="dia-col ${dIdx===hojeIdx?'dia-hoje':''}">
@@ -320,6 +347,9 @@
                 const horaF = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${dataF} às ${horaF}`;
 
+                // Ativa o carrossel após carregar os elementos no DOM
+                iniciarCarrossel();
+
             } catch (e) {
                 document.getElementById('conteudo').innerHTML = "<div class='loader-container' style='color:red'>Erro ao carregar dados.</div>";
             }
@@ -335,7 +365,14 @@
         setTheme(localStorage.getItem('theme') || 'light');
         themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 
+        // Execução inicial
         carregarDados();
+
+        // --- ATUALIZAÇÃO AUTOMÁTICA DA PÁGINA (10 MINUTOS) ---
+        setTimeout(() => {
+            window.location.reload();
+        }, 600000); // 10 * 60 * 1000ms
+
     </script>
 </body>
 </html>
