@@ -16,7 +16,6 @@
             --border: #1e293b; --ufra: #22c55e; --hoje: #1e1b4b;
         }
 
-        /* Status Pills */
         .p-presencial { background: #10b981; color: #fff; }
         .t-teletrabalho { background: #3b82f6; color: #fff; }
         .c-chefia { background: #f59e0b; color: #000; }
@@ -24,91 +23,74 @@
         .d-descanso { background: #64748b; color: #fff; }
         .vazio { background: var(--border); color: var(--sub); opacity: 0.3; }
 
-        .m-bg { border-left: 5px solid #0ea5e9; }
-        .t-bg { border-left: 5px solid #f97316; }
-        .n-bg { border-left: 5px solid #8b5cf6; }
-        .a-bg { border-left: 5px solid #ef4444; }
+        .m-bg { border-left: 6px solid #0ea5e9; }
+        .t-bg { border-left: 6px solid #f97316; }
+        .n-bg { border-left: 6px solid #8b5cf6; }
+        .a-bg { border-left: 6px solid #ef4444; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         .main-header { background: var(--card); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; }
-        .header-left h1 { font-weight: 800; font-size: 1.1rem; color: var(--ufra); }
-        
         .setor-info-banner { background: linear-gradient(90deg, var(--ufra), #064e3b); color: white; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .setor-grid-nome { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
-        .setor-grid-email { background: #fff; color: #000; padding: 6px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-
-        /* AJUSTE PARA NÃO CORTAR: O conteudo agora ocupa o espaço restante e permite scroll */
-        #conteudo { flex: 1; padding: 0 40px; overflow: hidden; position: relative; }
         
+        #conteudo { flex: 1; padding: 0 40px; overflow: hidden; }
         .setor-container { display: none; flex-direction: column; height: 100%; }
         .setor-container.active { display: flex; animation: slideUp 0.4s ease-out; }
 
-        /* Área com Scrollbar customizada */
-        .scrollable-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 0 40px 0;
-            scrollbar-width: thin;
-            scrollbar-color: var(--ufra) transparent;
-        }
-
-        .scrollable-list::-webkit-scrollbar { width: 6px; }
-        .scrollable-list::-webkit-scrollbar-thumb { background-color: var(--ufra); border-radius: 10px; }
-
-        .col-labels {
-            display: grid;
-            grid-template-columns: 3fr 7fr; 
-            padding: 20px 10px 10px 10px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: var(--sub);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: sticky; /* Mantém os nomes das colunas fixos ao rolar */
-            top: 0;
-            background: var(--bg);
-            z-index: 5;
-        }
-
+        /* Grid Master: 25% | 75% (Onde o 75 se divide em 15/60 internamente) */
         .servidor-item { 
             display: grid; 
-            grid-template-columns: 3fr 7fr; 
-            background: var(--card);
+            grid-template-columns: 25fr 75fr; 
+            background: var(--card); 
             border-radius: 12px; 
             border: 1px solid var(--border); 
-            margin-bottom: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            margin-bottom: 12px; 
+            overflow: hidden; 
         }
 
-        .servidor-perfil { padding: 20px 25px; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.01); border-right: 1px solid var(--border); }
-        .servidor-nome { font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+        .servidor-perfil { 
+            padding: 20px; 
+            border-right: 1px solid var(--border); 
+            background: rgba(0,0,0,0.01); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+        }
+
+        .servidor-nome { font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 8px; }
         .contato-item { font-size: 1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; margin-top: 5px; opacity: 0.9; }
 
-        .escala-wrapper { display: flex; flex-direction: column; background: var(--card); }
-        .turno-linha { display: grid; grid-template-columns: 100px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .turnos-container { display: flex; flex-direction: column; }
+        
+        /* Grid para as linhas de turno: 15fr (Horário) e 60fr (Escala) */
+        .turno-linha { 
+            display: grid; 
+            grid-template-columns: 15fr 60fr; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border);
+        }
         .turno-linha:last-child { border-bottom: none; }
 
-        .turno-info { text-align: center; border-right: 1px solid var(--border); }
-        .turno-badge { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
-        .turno-hora { font-size: 0.85rem; font-weight: 700; display: block; }
+        .turno-info { text-align: center; padding: 12px; border-right: 1px solid var(--border); background: rgba(0,0,0,0.02); }
+        .turno-badge { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--sub); display: block; }
+        .turno-hora { font-size: 1.1rem; font-weight: 800; color: var(--text); display: block; margin-top: 2px; }
 
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding: 0 20px; }
-        .dia-col { text-align: center; padding: 5px; }
-        .dia-numero { font-size: 1.2rem; font-weight: 800; display: block; line-height: 1; }
-        .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--sub); text-transform: uppercase; }
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 0 15px; }
+        .dia-col { text-align: center; padding: 4px; }
+        .dia-numero { font-size: 1.1rem; font-weight: 800; display: block; }
+        .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--sub); text-transform: uppercase; }
+        .status-badge { width: 38px; height: 38px; border-radius: 10px; margin: 4px auto; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
         
-        .status-badge { 
-            width: 36px; height: 36px; border-radius: 10px; margin: 6px auto; 
-            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;
-        }
+        .dia-hoje { background: var(--hoje); border-radius: 8px; }
 
-        .dia-hoje { background: var(--hoje); border-radius: 10px; }
+        .scrollable-list { flex: 1; overflow-y: hidden; padding-bottom: 50px; scroll-behavior: smooth; }
+        .col-labels { display: grid; grid-template-columns: 25fr 15fr 60fr; padding: 20px 10px 10px; font-size: 0.7rem; font-weight: 800; color: var(--sub); text-transform: uppercase; letter-spacing: 1px; }
 
+        .setor-grid-nome { font-size: 2rem; font-weight: 800; }
+        .setor-grid-email { background: #fff; color: #000; padding: 6px 15px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
         #legenda-area { display: flex; gap: 15px; }
-        .legenda-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--sub); }
+        .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: var(--sub); }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -117,7 +99,7 @@
 
     <header class="main-header">
         <div class="header-left">
-            <h1>UFRA • CAMPUS CAPANEMA</h1>
+            <h1 style="color:var(--ufra); font-weight:800; font-size:1.1rem;">UFRA • CAMPUS CAPANEMA</h1>
             <div id="data-atualizacao" style="font-size: 0.7rem; font-weight: 700; color: var(--sub);">Sincronizando...</div>
         </div>
         <div id="legenda-area"></div>
@@ -130,7 +112,6 @@
     <main id="conteudo"></main>
 
     <script>
-        // SCRIPTS MANTIDOS INTEGRALMENTE
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
         const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
@@ -192,12 +173,13 @@
                 Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servidoresHtml = '';
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
+                        
                         let turnosHtml = serv.turnos.map(t => {
                             const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
                             return `<div class="turno-linha ${estaAfastado ? 'a-bg' : t.class}">
                                 <div class="turno-info">
                                     <span class="turno-badge">${estaAfastado ? 'Afastado' : t.label}</span>
-                                    ${!estaAfastado ? `<span class="turno-hora">${t.hora || '--:--'}</span>` : ''}
+                                    <span class="turno-hora">${estaAfastado ? '--:--' : (t.hora || '--:--')}</span>
                                 </div>
                                 <div class="dias-grid">
                                     ${config.dias.map((info, dIdx) => {
@@ -219,7 +201,7 @@
                                 <a href="mailto:${serv.email}" class="contato-item" style="color:#3b82f6;">${iconEmail} ${serv.email}</a>
                                 ${serv.zap ? `<a class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
                             </div>
-                            <div class="escala-wrapper">${turnosHtml}</div>
+                            <div class="turnos-container">${turnosHtml}</div>
                         </div>`;
                     });
 
@@ -230,7 +212,8 @@
                         </div>
                         <div class="col-labels">
                             <div>Servidor / Contatos</div>
-                            <div>Escala de Trabalho Semanal</div>
+                            <div style="text-align:center">Horários</div>
+                            <div style="text-align:center">Escala Semanal</div>
                         </div>
                         <div class="scrollable-list">
                             ${servidoresHtml}
@@ -249,7 +232,16 @@
             const mostrar = () => {
                 document.querySelectorAll('.setor-container').forEach(el => el.classList.remove('active'));
                 const prox = document.getElementById(`setor-${setorAtual}`);
-                if(prox) prox.classList.add('active');
+                if(prox) {
+                    prox.classList.add('active');
+                    const listArea = prox.querySelector('.scrollable-list');
+                    if (listArea) {
+                        listArea.scrollTop = 0;
+                        setTimeout(() => {
+                            listArea.scrollTo({ top: listArea.scrollHeight, behavior: 'smooth' });
+                        }, 3000); 
+                    }
+                }
                 setorAtual = (setorAtual + 1) % total;
             };
             mostrar();
@@ -266,6 +258,7 @@
         setTheme(localStorage.getItem('theme') || 'light');
         themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
         carregarDados();
+        setTimeout(() => { window.location.reload(); }, 600000);
     </script>
 </body>
 </html>
