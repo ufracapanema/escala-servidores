@@ -9,8 +9,7 @@
             --cor-c: #f1c40f; --cor-t: #34495e; --cor-p: #10b981; --cor-a: #ef4444; --cor-d: #94a3b8;
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
             --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
-            --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
-            /* Cores dos Turnos */
+            --texto-secundario: #64748b; --border-color: #f1f5f9;
             --m-bg: #e0f2fe; --m-text: #0369a1;
             --t-bg: #fef3c7; --t-text: #92400e;
             --n-bg: #ede9fe; --n-text: #5b21b6;
@@ -18,10 +17,9 @@
 
         * { box-sizing: border-box; }
         body, html { height: 100%; margin: 0; overflow: hidden; background-color: var(--bg-body); }
-
         body { font-family: 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column; padding: 10px; color: var(--texto-principal); }
 
-        /* HEADER */
+        /* CABEÇALHO PRINCIPAL */
         .header-main { text-align: center; margin-bottom: 5px; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
         
@@ -31,29 +29,35 @@
         /* LEGENDAS COMPLETAS */
         .legenda-bloco { display: flex; gap: 15px; background: var(--bg-card); padding: 10px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; }
-        .legenda-item .status-badge { width: 22px !important; height: 22px !important; font-size: 0.7rem !important; border-radius: 6px !important; }
+        .legenda-badge-min { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; }
 
-        /* CARROSSEL E SETORES */
+        /* SETORES E CORES DE CABEÇALHO */
         #conteudo { flex: 1; display: flex; justify-content: center; width: 100%; }
         .setor-container { display: none; width: 99vw; height: 100%; background: var(--bg-card); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 0.4s ease-out; }
         .setor-container.active { display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .setor-header { padding: 15px; text-align: center; color: white; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; }
-        .setor-email-info { padding: 8px; text-align: center; font-weight: 700; font-size: 1rem; border-bottom: 1px solid #eee; }
+        .setor-header { padding: 15px; text-align: center; color: white !important; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; }
+        .bg-setor-0 { background-color: #1e40af !important; } 
+        .bg-setor-1 { background-color: #065f46 !important; } 
+        .bg-setor-2 { background-color: #6b21a8 !important; } 
+        .bg-setor-3 { background-color: #9a3412 !important; }
 
-        /* SERVIDOR E TURNOS */
+        .setor-email-info { padding: 8px; text-align: center; font-weight: 800; font-size: 1rem; border-bottom: 1px solid #eee; color: #2563eb; background: #f0f7ff; }
+
+        /* SERVIDORES E TURNOS */
         .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid #edf2f7; padding: 15px 30px; align-items: center; }
         .servidor-nome { font-size: 1.35rem; font-weight: 800; display: block; }
-        .contato-info { font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-top: 4px; }
+        .contato-info { font-size: 0.85rem; font-weight: 700; color: #2563eb; margin-top: 4px; }
+        .whatsapp-info { color: #10b981 !important; }
 
-        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno); padding: 8px; border-radius: 12px; gap: 15px; margin-bottom: 6px; }
+        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: #f8fafc; padding: 8px; border-radius: 12px; gap: 15px; margin-bottom: 6px; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 4px; border-radius: 5px; text-align: center; }
         .m-bg { background-color: var(--m-bg); color: var(--m-text); }
         .t-bg { background-color: var(--t-bg); color: var(--t-text); }
         .n-bg { background-color: var(--n-bg); color: var(--n-text); }
 
-        /* GRID DIAS */
+        /* GRID DIAS (ESTILO ORIGINAL) */
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 4px; border-radius: 10px; }
         .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 2px; }
@@ -75,22 +79,23 @@
     </style>
 </head>
 <body>
-    <div id="loader"><div class="spinner"></div><h2 style="margin-top:20px; font-weight: 900;">SINCRONIZANDO...</h2></div>
+    <div id="loader"><div class="spinner"></div><h2 style="margin-top:20px; font-weight: 900;">ATUALIZANDO ESCALAS...</h2></div>
     
     <header class="header-main"><h1 class="titulo-pagina">Escala TAE - Campus Capanema</h1></header>
 
     <div class="top-info-bar">
         <div id="mes-area" class="mes-badge">--</div>
         <div class="legenda-bloco">
-            <div class="legenda-item"><span class="status-badge p-presencial">P</span> Presencial</div>
-            <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> Teletrabalho</div>
-            <div class="legenda-item"><span class="status-badge c-chefia">C</span> Chefia</div>
-            <div class="legenda-item"><span class="status-badge a-afastado">A</span> Afastado</div>
-            <div class="legenda-item"><span class="status-badge d-descanso">D</span> Descanso</div>
+            <div class="legenda-item"><div class="legenda-badge-min p-presencial">P</div> Presencial</div>
+            <div class="legenda-item"><div class="legenda-badge-min t-teletrabalho">T</div> Teletrabalho</div>
+            <div class="legenda-item"><div class="legenda-badge-min c-chefia">C</div> Chefia</div>
+            <div class="legenda-item"><div class="legenda-badge-min a-afastado">A</div> Afastado</div>
+            <div class="legenda-item"><div class="legenda-badge-min d-descanso">D</div> Descanso</div>
         </div>
-        <div id="data-atualizacao" style="font-weight: 900; font-size: 0.8rem; color: var(--cor-primaria);">--</div>
+        <div id="data-atualizacao" style="font-weight: 900; font-size: 0.8rem; color: var(--cor-primaria);">AGUARDANDO...</div>
     </div>
     <main id="conteudo"></main>
+
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         let indiceSetor = 0;
@@ -123,17 +128,14 @@
                 const setoresMap = {};
                 const setorEmails = {};
 
-                document.getElementById('mes-area').innerText = config.texto;
-
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
                     if (!setoresMap[setor]) {
                         setoresMap[setor] = [];
-                        setorEmails[setor] = l1[1]; // Resgata e-mail do setor
+                        setorEmails[setor] = l1[1];
                     }
-                    
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
@@ -172,7 +174,7 @@
                             <div>
                                 <span class="servidor-nome">${serv.nome}</span>
                                 <div class="contato-info">${serv.email}</div>
-                                ${serv.zap ? `<div class="contato-info" style="color:#10b981;">${formatarZap(serv.zap)}</div>` : ''}
+                                ${serv.zap ? `<div class="contato-info whatsapp-info">${formatarZap(serv.zap)}</div>` : ''}
                             </div>
                             <div>${turnosHtml}</div>
                         </div>`;
@@ -180,11 +182,12 @@
 
                     html += `<div class="setor-container">
                         <div class="setor-header bg-setor-${sIdx % 4}">${setor}</div>
-                        <div class="setor-email-info" style="color: var(--texto-secundario); background: #f8fafc;">E-mail do Setor: ${setorEmails[setor] || 'Não informado'}</div>
+                        <div class="setor-email-info">E-mail do Setor: ${setorEmails[setor] || 'Não informado'}</div>
                         <div style="flex:1; overflow-y:auto;">${servHtml}</div>
                     </div>`;
                 });
 
+                document.getElementById('mes-area').innerText = config.texto;
                 document.getElementById('conteudo').innerHTML = html;
                 document.getElementById('loader').style.display = 'none';
                 iniciarCarrossel();
