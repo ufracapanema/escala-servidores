@@ -1,260 +1,263 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala TAE - UFRA Capanema</title>
+    <title>Painel UFRA Capanema</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
-        :root {
-            --ufra-verde: #1a5d1a; /* Verde Institucional UFRA */
-            --bg-site: #f4f7f6;
-            --texto-p: #1e293b;
-            --p: #10b981; --t: #33415e; --c: #f1c40f; --a: #ef4444; --d: #94a3b8;
+        :root[data-theme="light"] {
+            --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --sub: #64748b;
+            --border: #e2e8f0; --ufra: #1a5d1a; --hoje: #fef9c3;
         }
+        :root[data-theme="dark"] {
+            --bg: #020617; --card: #0f172a; --text: #f1f5f9; --sub: #94a3b8;
+            --border: #1e293b; --ufra: #22c55e; --hoje: #1e1b4b;
+        }
+
+        /* Status Pills */
+        .p-presencial { background: #10b981; color: #fff; }
+        .t-teletrabalho { background: #3b82f6; color: #fff; }
+        .c-chefia { background: #f59e0b; color: #000; }
+        .a-afastado { background: #ef4444; color: #fff; }
+        .d-descanso { background: #64748b; color: #fff; }
+        .vazio { background: var(--border); color: var(--sub); opacity: 0.3; }
+
+        /* Barras Laterais de Turno */
+        .m-bg { border-left: 5px solid #0ea5e9; }
+        .t-bg { border-left: 5px solid #f97316; }
+        .n-bg { border-left: 5px solid #8b5cf6; }
+        .a-bg { border-left: 5px solid #ef4444; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg-site); 
-            color: var(--texto-p);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* CABEÇALHO UFRA */
-        .header-ufra {
-            background: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 4px solid var(--ufra-verde);
-        }
-        .logo-area h1 { font-weight: 900; font-size: 1.5rem; color: var(--ufra-verde); text-transform: uppercase; }
-        .logo-area span { font-size: 0.9rem; font-weight: 600; color: #64748b; }
+        /* Header */
+        .main-header { background: var(--card); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; }
+        .header-left h1 { font-weight: 800; font-size: 1.1rem; color: var(--ufra); }
+        
+        .setor-info-banner { background: linear-gradient(90deg, var(--ufra), #064e3b); color: white; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .setor-grid-nome { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
+        .setor-grid-email { background: #fff; color: #000; padding: 6px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
 
-        .legenda { display: flex; gap: 15px; background: #f8fafc; padding: 8px 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; }
-        .box { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.65rem; }
+        /* Grid de Conteúdo principal */
+        #conteudo { flex: 1; padding: 15px 40px; overflow: hidden; }
+        .setor-container { display: none; flex-direction: column; height: 100%; }
+        .setor-container.active { display: flex; animation: slideUp 0.4s ease-out; }
 
-        /* BANNER DO SETOR */
-        #setor-banner {
-            background: var(--ufra-verde);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .setor-nome { font-size: 2.2rem; font-weight: 900; text-transform: uppercase; }
-        .setor-email-pill { 
-            background: white; 
-            color: black !important; /* E-mail em Preto */
-            padding: 8px 20px; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            font-size: 1.1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        /* TABELA DE ESCALAS */
-        #conteudo { flex: 1; padding: 20px 40px; overflow: hidden; }
-        .setor-container { display: none; width: 100%; height: 100%; flex-direction: column; gap: 10px; }
-        .setor-container.active { display: flex; animation: fadeIn 0.5s ease-in-out; }
-
-        .tabela-header {
+        /* Cabeçalho das Colunas - Divisão 30/70 */
+        .col-labels {
             display: grid;
-            grid-template-columns: 350px 100px 1fr;
-            padding: 10px 20px;
-            background: #e2e8f0;
-            border-radius: 8px;
+            grid-template-columns: 3fr 7fr; 
+            padding: 0 10px 8px 10px;
+            font-size: 0.75rem;
             font-weight: 800;
-            font-size: 0.8rem;
+            color: var(--sub);
             text-transform: uppercase;
-            color: #475569;
+            letter-spacing: 1px;
         }
 
-        .servidor-linha {
-            display: grid;
-            grid-template-columns: 350px 100px 1fr;
-            background: white;
-            margin-bottom: 8px;
-            padding: 15px 20px;
-            border-radius: 10px;
-            align-items: center;
+        /* Item do Servidor - Divisão 30/70 */
+        .servidor-item { 
+            display: grid; 
+            grid-template-columns: 3fr 7fr; 
+            background: var(--card);
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 10px;
+            overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            border: 1px solid #e2e8f0;
         }
 
-        .serv-info .n { font-size: 1.3rem; font-weight: 800; color: #0f172a; display: block; }
-        .serv-info .e { font-size: 1rem; color: #2563eb; font-weight: 600; }
-        .serv-info .w { font-size: 1.1rem; color: #10b981; font-weight: 800; display: block; }
+        .servidor-perfil { padding: 20px 25px; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.01); border-right: 1px solid var(--border); }
+        .servidor-nome { font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+        
+        /* AJUSTE SOLICITADO: Aumento dos contatos */
+        .contato-item { font-size: 1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; margin-top: 5px; opacity: 0.9; }
 
-        .turno-col { text-align: center; font-weight: 900; border-left: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; }
-        .turno-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
-        .turno-hora { font-size: 0.9rem; color: #1e293b; }
+        /* Escala (Lado Direito) */
+        .escala-wrapper { display: flex; flex-direction: column; background: var(--card); }
+        .turno-linha { display: grid; grid-template-columns: 100px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .turno-linha:last-child { border-bottom: none; }
 
-        /* GRADE DE DIAS */
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding-left: 20px; }
-        .dia-item { text-align: center; }
-        .d-num { font-size: 1.2rem; font-weight: 900; display: block; line-height: 1; color: #1e293b; }
-        .d-sig { font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+        .turno-info { text-align: center; border-right: 1px solid var(--border); }
+        .turno-badge { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
+        .turno-hora { font-size: 0.85rem; font-weight: 700; display: block; }
+
+        /* Dias da Semana - Distribuídos nos 70% */
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding: 0 20px; }
+        .dia-col { text-align: center; padding: 5px; }
+        .dia-numero { font-size: 1.2rem; font-weight: 800; display: block; line-height: 1; }
+        .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--sub); text-transform: uppercase; }
         
         .status-badge { 
-            width: 38px; height: 38px; border-radius: 8px; margin: 4px auto 0; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; color: white; font-size: 1.1rem;
+            width: 36px; height: 36px; border-radius: 10px; margin: 6px auto; 
+            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .hoje { background: #fffde7; outline: 2px solid #f1c40f; border-radius: 8px; }
+        .dia-hoje { background: var(--hoje); border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(241,196,15,0.4); }
 
-        /* CORES STATUS */
-        .st-P { background: var(--p); } .st-T { background: var(--t); }
-        .st-C { background: var(--c); color: black; } .st-A { background: var(--a); }
-        .st-D { background: var(--d); } .st-vazio { background: #f1f5f9; color: #cbd5e1; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #legenda-area { display: flex; gap: 15px; }
+        .legenda-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--sub); }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header class="header-ufra">
-        <div class="logo-area">
-            <h1>UFRA Campus Capanema</h1>
-            <span>Painel Digital de Escalas Administrativas</span>
+    <header class="main-header">
+        <div class="header-left">
+            <h1>UFRA • CAMPUS CAPANEMA</h1>
+            <div id="data-atualizacao" style="font-size: 0.7rem; font-weight: 700; color: var(--sub);">Sincronizando...</div>
         </div>
-        <div class="legenda">
-            <div class="leg-item"><div class="box" style="background:var(--p)">P</div> Presencial</div>
-            <div class="leg-item"><div class="box" style="background:var(--t)">T</div> Teletrabalho</div>
-            <div class="leg-item"><div class="box" style="background:var(--c); color:black">C</div> Chefia</div>
-            <div class="leg-item"><div class="box" style="background:var(--a)">A</div> Afastado</div>
+        <div id="legenda-area"></div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div id="mes-area" style="font-weight: 800; font-size: 0.9rem; color: var(--ufra);"></div>
+            <button id="theme-toggle" style="background:none; border:none; cursor:pointer; color:inherit;"><svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"></svg></button>
         </div>
     </header>
 
-    <div id="setor-banner">
-        <div class="setor-nome" id="nome-setor">CARREGANDO...</div>
-        <div class="setor-email-pill" id="email-setor">--</div>
-    </div>
-
-    <main id="conteudo">
-        </main>
+    <main id="conteudo"></main>
 
     <script>
+        // SCRIPTS MANTIDOS INTEGRALMENTE
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-        let setoresData = [];
-        let idx = 0;
+        const sunIcon = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22">`;
+        const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">`;
+        const iconEmail = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+        const iconZap = `<svg style="width:16px;height:16px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
-        async function carregarEscalas() {
+        function formatarZap(num) {
+            const l = ('' + num).replace(/\D/g, '');
+            return l.length >= 10 ? `(${l.substring(0,2)}) ${l.length===11?l.substring(2,7):l.substring(2,6)}-${l.length===11?l.substring(7):l.substring(6)}` : num;
+        }
+
+        function obterConfiguracaoSemana() {
+            const hoje = new Date();
+            const diaDaSemana = hoje.getDay(); 
+            const diffDomingo = hoje.getDate() - diaDaSemana;
+            let dias = []; 
+            let meses = new Set();
+            const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffDomingo + i);
+                dias.push({ numero: d.getDate().toString().padStart(2, '0'), sigla: siglas[i] });
+                meses.add(d.toLocaleDateString('pt-BR', { month: 'long' }));
+            }
+            return { dias, texto: Array.from(meses).join(' / ').toUpperCase() + " " + hoje.getFullYear() };
+        }
+
+        async function carregarDados() {
+            const config = obterConfiguracaoSemana();
+            const hojeIdx = new Date().getDay();
             try {
                 const res = await fetch(url);
                 const dados = await res.json();
                 const linhas = dados.slice(1);
-                const mapa = {};
-                
-                const hoje = new Date();
-                const dom = hoje.getDate() - hoje.getDay();
-                const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-                const configDias = Array.from({length: 7}, (_, i) => {
-                    const d = new Date(hoje.getFullYear(), hoje.getMonth(), dom + i);
-                    return { n: d.getDate().toString().padStart(2, '0'), s: siglas[i] };
-                });
+                const setoresMap = {};
+                const infoSetores = {};
+                document.getElementById('mes-area').innerHTML = config.texto;
+                const legArea = document.getElementById('legenda-area');
+                legArea.innerHTML = `
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:16px;height:16px;font-size:0.5rem;margin:0">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:16px;height:16px;font-size:0.5rem;margin:0">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:16px;height:16px;font-size:0.5rem;margin:0">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:16px;height:16px;font-size:0.5rem;margin:0">A</span> Afastado</div>`;
 
                 for (let i = 0; i < linhas.length; i += 3) {
-                    const l = linhas[i];
-                    if (!l || !l[0]) continue;
-                    const sNome = l[0].trim();
-                    if (!mapa[sNome]) mapa[sNome] = { email: l[1], servs: [] };
-                    
-                    const serv = { nome: l[2], email: l[4], zap: l[5], turnos: [] };
-                    [linhas[i], linhas[i+1], linhas[i+2]].forEach((lin, tIdx) => {
-                        if (lin && (lin[3] || lin.slice(6,13).some(v => v && v !== '-'))) {
-                            serv.turnos.push({
-                                label: tIdx === 0 ? 'Manhã' : tIdx === 1 ? 'Tarde' : 'Noite',
-                                hora: lin[3],
-                                dias: lin.slice(6, 13)
-                            });
+                    const l1 = linhas[i];
+                    if (!l1 || !l1[0]) continue;
+                    const setor = l1[0].trim();
+                    if (!setoresMap[setor]) { setoresMap[setor] = []; infoSetores[setor] = l1[1]; }
+                    const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
+                    [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
+                        if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
+                            serv.turnos.push({ label: idx===0?'Manhã':idx===1?'Tarde':'Noite', class: idx===0?'m-bg':idx===1?'t-bg':'n-bg', hora: linha[3], dias: linha.slice(6, 13) });
                         }
                     });
-                    mapa[sNome].servs.push(serv);
+                    setoresMap[setor].push(serv);
                 }
 
-                setoresData = Object.keys(mapa).sort().map(k => ({ nome: k, ...mapa[k] }));
-                renderizar(configDias, hoje.getDay());
+                let htmlFinal = '';
+                Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
+                    let servidoresHtml = '';
+                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
+                        let turnosHtml = serv.turnos.map(t => {
+                            const estaAfastado = t.dias.some(d => d && d.toString().toUpperCase() === 'A');
+                            return `<div class="turno-linha ${estaAfastado ? 'a-bg' : t.class}">
+                                <div class="turno-info">
+                                    <span class="turno-badge">${estaAfastado ? 'Afastado' : t.label}</span>
+                                    ${!estaAfastado ? `<span class="turno-hora">${t.hora || '--:--'}</span>` : ''}
+                                </div>
+                                <div class="dias-grid">
+                                    ${config.dias.map((info, dIdx) => {
+                                        const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
+                                        const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':st==='D'?'d-descanso':'vazio';
+                                        return `<div class="dia-col ${dIdx===hojeIdx?'dia-hoje':''}">
+                                            <span class="dia-numero">${info.numero}</span>
+                                            <span class="dia-sigla">${info.sigla}</span>
+                                            <span class="status-badge ${cl}">${st}</span>
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>`;
+                        }).join('');
+
+                        servidoresHtml += `<div class="servidor-item">
+                            <div class="servidor-perfil">
+                                <span class="servidor-nome">${serv.nome}</span>
+                                <a href="mailto:${serv.email}" class="contato-item" style="color:#3b82f6;">${iconEmail} ${serv.email}</a>
+                                ${serv.zap ? `<a class="contato-item" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
+                            </div>
+                            <div class="escala-wrapper">${turnosHtml}</div>
+                        </div>`;
+                    });
+
+                    htmlFinal += `<div class="setor-container" id="setor-${sIdx}">
+                        <div class="setor-info-banner">
+                            <div class="setor-grid-nome">${setor}</div>
+                            ${infoSetores[setor] ? `<div class="setor-grid-email">${iconEmail} ${infoSetores[setor]}</div>` : ''}
+                        </div>
+                        <div style="flex:1; overflow-y:auto; padding:20px 0;">
+                            <div class="col-labels">
+                                <div>Servidor / Contatos</div>
+                                <div>Escala de Trabalho Semanal</div>
+                            </div>
+                            ${servidoresHtml}
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('conteudo').innerHTML = htmlFinal;
+                iniciarCarrossel(Object.keys(setoresMap).length);
+                const agora = new Date();
+                document.getElementById('data-atualizacao').innerText = `Sincronizado: ${agora.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
             } catch (e) { console.error(e); }
         }
 
-        function renderizar(dias, hojeIdx) {
-            const cont = document.getElementById('conteudo');
-            
-            setoresData.forEach((setor, sIdx) => {
-                const sDiv = document.createElement('div');
-                sDiv.className = 'setor-container';
-                sDiv.id = `setor-${sIdx}`;
-
-                // Cabeçalho da Tabela
-                sDiv.innerHTML = `
-                    <div class="tabela-header">
-                        <div>Servidor / Contato</div>
-                        <div style="text-align:center">Turno</div>
-                        <div style="text-align:center">Escala Semanal</div>
-                    </div>
-                `;
-
-                setor.servs.forEach(serv => {
-                    const row = document.createElement('div');
-                    row.className = 'servidor-linha';
-                    
-                    let turnosHtml = serv.turnos.map(t => `
-                        <div style="display:contents">
-                            <div class="turno-col">
-                                <span class="turno-label">${t.label}</span><br>
-                                <span class="turno-hora">${t.hora || '--'}</span>
-                            </div>
-                            <div class="dias-grid">
-                                ${t.dias.map((st, dIdx) => {
-                                    const status = st ? st.toString().toUpperCase().trim() : '';
-                                    return `
-                                    <div class="dia-item ${dIdx === hojeIdx ? 'hoje' : ''}">
-                                        <span class="d-num">${dias[dIdx].n}</span>
-                                        <span class="d-sig">${dias[dIdx].s}</span>
-                                        <div class="status-badge st-${status && status !== '-' ? status : 'vazio'}">${status || '-'}</div>
-                                    </div>`;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `).join('<div style="grid-column: 2 / 4; height: 1px; background: #f1f5f9; margin: 5px 0;"></div>');
-
-                    row.innerHTML = `
-                        <div class="serv-info">
-                            <span class="n">${serv.nome}</span>
-                            <span class="e">${serv.email}</span>
-                            ${serv.zap ? `<span class="w">${serv.zap}</span>` : ''}
-                        </div>
-                        ${turnosHtml}
-                    `;
-                    sDiv.appendChild(row);
-                });
-                cont.appendChild(sDiv);
-            });
-
-            const rodar = () => {
-                document.querySelectorAll('.setor-container').forEach(t => t.classList.remove('active'));
-                const s = setoresData[idx];
-                document.getElementById('nome-setor').innerText = s.nome;
-                document.getElementById('email-setor').innerText = `E-mail: ${s.email || 'Não informado'}`;
-                document.getElementById(`setor-${idx}`).classList.add('active');
-                idx = (idx + 1) % setoresData.length;
+        let setorAtual = 0;
+        function iniciarCarrossel(total) {
+            const mostrar = () => {
+                document.querySelectorAll('.setor-container').forEach(el => el.classList.remove('active'));
+                const prox = document.getElementById(`setor-${setorAtual}`);
+                if(prox) prox.classList.add('active');
+                setorAtual = (setorAtual + 1) % total;
             };
-
-            rodar();
-            setInterval(rodar, 12000);
+            mostrar();
+            setInterval(mostrar, 12000); 
         }
 
-        carregarEscalas();
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        function setTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+            themeIcon.innerHTML = t === 'dark' ? sunIcon : moonIcon;
+            localStorage.setItem('theme', t);
+        }
+        setTheme(localStorage.getItem('theme') || 'light');
+        themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+        carregarDados();
     </script>
 </body>
 </html>
