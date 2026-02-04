@@ -258,6 +258,7 @@
         setTheme(localStorage.getItem('theme') || 'light');
         themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
         carregarDados();
+        setInterval(carregarDados, 600000);
     </script>
 </body>
 </html>
