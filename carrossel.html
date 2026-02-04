@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Escala TAE - Campus Capanema</title>
+    <title>Escala de Trabalho - Campus Capanema</title>
     <style>
         :root {
             --cor-c: #f1c40f; 
@@ -11,72 +11,105 @@
             --cor-p: #10b981; 
             --cor-a: #ef4444; 
             --cor-d: #94a3b8;
-            --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
-            --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
-            --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
+            --brilho-hoje: #fffde7; 
+            --borda-hoje: #f1c40f; 
+            --cor-primaria: #3b82f6;
+            --bg-body: #f1f5f9; 
+            --bg-card: white; 
+            --texto-principal: #1e293b;
+            --texto-secundario: #64748b; 
+            --border-color: #f1f5f9; 
+            --bg-turno: #f8fafc;
         }
 
-        /* Otimização para Tela Cheia */
         * { box-sizing: border-box; }
-        
+
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-body); margin: 0; padding: 10px;
+            background-color: var(--bg-body); 
+            margin: 0; padding: 20px;
             display: flex; flex-direction: column; align-items: center; 
             color: var(--texto-principal);
-            overflow: hidden; /* Evita barras de rolagem em modo TV */
             height: 100vh;
+            overflow: hidden; /* Modo TV */
         }
 
-        .header-container { text-align: center; margin-bottom: 10px; width: 100%; }
-        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.8rem; font-weight: 900; }
-        
-        /* Container do Carrossel */
-        #conteudo {
-            width: 100%;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 10px;
+        /* CABEÇALHO */
+        .header-container { text-align: center; margin-bottom: 15px; width: 100%; }
+        .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+        #data-atualizacao { font-weight: bold; margin-top: 5px; color: var(--texto-secundario); font-size: 0.9rem; }
+
+        .mes-bloco { 
+            margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center;
+            font-size: 1.3rem; font-weight: 900; text-transform: uppercase;
         }
+
+        /* LEGENDA */
+        .legenda-bloco { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; 
+            margin-bottom: 20px; background: var(--bg-card); padding: 12px 30px; border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 800; }
+        
+        /* CONTAINER DO CARROSSEL */
+        #conteudo { width: 100%; max-width: 1100px; flex: 1; }
 
         .setor-container { 
             display: none; 
-            width: 98%; max-width: 1200px; background: var(--bg-card); 
-            border-radius: 20px; overflow: hidden;
-            box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1);
-            animation: slideIn 0.8s ease-out;
+            width: 100%; background: var(--bg-card); 
+            border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            animation: fadeIn 0.8s ease;
         }
-
         .setor-container.active { display: block; }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Estilos Internos Mantidos */
-        .setor-grid-nome { padding: 25px; text-align: center; color: white; font-size: 2rem; font-weight: 900; text-transform: uppercase; }
-        .setor-grid-email { padding: 10px; text-align: center; background: rgba(0,0,0,0.05); }
-        
-        .mes-bloco { margin-bottom: 10px; background: var(--bg-card); padding: 8px 25px; border-radius: 12px; font-weight: 800; }
-        .legenda-bloco { display: flex; gap: 20px; margin-bottom: 15px; padding: 10px; background: var(--bg-card); border-radius: 10px; }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; }
+        /* TÍTULOS DO SETOR */
+        .setor-grid-nome { 
+            padding: 20px; text-align: center; color: white; 
+            font-size: 1.6rem; font-weight: 900; text-transform: uppercase;
+        }
+        .bg-setor-0 { background-color: #1e40af; } 
+        .bg-setor-1 { background-color: #065f46; } 
+        .bg-setor-2 { background-color: #6b21a8; } 
+        .bg-setor-3 { background-color: #9a3412; }
 
-        .servidor-item { display: grid; grid-template-columns: 300px 1fr; border-bottom: 1px solid var(--border-color); padding: 15px 25px; align-items: center; }
-        .servidor-nome { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; }
-        
-        .turno-linha { display: grid; grid-template-columns: 90px 1fr; align-items: center; background: var(--bg-turno); padding: 10px; border-radius: 12px; gap: 15px; margin-bottom: 5px; }
-        .turno-badge { font-size: 0.7rem; font-weight: 900; padding: 4px; border-radius: 5px; text-align: center; }
-        
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-        .dia-col { text-align: center; padding: 5px; border-radius: 8px; }
-        .status-badge { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; color: white; }
-        
-        .dia-hoje { background: var(--brilho-hoje); outline: 2px solid var(--borda-hoje); }
+        /* ITEM DO SERVIDOR */
+        .servidor-item { 
+            display: grid; grid-template-columns: 280px 1fr; 
+            border-bottom: 1px solid var(--border-color); 
+            padding: 15px 25px; align-items: center; 
+        }
+        .servidor-nome { font-size: 1.2rem; font-weight: 800; color: var(--texto-principal); }
 
-        /* Cores de Status */
+        /* ESCALA E TURNOS */
+        .turno-linha { 
+            display: grid; grid-template-columns: 85px 1fr; align-items: center; 
+            background: var(--bg-turno); padding: 8px; border-radius: 10px; gap: 10px; margin-bottom: 5px;
+        }
+        .turno-badge { 
+            font-size: 0.6rem; font-weight: 900; text-transform: uppercase; 
+            padding: 4px; border-radius: 4px; text-align: center;
+            background: #e2e8f0; color: #475569;
+        }
+        .turno-hora { font-size: 0.7rem; font-weight: 700; color: var(--texto-secundario); display: block; margin-top: 2px; }
+
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 4px; border-radius: 8px; }
+        .dia-numero { font-size: 0.9rem; font-weight: 900; margin-bottom: 2px; }
+        
+        /* STATUS BADGES (CORES ORIGINAIS) */
+        .status-badge { 
+            width: 36px; height: 36px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; font-size: 1.1rem; color: white; 
+        }
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
@@ -84,57 +117,50 @@
         .d-descanso { background-color: var(--cor-d); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
         
-        /* Backgrounds dos Setores */
-        .bg-setor-0 { background-color: #1e40af; } .bg-setor-1 { background-color: #065f46; }
-        .bg-setor-2 { background-color: #6b21a8; } .bg-setor-3 { background-color: #9a3412; }
+        .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 2px var(--borda-hoje); }
 
-        .loader-container { padding: 100px; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #ddd; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s infinite linear; margin-bottom: 15px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-container { padding: 80px; text-align: center; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Escala TAE - Campus Capanema</h1>
-        <div id="data-atualizacao" style="font-size: 0.9rem; margin-top: 5px; color: var(--texto-secundario);">Iniciando...</div>
+        <h1 class="titulo-pagina">Escala dos Servidores - Campus Capanema</h1>
+        <div id="data-atualizacao">Sincronizando...</div>
     </div>
 
     <div id="mes-area" class="mes-bloco"></div>
 
-    <div id="legenda-area" class="legenda-bloco">
-        <div class="legenda-item"><span class="status-badge p-presencial" style="width:24px; height:24px; font-size:0.7rem">P</span> Presencial</div>
-        <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:24px; height:24px; font-size:0.7rem">T</span> Teletrabalho</div>
-        <div class="legenda-item"><span class="status-badge c-chefia" style="width:24px; height:24px; font-size:0.7rem">C</span> Chefia</div>
-        <div class="legenda-item"><span class="status-badge a-afastado" style="width:24px; height:24px; font-size:0.7rem">A</span> Afastado</div>
-        <div class="legenda-item"><span class="status-badge d-descanso" style="width:24px; height:24px; font-size:0.7rem">D</span> Descanso</div>
+    <div class="legenda-bloco">
+        <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px;height:20px;font-size:0.7rem">P</span> Presencial</div>
+        <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px;height:20px;font-size:0.7rem">T</span> Teletrabalho</div>
+        <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px;height:20px;font-size:0.7rem">C</span> Chefia</div>
+        <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px;height:20px;font-size:0.7rem">A</span> Afastado</div>
+        <div class="legenda-item"><span class="status-badge d-descanso" style="width:20px;height:20px;font-size:0.7rem">D</span> Descanso</div>
     </div>
 
     <div id="conteudo">
-        <div class="loader-container"><div class="spinner"></div><strong>CARREGANDO ESCALAS...</strong></div>
+        <div class="loader-container">CARREGANDO DADOS...</div>
     </div>
 
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-        
-        let indiceAtivo = 0;
-        let carrosselTimer;
+        let indiceSetor = 0;
+        let timerCarrossel;
 
-        function obterConfiguracaoSemana() {
+        function obterSemana() {
             const hoje = new Date();
-            const diaSemana = hoje.getDay();
-            const diff = hoje.getDate() - diaSemana;
+            const dom = hoje.getDate() - hoje.getDay();
             const dias = [];
-            const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
             for (let i = 0; i < 7; i++) {
-                const d = new Date(hoje.getFullYear(), hoje.getMonth(), diff + i);
-                dias.push({ num: d.getDate().toString().padStart(2, '0'), sigla: siglas[i] });
+                const d = new Date(hoje.getFullYear(), hoje.getMonth(), dom + i);
+                dias.push({ num: d.getDate().toString().padStart(2, '0') });
             }
             return { dias, texto: hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase() };
         }
 
         async function carregarDados() {
-            const config = obterConfiguracaoSemana();
+            const config = obterSemana();
             const hojeIdx = new Date().getDay();
             
             try {
@@ -143,7 +169,7 @@
                 const linhas = dados.slice(1);
                 const setoresMap = {};
 
-                document.getElementById('mes-area').innerHTML = config.texto;
+                document.getElementById('mes-area').innerText = config.texto;
 
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
@@ -155,7 +181,7 @@
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
                             serv.turnos.push({ 
-                                label: idx===0?'MANHÃ':idx===1?'TARDE':'NOITE', 
+                                label: idx===0?'Manhã':idx===1?'Tarde':'Noite', 
                                 hora: linha[3], 
                                 dias: linha.slice(6, 13) 
                             });
@@ -170,15 +196,16 @@
                     setoresMap[setor].forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => `
                             <div class="turno-linha">
-                                <div class="turno-badge ${t.label === 'MANHÃ' ? 'm-bg' : t.label === 'TARDE' ? 't-bg' : 'n-bg'}" style="background:#eee; color:#333">
-                                    ${t.label}<br><small>${t.hora || ''}</small>
+                                <div class="turno-info">
+                                    <span class="turno-badge">${t.label}</span>
+                                    <span class="turno-hora">${t.hora || ''}</span>
                                 </div>
                                 <div class="dias-grid">
                                     ${t.dias.map((st, dIdx) => {
                                         const status = st ? st.toString().toUpperCase() : '-';
                                         const cl = status==='C'?'c-chefia':status==='P'?'p-presencial':status==='T'?'t-teletrabalho':status==='A'?'a-afastado':status==='D'?'d-descanso':'vazio';
                                         return `<div class="dia-col ${dIdx===hojeIdx?'dia-hoje':''}">
-                                            <div style="font-size:0.6rem; font-weight:900">${config.dias[dIdx].num}</div>
+                                            <span class="dia-numero">${config.dias[dIdx].num}</span>
                                             <div class="status-badge ${cl}">${status}</div>
                                         </div>`;
                                     }).join('')}
@@ -191,7 +218,7 @@
                         </div>`;
                     });
 
-                    html += `<div class="setor-container" id="setor-${sIdx}">
+                    html += `<div class="setor-container">
                         <div class="setor-grid-nome bg-setor-${sIdx % 4}">${setor}</div>
                         ${servHtml}
                     </div>`;
@@ -201,33 +228,26 @@
                 iniciarCarrossel();
                 
                 const agora = new Date();
-                document.getElementById('data-atualizacao').innerText = `Última atualização: ${agora.toLocaleTimeString('pt-BR')}`;
-
-            } catch (e) {
-                console.error(e);
-            }
+                document.getElementById('data-atualizacao').innerText = `Sincronizado: ${agora.toLocaleTimeString('pt-BR')}`;
+            } catch (e) { console.error(e); }
         }
 
         function iniciarCarrossel() {
-            const setores = document.querySelectorAll('.setor-container');
-            if (setores.length === 0) return;
-            
-            if (carrosselTimer) clearInterval(carrosselTimer);
+            const itens = document.querySelectorAll('.setor-container');
+            if (itens.length === 0) return;
+            if (timerCarrossel) clearInterval(timerCarrossel);
 
-            function alternar() {
-                setores.forEach(s => s.classList.remove('active'));
-                setores[indiceAtivo].classList.add('active');
-                indiceAtivo = (indiceAtivo + 1) % setores.length;
+            function show() {
+                itens.forEach(i => i.classList.remove('active'));
+                if (indiceSetor >= itens.length) indiceSetor = 0;
+                itens[indiceSetor].classList.add('active');
+                indiceSetor++;
             }
-
-            alternar();
-            carrosselTimer = setInterval(alternar, 10000); // Troca setor a cada 10 segundos
+            show();
+            timerCarrossel = setInterval(show, 10000); // 10 segundos
         }
 
-        // Sincronização automática a cada 10 minutos (sem refresh de página)
-        setInterval(carregarDados, 600000); 
-
-        // Carga inicial
+        setInterval(carregarDados, 600000); // Atualiza planilha a cada 10 min
         carregarDados();
     </script>
 </body>
