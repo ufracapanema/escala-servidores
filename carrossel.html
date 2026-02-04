@@ -24,7 +24,6 @@
         .d-descanso { background: #64748b; color: #fff; }
         .vazio { background: var(--border); color: var(--sub); opacity: 0.3; }
 
-        /* Barras Laterais de Turno */
         .m-bg { border-left: 5px solid #0ea5e9; }
         .t-bg { border-left: 5px solid #f97316; }
         .n-bg { border-left: 5px solid #8b5cf6; }
@@ -33,50 +32,61 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Header */
-        .main-header { background: var(--card); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; }
+        .main-header { background: var(--card); padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; }
         .header-left h1 { font-weight: 800; font-size: 1.1rem; color: var(--ufra); }
         
-        .setor-info-banner { background: linear-gradient(90deg, var(--ufra), #064e3b); color: white; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .setor-info-banner { background: linear-gradient(90deg, var(--ufra), #064e3b); color: white; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .setor-grid-nome { font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
         .setor-grid-email { background: #fff; color: #000; padding: 6px 18px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
 
-        /* Grid de Conteúdo principal */
-        #conteudo { flex: 1; padding: 15px 40px; overflow: hidden; }
+        /* AJUSTE PARA NÃO CORTAR: O conteudo agora ocupa o espaço restante e permite scroll */
+        #conteudo { flex: 1; padding: 0 40px; overflow: hidden; position: relative; }
+        
         .setor-container { display: none; flex-direction: column; height: 100%; }
         .setor-container.active { display: flex; animation: slideUp 0.4s ease-out; }
 
-        /* Cabeçalho das Colunas - Divisão 30/70 */
+        /* Área com Scrollbar customizada */
+        .scrollable-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0 40px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--ufra) transparent;
+        }
+
+        .scrollable-list::-webkit-scrollbar { width: 6px; }
+        .scrollable-list::-webkit-scrollbar-thumb { background-color: var(--ufra); border-radius: 10px; }
+
         .col-labels {
             display: grid;
             grid-template-columns: 3fr 7fr; 
-            padding: 0 10px 8px 10px;
+            padding: 20px 10px 10px 10px;
             font-size: 0.75rem;
             font-weight: 800;
             color: var(--sub);
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: sticky; /* Mantém os nomes das colunas fixos ao rolar */
+            top: 0;
+            background: var(--bg);
+            z-index: 5;
         }
 
-        /* Item do Servidor - Divisão 30/70 */
         .servidor-item { 
             display: grid; 
             grid-template-columns: 3fr 7fr; 
             background: var(--card);
             border-radius: 12px; 
             border: 1px solid var(--border); 
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .servidor-perfil { padding: 20px 25px; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.01); border-right: 1px solid var(--border); }
         .servidor-nome { font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
-        
-        /* AJUSTE SOLICITADO: Aumento dos contatos */
         .contato-item { font-size: 1rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px; margin-top: 5px; opacity: 0.9; }
 
-        /* Escala (Lado Direito) */
         .escala-wrapper { display: flex; flex-direction: column; background: var(--card); }
         .turno-linha { display: grid; grid-template-columns: 100px 1fr; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .turno-linha:last-child { border-bottom: none; }
@@ -85,7 +95,6 @@
         .turno-badge { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
         .turno-hora { font-size: 0.85rem; font-weight: 700; display: block; }
 
-        /* Dias da Semana - Distribuídos nos 70% */
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; padding: 0 20px; }
         .dia-col { text-align: center; padding: 5px; }
         .dia-numero { font-size: 1.2rem; font-weight: 800; display: block; line-height: 1; }
@@ -94,10 +103,9 @@
         .status-badge { 
             width: 36px; height: 36px; border-radius: 10px; margin: 6px auto; 
             display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .dia-hoje { background: var(--hoje); border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(241,196,15,0.4); }
+        .dia-hoje { background: var(--hoje); border-radius: 10px; }
 
         #legenda-area { display: flex; gap: 15px; }
         .legenda-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--sub); }
@@ -220,11 +228,11 @@
                             <div class="setor-grid-nome">${setor}</div>
                             ${infoSetores[setor] ? `<div class="setor-grid-email">${iconEmail} ${infoSetores[setor]}</div>` : ''}
                         </div>
-                        <div style="flex:1; overflow-y:auto; padding:20px 0;">
-                            <div class="col-labels">
-                                <div>Servidor / Contatos</div>
-                                <div>Escala de Trabalho Semanal</div>
-                            </div>
+                        <div class="col-labels">
+                            <div>Servidor / Contatos</div>
+                            <div>Escala de Trabalho Semanal</div>
+                        </div>
+                        <div class="scrollable-list">
                             ${servidoresHtml}
                         </div>
                     </div>`;
@@ -258,7 +266,6 @@
         setTheme(localStorage.getItem('theme') || 'light');
         themeToggle.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
         carregarDados();
-        setInterval(carregarDados, 600000);
     </script>
 </body>
 </html>
