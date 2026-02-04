@@ -10,107 +10,58 @@
             --brilho-hoje: #fffde7; --borda-hoje: #f1c40f; --cor-primaria: #3b82f6;
             --bg-body: #f1f5f9; --bg-card: white; --texto-principal: #1e293b;
             --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
+            /* Cores dos Turnos */
             --m-bg: #e0f2fe; --m-text: #0369a1;
             --t-bg: #fef3c7; --t-text: #92400e;
             --n-bg: #ede9fe; --n-text: #5b21b6;
         }
 
         * { box-sizing: border-box; }
-        body, html { height: 100%; margin: 0; overflow: hidden; }
+        body, html { height: 100%; margin: 0; overflow: hidden; background-color: var(--bg-body); }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-body);
-            display: flex; flex-direction: column;
-            color: var(--texto-principal);
-            padding: 10px;
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; display: flex; flex-direction: column; padding: 10px; color: var(--texto-principal); }
 
         /* HEADER */
-        .header-main { text-align: center; margin-bottom: 5px; flex-shrink: 0; }
+        .header-main { text-align: center; margin-bottom: 5px; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
         
-        .top-info-bar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            max-width: 100%; margin: 0 auto 10px; width: 100%; padding: 0 15px;
-        }
+        .top-info-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 15px; margin-bottom: 10px; }
+        .mes-badge { background: var(--bg-card); padding: 8px 25px; border-radius: 12px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        .mes-badge { 
-            background: var(--bg-card); padding: 8px 25px; border-radius: 12px;
-            font-size: 1.2rem; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .legenda-bloco { 
-            display: flex; gap: 15px; background: var(--bg-card); padding: 10px 20px; border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+        /* LEGENDAS COMPLETAS */
+        .legenda-bloco { display: flex; gap: 15px; background: var(--bg-card); padding: 10px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; }
         .legenda-item .status-badge { width: 22px !important; height: 22px !important; font-size: 0.7rem !important; border-radius: 6px !important; }
 
-        /* LOADER */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-body); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
-        }
-        .spinner {
-            width: 100px; height: 100px;
-            border: 10px solid #ddd; border-top: 10px solid var(--cor-primaria);
-            border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* CONTENT */
+        /* CARROSSEL E SETORES */
         #conteudo { flex: 1; display: flex; justify-content: center; width: 100%; }
-
-        .setor-container { 
-            display: none; width: 99vw; height: 100%; 
-            background: var(--bg-card); border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
-            animation: fadeIn 0.4s ease-out;
-        }
+        .setor-container { display: none; width: 99vw; height: 100%; background: var(--bg-card); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; animation: fadeIn 0.4s ease-out; }
         .setor-container.active { display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .setor-header { 
-            padding: 18px; text-align: center; color: white; 
-            font-size: 1.8rem; font-weight: 900; text-transform: uppercase;
-        }
+        .setor-header { padding: 15px; text-align: center; color: white; font-size: 1.8rem; font-weight: 900; text-transform: uppercase; }
+        .setor-email-info { padding: 8px; text-align: center; font-weight: 700; font-size: 1rem; border-bottom: 1px solid #eee; }
 
-        /* SERVIDOR */
-        .servidor-item { 
-            display: grid; grid-template-columns: 320px 1fr; 
-            border-bottom: 1px solid #edf2f7; 
-            padding: 15px 30px; align-items: center;
-        }
-        .servidor-nome { font-size: 1.35rem; font-weight: 800; display: block; margin-bottom: 4px; }
-        
-        /* CONTATOS (EMAIL/ZAP) */
-        .contato-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .contato-link { display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+        /* SERVIDOR E TURNOS */
+        .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid #edf2f7; padding: 15px 30px; align-items: center; }
+        .servidor-nome { font-size: 1.35rem; font-weight: 800; display: block; }
+        .contato-info { font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-top: 4px; }
 
-        /* TURNOS */
-        .turno-linha { 
-            display: grid; grid-template-columns: 85px 1fr; align-items: center; 
-            background: var(--bg-turno); padding: 10px; border-radius: 12px; gap: 15px; margin-bottom: 6px;
-        }
+        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno); padding: 8px; border-radius: 12px; gap: 15px; margin-bottom: 6px; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 4px; border-radius: 5px; text-align: center; }
+        .m-bg { background-color: var(--m-bg); color: var(--m-text); }
+        .t-bg { background-color: var(--t-bg); color: var(--t-text); }
+        .n-bg { background-color: var(--n-bg); color: var(--n-text); }
 
-        /* DIAS DA SEMANA (ESTILO ORIGINAL) */
+        /* GRID DIAS */
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 4px; border-radius: 10px; }
-        .dia-numero { font-size: 1.1rem; font-weight: 900; color: var(--texto-principal); line-height: 1; }
-        .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 4px; }
+        .dia-sigla { font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; margin-bottom: 2px; }
+        .dia-numero { font-size: 1.1rem; font-weight: 900; line-height: 1; }
         
-        .status-badge { 
-            width: 38px; height: 38px; border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; font-size: 1.15rem; color: white; 
-        }
-
+        .status-badge { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.15rem; color: white; margin-top: 4px; }
         .dia-hoje { background: var(--brilho-hoje); box-shadow: 0 0 0 3px var(--borda-hoje); z-index: 1; }
 
-        /* CORES STATUS */
         .c-chefia { background-color: var(--cor-c); color: #000; }
         .p-presencial { background-color: var(--cor-p); }
         .t-teletrabalho { background-color: var(--cor-t); }
@@ -118,42 +69,30 @@
         .d-descanso { background-color: var(--cor-d); }
         .vazio { background-color: #e2e8f0; color: #94a3b8; }
 
-        .bg-setor-0 { background-color: #1e40af; } 
-        .bg-setor-1 { background-color: #065f46; } 
-        .bg-setor-2 { background-color: #6b21a8; } 
-        .bg-setor-3 { background-color: #9a3412; }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 80px; height: 80px; border: 8px solid #ddd; border-top: 8px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
-    <div id="loader">
-        <div class="spinner"></div>
-        <h2 style="margin-top:20px; font-weight: 900; letter-spacing: 2px;">SINCRONIZANDO...</h2>
-    </div>
-
-    <header class="header-main">
-        <h1 class="titulo-pagina">Escala TAE - Campus Capanema</h1>
-    </header>
+    <div id="loader"><div class="spinner"></div><h2 style="margin-top:20px; font-weight: 900;">SINCRONIZANDO...</h2></div>
+    
+    <header class="header-main"><h1 class="titulo-pagina">Escala TAE - Campus Capanema</h1></header>
 
     <div class="top-info-bar">
         <div id="mes-area" class="mes-badge">--</div>
         <div class="legenda-bloco">
-            <div class="legenda-item"><span class="status-badge p-presencial">P</span> P</div>
-            <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> T</div>
-            <div class="legenda-item"><span class="status-badge c-chefia">C</span> C</div>
-            <div class="legenda-item"><span class="status-badge a-afastado">A</span> A</div>
-            <div class="legenda-item"><span class="status-badge d-descanso">D</span> D</div>
+            <div class="legenda-item"><span class="status-badge p-presencial">P</span> Presencial</div>
+            <div class="legenda-item"><span class="status-badge t-teletrabalho">T</span> Teletrabalho</div>
+            <div class="legenda-item"><span class="status-badge c-chefia">C</span> Chefia</div>
+            <div class="legenda-item"><span class="status-badge a-afastado">A</span> Afastado</div>
+            <div class="legenda-item"><span class="status-badge d-descanso">D</span> Descanso</div>
         </div>
         <div id="data-atualizacao" style="font-weight: 900; font-size: 0.8rem; color: var(--cor-primaria);">--</div>
     </div>
-
     <main id="conteudo"></main>
-
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
-        const iconEmail = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
-        const iconZap = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.435 5.63 1.443h.005c6.552 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
-
         let indiceSetor = 0;
         let timerCarrossel;
 
@@ -177,12 +116,12 @@
         async function buscarEscalas() {
             const config = obterDadosSemana();
             const hojeIdx = new Date().getDay();
-            
             try {
                 const res = await fetch(url);
                 const dados = await res.json();
                 const linhas = dados.slice(1);
                 const setoresMap = {};
+                const setorEmails = {};
 
                 document.getElementById('mes-area').innerText = config.texto;
 
@@ -190,13 +129,16 @@
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
-                    if (!setoresMap[setor]) setoresMap[setor] = [];
+                    if (!setoresMap[setor]) {
+                        setoresMap[setor] = [];
+                        setorEmails[setor] = l1[1]; // Resgata e-mail do setor
+                    }
                     
                     const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
                             const label = idx===0?'MANHÃ':idx===1?'TARDE':'NOITE';
-                            const classe = idx===0?'badge-manha':idx===1?'badge-tarde':'badge-noite';
+                            const classe = idx===0?'m-bg':idx===1?'t-bg':'n-bg';
                             serv.turnos.push({ label, classe, hora: linha[3], dias: linha.slice(6, 13) });
                         }
                     });
@@ -209,7 +151,7 @@
                     setoresMap[setor].forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => `
                             <div class="turno-linha">
-                                <div class="turno-info" style="text-align:center;">
+                                <div style="text-align:center;">
                                     <div class="turno-badge ${t.classe}">${t.label}</div>
                                     <div style="font-size:0.75rem; font-weight:900; margin-top:3px;">${t.hora || ''}</div>
                                 </div>
@@ -226,21 +168,19 @@
                                 </div>
                             </div>`).join('');
 
-                        servHtml += `
-                            <div class="servidor-item">
-                                <div class="servidor-perfil">
-                                    <span class="servidor-nome">${serv.nome}</span>
-                                    <div class="contato-wrapper">
-                                        <a href="mailto:${serv.email}" class="contato-link" style="color:#3b82f6;">${iconEmail} ${serv.email}</a>
-                                        ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" target="_blank" class="contato-link" style="color:#10b981;">${iconZap} ${formatarZap(serv.zap)}</a>` : ''}
-                                    </div>
-                                </div>
-                                <div>${turnosHtml}</div>
-                            </div>`;
+                        servHtml += `<div class="servidor-item">
+                            <div>
+                                <span class="servidor-nome">${serv.nome}</span>
+                                <div class="contato-info">${serv.email}</div>
+                                ${serv.zap ? `<div class="contato-info" style="color:#10b981;">${formatarZap(serv.zap)}</div>` : ''}
+                            </div>
+                            <div>${turnosHtml}</div>
+                        </div>`;
                     });
 
                     html += `<div class="setor-container">
                         <div class="setor-header bg-setor-${sIdx % 4}">${setor}</div>
+                        <div class="setor-email-info" style="color: var(--texto-secundario); background: #f8fafc;">E-mail do Setor: ${setorEmails[setor] || 'Não informado'}</div>
                         <div style="flex:1; overflow-y:auto;">${servHtml}</div>
                     </div>`;
                 });
@@ -248,9 +188,7 @@
                 document.getElementById('conteudo').innerHTML = html;
                 document.getElementById('loader').style.display = 'none';
                 iniciarCarrossel();
-                
-                const agora = new Date();
-                document.getElementById('data-atualizacao').innerText = `SINCRONIZADO: ${agora.toLocaleTimeString('pt-BR')}`;
+                document.getElementById('data-atualizacao').innerText = `SINCRONIZADO: ${new Date().toLocaleTimeString('pt-BR')}`;
             } catch (e) { console.error(e); }
         }
 
@@ -258,7 +196,6 @@
             const containers = document.querySelectorAll('.setor-container');
             if (containers.length === 0) return;
             if (timerCarrossel) clearInterval(timerCarrossel);
-
             function alternar() {
                 containers.forEach(c => c.classList.remove('active'));
                 if (indiceSetor >= containers.length) indiceSetor = 0;
