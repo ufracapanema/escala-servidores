@@ -12,27 +12,23 @@
             --texto-secundario: #64748b; --border-color: #f1f5f9; --bg-turno: #f8fafc;
         }
 
-        [data-theme="dark"] {
-            --bg-body: #0f172a; --bg-card: #1e293b; --texto-principal: #f1f5f9;
-            --texto-secundario: #94a3b8; --border-color: #334155; --bg-turno: #1e293b;
-            --brilho-hoje: #172554; --borda-hoje: #3b82f6;
-        }
-
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-body); margin: 0; padding: 20px;
             display: flex; flex-direction: column; align-items: center; color: var(--texto-principal);
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
-        /* CONFIGURAÇÃO DE IMPRESSÃO REFEITA */
+        /* CONFIGURAÇÃO DE IMPRESSÃO - CORRIGIDA */
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 0; /* Remove cabeçalhos e rodapés do navegador */
+                margin: 0.5cm; /* Margem pequena para evitar cortes */
             }
             body {
                 background-color: white !important;
-                padding: 1cm !important;
+                padding: 0 !important;
                 display: block !important;
             }
             .no-print, .btn-dashboard, .btn-tabela, #theme-toggle, .header-container, #mes-area, #legenda-area {
@@ -42,24 +38,32 @@
                 page-break-after: always;
                 border: 1px solid #ddd !important;
                 box-shadow: none !important;
-                margin-bottom: 0 !important;
+                margin: 0 0 20px 0 !important;
                 width: 100% !important;
+                display: block !important;
+                background-color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .print-header-repeat {
                 display: block !important;
                 text-align: center;
-                margin-bottom: 10px;
+                padding: 10px;
+                background: #f8fafc !important;
+                -webkit-print-color-adjust: exact !important;
             }
-            * {
+            .setor-grid-nome {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            /* Remove cabeçalhos de URL e número de página */
+            header, footer { display: none !important; }
         }
 
-        /* ELEMENTOS REPETIDOS NA IMPRESSÃO (ESCONDIDOS NA TELA) */
-        .print-header-repeat { display: none; }
+        /* ELEMENTOS REPETIDOS NA IMPRESSÃO */
+        .print-header-repeat { display: none; border-bottom: 2px solid #eee; margin-bottom: 10px; }
 
-        /* ESTILOS DE TELA */
+        /* ESTILOS GERAIS */
         .btn-dashboard, .btn-tabela, #theme-toggle {
             position: fixed; bottom: 20px; width: 50px; height: 50px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; z-index: 1000;
@@ -79,43 +83,54 @@
             display: none; flex-wrap: wrap; justify-content: center; gap: 15px; 
             margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: 12px;
         }
-        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 800; }
-        .status-badge { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
+        .legenda-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: #1e293b; }
+        
+        /* CORES DAS BADGES - FORÇANDO IMPRESSÃO */
+        .status-badge { 
+            width: 30px; height: 30px; border-radius: 8px; display: flex; 
+            align-items: center; justify-content: center; font-weight: 800; color: white !important;
+            -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+        }
 
         .setor-container { 
             width: 100%; max-width: 1100px; background: var(--bg-card); 
             border-radius: 16px; overflow: hidden; margin-bottom: 40px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .setor-grid-nome { padding: 15px; text-align: center; color: white; font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
         
+        .setor-grid-nome { 
+            padding: 15px; text-align: center; color: white !important; 
+            font-size: 1.3rem; font-weight: 900; text-transform: uppercase;
+            -webkit-print-color-adjust: exact !important;
+        }
+
+        .bg-setor-0 { background-color: #1e40af !important; }
+        .bg-setor-1 { background-color: #065f46 !important; }
+        .bg-setor-2 { background-color: #6b21a8 !important; }
+        .bg-setor-3 { background-color: #9a3412 !important; }
+
         .servidor-item { 
             display: grid; grid-template-columns: 280px 1fr; border-bottom: 1px solid var(--border-color);
-            padding: 15px; align-items: center;
+            padding: 10px 15px; align-items: center;
         }
-        .servidor-nome { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; display: block; }
-        .contato-item { display: flex; align-items: center; gap: 5px; text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-top: 4px; }
+        .servidor-nome { font-size: 1.1rem; font-weight: 800; color: #1e293b; }
 
         .turno-linha { 
             display: grid; grid-template-columns: 80px 1fr; align-items: center;
-            background: var(--bg-turno); padding: 8px; border-radius: 10px; gap: 10px; margin-bottom: 5px;
+            background: var(--bg-turno) !important; padding: 6px; border-radius: 10px; gap: 10px; margin-bottom: 4px;
+            -webkit-print-color-adjust: exact !important;
         }
-        .turno-badge { font-size: 0.6rem; font-weight: 900; padding: 2px 4px; border-radius: 4px; text-align: center; }
-        .m-bg { background: #e0f2fe; color: #0369a1; } .t-bg { background: #fef3c7; color: #92400e; } .n-bg { background: #ede9fe; color: #5b21b6; }
         
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .dia-numero { font-size: 0.9rem; font-weight: 900; }
-        .dia-sigla { font-size: 0.55rem; font-weight: 700; color: var(--texto-secundario); }
+        
+        .c-chefia { background-color: var(--cor-c) !important; color: #000 !important; }
+        .p-presencial { background-color: var(--cor-p) !important; }
+        .t-teletrabalho { background-color: var(--cor-t) !important; }
+        .a-afastado { background-color: var(--cor-a) !important; }
+        .d-descanso { background-color: var(--cor-d) !important; }
+        .vazio { background-color: #e2e8f0 !important; color: #94a3b8 !important; }
 
-        .c-chefia { background-color: var(--cor-c); color: #000; }
-        .p-presencial { background-color: var(--cor-p); }
-        .t-teletrabalho { background-color: var(--cor-t); }
-        .a-afastado { background-color: var(--cor-a); }
-        .d-descanso { background-color: var(--cor-d); }
-        .vazio { background-color: #e2e8f0; color: #94a3b8; }
-
-        .loader-container { padding: 80px; text-align: center; width: 100%; }
         .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
@@ -159,14 +174,13 @@
 
         async function carregarDados() {
             const config = obterConfiguracaoSemana();
-            const hojeIdx = new Date().getDay();
             const legendaHtml = `
-                <div class="legenda-bloco" style="display:flex; border:none; margin-bottom:10px;">
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px;height:20px;font-size:0.7rem">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px;height:20px;font-size:0.7rem">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px;height:20px;font-size:0.7rem">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px;height:20px;font-size:0.7rem">A</span> Afastado</div>
-                    <div class="legenda-item"><span class="status-badge d-descanso" style="width:20px;height:20px;font-size:0.7rem">D</span> Descanso</div>
+                <div style="display:flex; justify-content:center; gap:15px; padding:5px; flex-wrap:wrap;">
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:18px;height:18px;font-size:0.7rem">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:18px;height:18px;font-size:0.7rem">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:18px;height:18px;font-size:0.7rem">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:18px;height:18px;font-size:0.7rem">A</span> Afastado</div>
+                    <div class="legenda-item"><span class="status-badge d-descanso" style="width:18px;height:18px;font-size:0.7rem">D</span> Descanso</div>
                 </div>`;
 
             try {
@@ -174,9 +188,7 @@
                 const dados = await res.json();
                 const linhas = dados.slice(1);
                 const setoresMap = {};
-                const infoSetores = {};
 
-                // Update screen view
                 document.getElementById('mes-area').style.display = 'block';
                 document.getElementById('mes-area').innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
                 document.getElementById('legenda-area').style.display = 'flex';
@@ -186,14 +198,13 @@
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
-                    if (!setoresMap[setor]) { setoresMap[setor] = []; infoSetores[setor] = l1[1]; }
-                    const serv = { nome: l1[2], email: l1[4], zap: l1[5], turnos: [] };
+                    if (!setoresMap[setor]) setoresMap[setor] = [];
+                    const serv = { nome: l1[2], email: l1[4], turnos: [] };
                     
                     [linhas[i], linhas[i+1], linhas[i+2]].forEach((linha, idx) => {
                         if (linha && (linha[3] || linha.slice(6,13).some(d => d && d !== '-'))) {
                             serv.turnos.push({ 
-                                label: idx===0?'Manhã':idx===1?'Tarde':'Noite', 
-                                class: idx===0?'m-bg':idx===1?'t-bg':'n-bg', 
+                                label: idx===0?'M':idx===1?'T':'N', 
                                 hora: linha[3], 
                                 dias: linha.slice(6, 13) 
                             });
@@ -208,23 +219,23 @@
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => `
                             <div class="turno-linha">
-                                <div class="turno-info"><span class="turno-badge ${t.class}">${t.label}</span><span style="font-size:0.7rem">${t.hora || ''}</span></div>
+                                <div style="font-weight:900; font-size:0.7rem; text-align:center;">${t.label}<br><small>${t.hora || ''}</small></div>
                                 <div class="dias-grid">
                                     ${config.dias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
                                         const cl = st==='C'?'c-chefia':st==='P'?'p-presencial':st==='T'?'t-teletrabalho':st==='A'?'a-afastado':st==='D'?'d-descanso':'vazio';
-                                        return `<div class="dia-col"><span class="dia-numero">${info.numero}</span><span class="dia-sigla">${info.sigla}</span><span class="status-badge ${cl}" style="width:28px;height:28px;font-size:0.9rem">${st}</span></div>`;
+                                        return `<div class="dia-col"><span style="font-size:0.7rem;font-weight:bold">${info.numero}</span><span class="status-badge ${cl}">${st}</span></div>`;
                                     }).join('')}
                                 </div>
                             </div>`).join('');
 
-                        servidoresHtml += `<div class="servidor-item"><div><span class="servidor-nome">${serv.nome}</span><span class="contato-item">${serv.email}</span></div><div>${turnosHtml}</div></div>`;
+                        servidoresHtml += `<div class="servidor-item"><div><div class="servidor-nome">${serv.nome}</div><div style="font-size:0.7rem;color:#64748b">${serv.email}</div></div><div>${turnosHtml}</div></div>`;
                     });
 
                     htmlFinal += `
                         <div class="setor-container">
                             <div class="print-header-repeat">
-                                <div style="font-weight:900; font-size:1.2rem;">ESCALA TAE - ${config.texto}</div>
+                                <div style="font-weight:900; font-size:1.1rem; margin-bottom:5px;">ESCALA TAE - ${config.texto}</div>
                                 ${legendaHtml}
                             </div>
                             <div class="setor-grid-nome bg-setor-${sIdx % 4}">${setor}</div>
@@ -233,7 +244,7 @@
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
-                document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
+                document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${new Date().toLocaleDateString()}`;
 
             } catch (e) { document.getElementById('conteudo').innerHTML = "Erro ao carregar."; }
         }
