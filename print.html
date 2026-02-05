@@ -18,79 +18,71 @@
             -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
         }
 
-        /* --- CONFIGURAÇÕES DE IMPRESSÃO --- */
+        /* CONFIGURAÇÕES DE IMPRESSÃO */
         @media print {
-            @page { 
-                size: A4 landscape; 
-                margin: 1cm; 
-            }
-            body { 
-                background-color: white !important; 
-                padding: 0 !important; 
-                display: block !important; 
-            }
-            .no-print, .btn-dashboard, .btn-tabela, #theme-toggle, .header-container { 
-                display: none !important; 
-            }
+            @page { size: A4 landscape; margin: 0.5cm; }
+            body { background-color: white !important; padding: 0 !important; display: block !important; }
+            .no-print, .btn-dashboard, .btn-tabela, #theme-toggle, .header-container, #mes-area, #legenda-area { display: none !important; }
             
             .setor-container { 
                 page-break-after: always; 
                 box-shadow: none !important; 
                 border: 1px solid #eee !important; 
                 width: 100% !important; 
-                margin-bottom: 0 !important; 
+                margin-bottom: 0 !important;
                 display: block !important;
             }
-
-            /* Garante que as cores apareçam na impressão */
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            .print-header-repeat { 
-                display: block !important; 
-                text-align: center; 
-                margin-bottom: 10px; 
+            /* Forçar cores de fundo dos cabeçalhos na impressão */
+            .setor-grid-nome { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
             }
+
+            .print-header-repeat { display: block !important; text-align: center; margin-bottom: 10px; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
         .print-header-repeat { display: none; }
 
-        /* ESTILOS DE UI */
-        .btn-dashboard, .btn-tabela { position: fixed; bottom: 20px; width: 50px; height: 50px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
-        .btn-dashboard { left: 20px; background: #10b981; }
-        .btn-tabela { left: 80px; background: #6366f1; }
+        /* ESTILOS ORIGINAIS */
+        .btn-dashboard { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
+        .btn-tabela { position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px; border-radius: 50%; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--cor-primaria); color: white; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; }
 
         .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
         
-        /* Ajustes nas legendas para caberem na impressão */
-        .legenda-bloco { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: 12px; }
-        .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 800; }
+        .mes-bloco { margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none; }
+        .mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
 
-        .setor-container { width: 100%; max-width: 1000px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 35px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .setor-grid-nome { padding: 15px; text-align: center; color: white !important; font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
+        .legenda-bloco { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; }
 
-        /* Cores dos Setores */
+        .setor-container { width: 100%; max-width: 950px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 35px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .setor-grid-nome { padding: 20px; text-align: center; color: white !important; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
+
         .bg-setor-0 { background-color: #1e40af !important; } 
         .bg-setor-1 { background-color: #065f46 !important; }
         .bg-setor-2 { background-color: #6b21a8 !important; }
         .bg-setor-3 { background-color: #9a3412 !important; }
 
-        .servidor-item { display: grid; grid-template-columns: 280px 1fr; border-bottom: 1px solid var(--border-color); padding: 15px; align-items: center; }
-        .servidor-nome { font-size: 1.1rem; font-weight: 800; margin: 0; display: block; }
+        .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid var(--border-color); padding: 20px; align-items: center; }
+        .servidor-nome { font-size: 1.25rem; font-weight: 800; margin: 0 0 4px 0; display: block; }
+        .contato-zap { display: flex; align-items: center; gap: 5px; text-decoration: none; color: #10b981; font-size: 0.9rem; font-weight: 700; margin-top: 5px; }
 
-        .turno-linha { display: grid; grid-template-columns: 80px 1fr; align-items: center; background: var(--bg-turno) !important; padding: 8px; border-radius: 10px; gap: 10px; margin-bottom: 5px; }
-        .turno-badge { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; padding: 2px 4px; border-radius: 4px; text-align: center; }
+        .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno) !important; padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; }
+        .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
         .m-bg { background: #e0f2fe !important; color: #0369a1 !important; }
         .t-bg { background: #fef3c7 !important; color: #92400e !important; }
         .n-bg { background: #ede9fe !important; color: #5b21b6 !important; }
 
-        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .dia-numero { font-size: 1rem; font-weight: 900; }
-        .dia-sigla { font-size: 0.55rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; }
+        .dia-numero { font-size: 1.1rem; font-weight: 900; }
+        .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; }
         
-        .status-badge { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; color: white !important; }
+        .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white !important; }
 
         .c-chefia { background-color: var(--cor-c) !important; color: #000 !important; }
         .p-presencial { background-color: var(--cor-p) !important; }
@@ -105,14 +97,18 @@
 </head>
 <body>
 
-    <a href="graficos.html" class="btn-dashboard no-print">📊</a>
-    <a href="tabelahorarios.html" class="btn-tabela no-print">📅</a>
-    <button id="theme-toggle" class="no-print">🌓</button>
+    <a href="graficos.html" class="btn-dashboard">📊</a>
+    <a href="tabelahorarios.html" class="btn-tabela">📅</a>
+    <button id="theme-toggle">🌓</button>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Servidores TAE - Campus Capanema</h1>
+        <h1 class="titulo-pagina">Servidores TAE</h1>
+        <h2 class="titulo-pagina">Campus Capanema</h2>
         <div id="data-atualizacao">Sincronizando...</div>
     </div>
+
+    <div id="mes-area" class="mes-bloco"></div>
+    <div id="legenda-area" class="legenda-bloco"></div>
 
     <div id="conteudo" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="loader-container"><div class="spinner"></div></div>
@@ -138,13 +134,14 @@
 
         async function carregarDados() {
             const config = obterConfiguracaoSemana();
+            // Template da legenda para reuso na impressão
             const legendaHtml = `
-                <div class="legenda-bloco">
-                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:20px;height:20px;font-size:0.7rem">P</span> Presencial</div>
-                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:20px;height:20px;font-size:0.7rem">T</span> Teletrabalho</div>
-                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:20px;height:20px;font-size:0.7rem">C</span> Chefia</div>
-                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:20px;height:20px;font-size:0.7rem">A</span> Afastado</div>
-                    <div class="legenda-item"><span class="status-badge d-descanso" style="width:20px;height:20px;font-size:0.7rem">D</span> Descanso</div>
+                <div class="legenda-bloco" style="display:flex; box-shadow:none; border:none; margin:0; padding:10px; justify-content:center; width:100%;">
+                    <div class="legenda-item"><span class="status-badge p-presencial" style="width:24px;height:24px;font-size:0.8rem">P</span> Presencial</div>
+                    <div class="legenda-item"><span class="status-badge t-teletrabalho" style="width:24px;height:24px;font-size:0.8rem">T</span> Teletrabalho</div>
+                    <div class="legenda-item"><span class="status-badge c-chefia" style="width:24px;height:24px;font-size:0.8rem">C</span> Chefia</div>
+                    <div class="legenda-item"><span class="status-badge a-afastado" style="width:24px;height:24px;font-size:0.8rem">A</span> Afastado</div>
+                    <div class="legenda-item"><span class="status-badge d-descanso" style="width:24px;height:24px;font-size:0.8rem">D</span> Descanso</div>
                 </div>`;
 
             try {
@@ -152,6 +149,11 @@
                 const dados = await res.json();
                 const linhas = dados.slice(1);
                 const setoresMap = {};
+
+                document.getElementById('mes-area').style.display = 'block';
+                document.getElementById('mes-area').innerHTML = `<span class="mes-titulo">${config.texto}</span>`;
+                document.getElementById('legenda-area').style.display = 'flex';
+                document.getElementById('legenda-area').innerHTML = legendaHtml;
 
                 for (let i = 0; i < linhas.length; i += 3) {
                     const l1 = linhas[i];
@@ -185,10 +187,7 @@
                     setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => `
                             <div class="turno-linha">
-                                <div class="turno-info">
-                                    <span class="turno-badge ${t.class}">${t.label}</span>
-                                    <span style="font-size:0.65rem; font-weight:700; color:#64748b; display:block;">${t.hora || ''}</span>
-                                </div>
+                                <div class="turno-info"><span class="turno-badge ${t.class}">${t.label}</span><span style="font-size:0.75rem; font-weight:700; color:#64748b; margin-top:3px; display:block;">${t.hora || ''}</span></div>
                                 <div class="dias-grid">
                                     ${config.dias.map((info, dIdx) => {
                                         const st = t.dias[dIdx] ? t.dias[dIdx].toString().toUpperCase() : '-';
@@ -202,21 +201,21 @@
                             <div class="servidor-item">
                                 <div>
                                     <span class="servidor-nome">${serv.nome}</span>
-                                    <span style="font-size:0.8rem; font-weight:600; color:#3b82f6;">${serv.email}</span>
+                                    <span style="font-size:0.9rem; font-weight:600; color:#3b82f6;">${serv.email}</span>
+                                    ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" class="contato-zap" target="_blank"><span> WhatsApp</span></a>` : ''}
                                 </div>
                                 <div>${turnosHtml}</div>
                             </div>`;
                     });
 
-                    // Cada setor ganha um container que força a quebra de página
                     htmlFinal += `
                         <div class="setor-container">
                             <div class="print-header-repeat">
-                                <h2 style="margin:0; text-transform:uppercase; font-size:1.2rem;">ESCALA DE SERVIDORES - ${setor}</h2>
-                                <h3 style="margin:5px 0; color:#64748b; font-size:0.9rem;">PERÍODO: ${config.texto}</h3>
+                                <h2 style="margin:0; text-transform:uppercase; font-size:1.4rem;">${setor}</h2>
+                                <h3 style="margin:5px 0; color:#64748b; font-size:1rem;">MÊS: ${config.texto}</h3>
                                 ${legendaHtml}
                             </div>
-                            <div class="setor-grid-nome bg-setor-${sIdx % 4} no-print">${setor}</div>
+                            <div class="setor-grid-nome bg-setor-${sIdx % 4}">${setor}</div>
                             ${servidoresHtml}
                         </div>`;
                 });
@@ -224,10 +223,7 @@
                 document.getElementById('conteudo').innerHTML = htmlFinal;
                 document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${new Date().toLocaleDateString()}`;
 
-            } catch (e) { 
-                console.error(e);
-                document.getElementById('conteudo').innerHTML = "Erro ao carregar dados."; 
-            }
+            } catch (e) { document.getElementById('conteudo').innerHTML = "Erro ao carregar dados."; }
         }
 
         carregarDados();
