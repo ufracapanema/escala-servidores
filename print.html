@@ -18,6 +18,7 @@
             -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
         }
 
+        /* AJUSTES DE IMPRESSÃO */
         @media print {
             @page { size: A4 landscape; margin: 0.8cm; }
             body { background-color: white !important; padding: 0 !important; display: block !important; }
@@ -29,44 +30,61 @@
         }
 
         .print-header-repeat { display: none; }
+
+        /* UI INTERFACE */
         .btn-dashboard { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         .btn-tabela { position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px; border-radius: 50%; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--cor-primaria); color: white; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; }
+        
         .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
+        
         .mes-bloco { margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none; }
         .mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
+
         .legenda-bloco { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px; }
         .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; }
+
+        /* CABEÇALHO DO SETOR */
         .setor-container { width: 100%; max-width: 950px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 35px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .setor-grid-nome { padding: 15px; text-align: center; color: white !important; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
-        .setor-email-top { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9) !important; margin-top: -10px; padding-bottom: 10px; display: block; text-align: center; }
+        .setor-grid-nome { padding: 15px 20px; text-align: center; color: white !important; font-weight: 900; text-transform: uppercase; }
+        .nome-setor-txt { font-size: 1.6rem; display: block; margin-bottom: 5px; }
+        .email-setor-txt { font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.9); display: block; text-transform: lowercase; }
+
         .bg-setor-0 { background-color: #1e40af !important; } 
         .bg-setor-1 { background-color: #065f46 !important; }
         .bg-setor-2 { background-color: #6b21a8 !important; }
         .bg-setor-3 { background-color: #9a3412 !important; }
+
+        /* ITENS DO SERVIDOR */
         .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid var(--border-color); padding: 20px; align-items: center; }
         .servidor-nome { font-size: 1.25rem; font-weight: 800; margin: 0 0 4px 0; display: block; }
-        .contato-info { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
-        .contato-link { display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+        .contato-info { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .contato-link { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem; font-weight: 700; }
         .email-link { color: #3b82f6; }
         .zap-link { color: #10b981; }
+
+        /* TURNOS E DIAS */
         .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno) !important; padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
         .m-bg { background: #e0f2fe !important; color: #0369a1 !important; }
         .t-bg { background: #fef3c7 !important; color: #92400e !important; }
         .n-bg { background: #ede9fe !important; color: #5b21b6 !important; }
+
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
         .dia-numero { font-size: 1.1rem; font-weight: 900; }
         .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; }
+        
         .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white !important; }
+
         .c-chefia { background-color: var(--cor-c) !important; color: #000 !important; }
         .p-presencial { background-color: var(--cor-p) !important; }
         .t-teletrabalho { background-color: var(--cor-t) !important; }
         .a-afastado { background-color: var(--cor-a) !important; }
         .d-descanso { background-color: var(--cor-d) !important; }
         .vazio { background-color: #e2e8f0 !important; color: #94a3b8 !important; }
+
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
@@ -199,8 +217,8 @@
                                 ${legendaHtml}
                             </div>
                             <div class="setor-grid-nome bg-setor-${sIdx % 4}">
-                                ${setor}
-                                <span class="setor-email-top">${setoresMap[setor].email || ''}</span>
+                                <span class="nome-setor-txt">${setor}</span>
+                                <span class="email-setor-txt">📧 ${setoresMap[setor].email || ''}</span>
                             </div>
                             ${servidoresHtml}
                         </div>`;
@@ -208,8 +226,10 @@
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
                 document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${new Date().toLocaleDateString()}`;
+
             } catch (e) { document.getElementById('conteudo').innerHTML = "Erro ao carregar dados."; }
         }
+
         carregarDados();
     </script>
 </body>
