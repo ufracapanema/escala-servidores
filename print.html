@@ -18,88 +18,64 @@
             -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
         }
 
-        /* CONFIGURAÇÕES DE IMPRESSÃO */
         @media print {
             @page { size: A4 landscape; margin: 0.8cm; }
             body { background-color: white !important; padding: 0 !important; display: block !important; }
             .no-print, .btn-dashboard, .btn-tabela, #theme-toggle, .header-container, #mes-area, #legenda-area { display: none !important; }
-            
-            .setor-container { 
-                page-break-after: always; 
-                box-shadow: none !important; 
-                border: 1px solid #eee !important; 
-                width: 100% !important; 
-                margin-bottom: 0 !important;
-                display: block !important;
-            }
-            
-            .setor-grid-nome { 
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important;
-                color: white !important;
-            }
-
+            .setor-container { page-break-after: always; box-shadow: none !important; border: 1px solid #eee !important; width: 100% !important; margin-bottom: 0 !important; display: block !important; }
+            .setor-grid-nome { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color: white !important; }
             .print-header-repeat { display: block !important; text-align: center; margin-bottom: 10px; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
 
         .print-header-repeat { display: none; }
-
-        /* ESTILOS ORIGINAIS MANTIDOS */
         .btn-dashboard { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         .btn-tabela { position: fixed; bottom: 20px; left: 80px; width: 50px; height: 50px; border-radius: 50%; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
         #theme-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--cor-primaria); color: white; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; }
-
         .header-container { text-align: center; margin-bottom: 20px; width: 100%; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.6rem; font-weight: 900; }
-        
         .mes-bloco { margin-bottom: 15px; background: var(--bg-card); padding: 10px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: none; }
         .mes-titulo { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; }
-
-        .legenda-bloco { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .legenda-bloco { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 30px; background: var(--bg-card); padding: 15px 30px; border-radius: 12px; }
         .legenda-item { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 800; }
-
         .setor-container { width: 100%; max-width: 950px; background: var(--bg-card); border-radius: 16px; overflow: hidden; margin-bottom: 35px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .setor-grid-nome { padding: 20px; text-align: center; color: white !important; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
-
+        .setor-grid-nome { padding: 15px; text-align: center; color: white !important; font-size: 1.5rem; font-weight: 900; text-transform: uppercase; }
+        .setor-email-top { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9) !important; margin-top: -10px; padding-bottom: 10px; display: block; text-align: center; }
         .bg-setor-0 { background-color: #1e40af !important; } 
         .bg-setor-1 { background-color: #065f46 !important; }
         .bg-setor-2 { background-color: #6b21a8 !important; }
         .bg-setor-3 { background-color: #9a3412 !important; }
-
         .servidor-item { display: grid; grid-template-columns: 320px 1fr; border-bottom: 1px solid var(--border-color); padding: 20px; align-items: center; }
         .servidor-nome { font-size: 1.25rem; font-weight: 800; margin: 0 0 4px 0; display: block; }
-        .contato-zap { display: flex; align-items: center; gap: 5px; text-decoration: none; color: #10b981; font-size: 0.9rem; font-weight: 700; margin-top: 5px; }
-
+        .contato-info { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
+        .contato-link { display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+        .email-link { color: #3b82f6; }
+        .zap-link { color: #10b981; }
         .turno-linha { display: grid; grid-template-columns: 85px 1fr; align-items: center; background: var(--bg-turno) !important; padding: 12px; border-radius: 12px; gap: 10px; margin-bottom: 8px; }
         .turno-badge { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; text-align: center; }
         .m-bg { background: #e0f2fe !important; color: #0369a1 !important; }
         .t-bg { background: #fef3c7 !important; color: #92400e !important; }
         .n-bg { background: #ede9fe !important; color: #5b21b6 !important; }
-
         .dias-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .dia-col { text-align: center; display: flex; flex-direction: column; align-items: center; }
         .dia-numero { font-size: 1.1rem; font-weight: 900; }
         .dia-sigla { font-size: 0.6rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; }
-        
         .status-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: white !important; }
-
         .c-chefia { background-color: var(--cor-c) !important; color: #000 !important; }
         .p-presencial { background-color: var(--cor-p) !important; }
         .t-teletrabalho { background-color: var(--cor-t) !important; }
         .a-afastado { background-color: var(--cor-a) !important; }
         .d-descanso { background-color: var(--cor-d) !important; }
         .vazio { background-color: #e2e8f0 !important; color: #94a3b8 !important; }
-
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--cor-primaria); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <a href="graficos.html" class="btn-dashboard">📊</a>
-    <a href="tabelahorarios.html" class="btn-tabela">📅</a>
-    <button id="theme-toggle">🌓</button>
+    <a href="graficos.html" class="btn-dashboard no-print">📊</a>
+    <a href="tabelahorarios.html" class="btn-tabela no-print">📅</a>
+    <button id="theme-toggle" class="no-print">🌓</button>
 
     <div class="header-container">
         <h1 class="titulo-pagina">Servidores TAE</h1>
@@ -117,14 +93,10 @@
     <script>
         const url = 'https://script.google.com/macros/s/AKfycbzHe6FYRN5bwebFslDF-pecwnUWpY9WXDF_Nl9V1sYncbwfIVmZ0k-Mqu6WUDNoYZtZxw/exec';
         
-        // Função para formatar o número de telefone (ex: 91988887777 -> (91) 98888-7777)
         function formatarTelefone(num) {
             const limpo = num.toString().replace(/\D/g, '');
-            if (limpo.length === 11) {
-                return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 7)}-${limpo.substring(7)}`;
-            } else if (limpo.length === 10) {
-                return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 6)}-${limpo.substring(6)}`;
-            }
+            if (limpo.length === 11) return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 7)}-${limpo.substring(7)}`;
+            if (limpo.length === 10) return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 6)}-${limpo.substring(6)}`;
             return num;
         }
 
@@ -134,7 +106,6 @@
             const diffDomingo = hoje.getDate() - diaDaSemana;
             let dias = []; let meses = new Set();
             const siglas = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
-
             for (let i = 0; i < 7; i++) {
                 const d = new Date(hoje.getFullYear(), hoje.getMonth(), diffDomingo + i);
                 dias.push({ numero: d.getDate().toString().padStart(2, '0'), sigla: siglas[i] });
@@ -169,12 +140,12 @@
                     const l1 = linhas[i];
                     if (!l1 || !l1[0]) continue;
                     const setor = l1[0].trim();
-                    if (!setoresMap[setor]) setoresMap[setor] = [];
+                    if (!setoresMap[setor]) setoresMap[setor] = { email: l1[1], servidores: [] };
                     
                     const serv = { 
                         nome: l1[2], 
                         email: l1[4], 
-                        zapOriginal: l1[5] ? l1[5].toString().replace(/\D/g, '') : '',
+                        zap: l1[5] ? l1[5].toString().replace(/\D/g, '') : '',
                         turnos: [] 
                     };
                     
@@ -188,13 +159,13 @@
                             });
                         }
                     });
-                    setoresMap[setor].push(serv);
+                    setoresMap[setor].servidores.push(serv);
                 }
 
                 let htmlFinal = '';
                 Object.keys(setoresMap).sort().forEach((setor, sIdx) => {
                     let servidoresHtml = '';
-                    setoresMap[setor].sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
+                    setoresMap[setor].servidores.sort((a,b) => a.nome.localeCompare(b.nome)).forEach(serv => {
                         let turnosHtml = serv.turnos.map(t => `
                             <div class="turno-linha">
                                 <div class="turno-info"><span class="turno-badge ${t.class}">${t.label}</span><span style="font-size:0.75rem; font-weight:700; color:#64748b; margin-top:3px; display:block;">${t.hora || ''}</span></div>
@@ -211,8 +182,10 @@
                             <div class="servidor-item">
                                 <div>
                                     <span class="servidor-nome">${serv.nome}</span>
-                                    <span style="font-size:0.9rem; font-weight:600; color:#3b82f6;">${serv.email}</span>
-                                    ${serv.zapOriginal ? `<a href="https://wa.me/55${serv.zapOriginal}" class="contato-zap" target="_blank"><span>${formatarTelefone(serv.zapOriginal)}</span></a>` : ''}
+                                    <div class="contato-info">
+                                        <a href="mailto:${serv.email}" class="contato-link email-link"><span>📧 ${serv.email}</span></a>
+                                        ${serv.zap ? `<a href="https://wa.me/55${serv.zap}" class="contato-link zap-link" target="_blank"><span>📱 ${formatarTelefone(serv.zap)}</span></a>` : ''}
+                                    </div>
                                 </div>
                                 <div>${turnosHtml}</div>
                             </div>`;
@@ -225,17 +198,18 @@
                                 <h3 style="margin:5px 0; color:#64748b; font-size:1rem;">MÊS: ${config.texto}</h3>
                                 ${legendaHtml}
                             </div>
-                            <div class="setor-grid-nome bg-setor-${sIdx % 4}">${setor}</div>
+                            <div class="setor-grid-nome bg-setor-${sIdx % 4}">
+                                ${setor}
+                                <span class="setor-email-top">${setoresMap[setor].email || ''}</span>
+                            </div>
                             ${servidoresHtml}
                         </div>`;
                 });
 
                 document.getElementById('conteudo').innerHTML = htmlFinal;
                 document.getElementById('data-atualizacao').innerText = `Sincronizado em: ${new Date().toLocaleDateString()}`;
-
             } catch (e) { document.getElementById('conteudo').innerHTML = "Erro ao carregar dados."; }
         }
-
         carregarDados();
     </script>
 </body>
