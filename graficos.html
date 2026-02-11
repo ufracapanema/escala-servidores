@@ -187,41 +187,85 @@
             } catch (e) { document.getElementById('loading').innerText = "Erro ao carregar dados."; }
         }
 
-        function processar() {
-            const turnoFiltro = document.getElementById('select-turno').value;
-            const diaFiltro = parseInt(document.getElementById('select-dia').value);
-            // Inicializa arrays com 7 posições
-            let semanal = { P:[0,0,0,0,0,0,0], T:[0,0,0,0,0,0,0], C:[0,0,0,0,0,0,0], A:[0,0,0,0,0,0,0], F:[0,0,0,0,0,0,0] };
-            let nomesNoDia = { P:[], T:[], C:[], A:[], F:[] };
+function processar() {
+    const turnoFiltro = document.getElementById('select-turno').value;
+    const diaFiltro = parseInt(document.getElementById('select-dia').value);
+    
+    let semanal = { P:[0,0,0,0,0,0,0], T:[0,0,0,0,0,0,0], C:[0,0,0,0,0,0,0], A:[0,0,0,0,0,0,0], F:[0,0,0,0,0,0,0] };
+    let nomesNoDia = { P:[], T:[], C:[], A:[], F:[] };
 
-            Object.keys(database).forEach(nome => {
-                const blocos = database[nome];
-                const isAfastadoNoDia = (d) => blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
+    Object.keys(database).forEach(nome => {
+        const blocos = database[nome];
+        
+        // 1. Identificar a carga horária individual (ex: "08:00" ou "8")
+        // Pegamos do primeiro bloco que tiver o horário preenchido
+        let rawHorario = blocos.find(l => l && l[3])?.[3] || "0";
+        let cargaHorariaIndividual = parseFloat(rawHorario.toString().replace(',', '.').replace(':', '.')) || 0;
 
-                for (let d = 0; d < 7; d++) { // Loop de 7 dias
-                    let statusFinal = 'F';
-                    
-                    if (isAfastadoNoDia(d)) {
-                        statusFinal = 'A'; 
-                    } else {
-                        let statusEncontrado = new Set();
-                        blocos.forEach((linha, tIdx) => {
-                            if (!linha) return;
-                            const s = linha[6 + d]?.toString().toUpperCase().trim();
-                            if (turnoFiltro === 'todos' || turnoFiltro == tIdx) {
-                                if (['P', 'T', 'C'].includes(s)) statusEncontrado.add(s);
-                            }
-                        });
+        let diasTrabalhados = 0;
+        let statusNoDiaSelecionado = 'F';
 
-                        if (statusEncontrado.has('C')) statusFinal = 'C';
-                        else if (statusEncontrado.has('P')) statusFinal = 'P';
-                        else if (statusEncontrado.has('T')) statusFinal = 'T';
+        // Percorrer os 7 dias para calcular o total semanal
+        for (let d = 0; d < 7; d++) {
+            let statusFinalDia = 'F';
+            let isAfastado = blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
+
+            if (isAfastado) {
+                statusFinalDia = 'A';
+            } else {
+                let statusEncontrado = new Set();
+                blocos.forEach((linha, tIdx) => {
+                    if (!linha) return;
+                    const s = linha[6 + d]?.toString().toUpperCase().trim();
+                    if (['P', 'T', 'C'].includes(s)) {
+                        statusEncontrado.add(s);
                     }
+                });
 
-                    semanal[statusFinal][d]++;
-                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
-                }
-            });
+                if (statusEncontrado.has('C')) statusFinalDia = 'C';
+                else if (statusEncontrado.has('P')) statusFinalDia = 'P';
+                else if (statusEncontrado.has('T')) statusFinalDia = 'T';
+            }
+
+            // Se trabalhou (P, T ou C), incrementa o contador de dias para a multiplicação
+            if (['P', 'T', 'C'].includes(statusFinalDia)) {
+                diasTrabalhados++;
+            }
+
+            // Contagem para os gráficos
+            semanal[statusFinalDia][d]++;
+
+            // Guardar status do dia que o usuário selecionou no filtro
+            if (d === diaFiltro) {
+                statusNoDiaSelecionado = statusFinalDia;
+            }
+        }
+
+        // 2. Realizar a Multiplicação: Carga Horária x Dias Trabalhados
+        let totalHorasSemanais = cargaHorariaIndividual * diasTrabalhados;
+
+        // Adicionar à lista para exibição
+        nomesNoDia[statusNoDiaSelecionado].push({
+            nome: nome.trim(),
+            horas: totalHorasSemanais
+        });
+    });
+
+    // --- Atualização da Interface (DOM) ---
+    document.getElementById('stat-total').innerText = Object.keys(database).length;
+    ['P','T','C','A','F'].forEach(k => {
+        const low = k.toLowerCase();
+        document.getElementById(`stat-${low}`).innerText = semanal[k][diaFiltro];
+        document.getElementById(`count-${low}`).innerText = `(${nomesNoDia[k].length})`;
+        
+        document.getElementById(`list-${low}`).innerHTML = nomesNoDia[k]
+            .sort((a, b) => a.nome.localeCompare(b.nome))
+            .map(item => `<li>${item.nome} <span style="float:right; font-weight:bold;">${item.horas}h</span></li>`)
+            .join('') || '<li>-</li>';
+    });
+
+    renderCharts(semanal, diaFiltro);
+}
 
             document.getElementById('stat-total').innerText = Object.keys(database).length;
             ['P','T','C','A','F'].forEach(k => {
