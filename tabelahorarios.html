@@ -19,20 +19,26 @@
         .btn-voltar { left: 20px; background: #64748b; color: white; }
         .btn-graficos { left: 80px; background: var(--cor-graficos); color: white; }
         #theme-toggle { right: 20px; background: var(--cor-primaria); color: white; }
-        .header-container { text-align: center; margin-bottom: 30px; width: 100%; max-width: 1000px; }
+        .header-container { text-align: center; margin-bottom: 30px; width: 100%; max-width: 1100px; }
         .titulo-pagina { text-transform: uppercase; margin: 0; font-size: 1.5rem; font-weight: 900; }
         #loading { font-weight: bold; margin-top: 10px; color: var(--cor-primaria); }
-        .container { width: 100%; max-width: 1000px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .grid-escala { display: grid; grid-template-columns: 2fr repeat(3, 1.2fr) 1fr; width: 100%; }
-        .grid-header { background: var(--header-bg); color: white; padding: 15px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; text-align: center; }
+        .container { width: 100%; max-width: 1100px; background: var(--bg-card); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        /* Ajuste na Grid para acomodar a nova coluna Semanal */
+        .grid-escala { display: grid; grid-template-columns: 2fr repeat(3, 1fr) 0.8fr 1fr; width: 100%; }
+        
+        .grid-header { background: var(--header-bg); color: white; padding: 15px; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; text-align: center; }
         .grid-setor-row { grid-column: 1 / -1; padding: 12px 20px; font-weight: 900; font-size: 0.85rem; text-transform: uppercase; color: white; letter-spacing: 1px; }
-        .grid-item { padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; }
-        .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 30px; }
-        .grid-item.total { background: rgba(0,0,0,0.02); font-weight: 900; color: var(--cor-primaria); }
-        .grid-soma-setor { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr repeat(3, 1.2fr) 1fr; background: rgba(59, 130, 246, 0.05); border-bottom: 2px solid var(--cor-primaria); }
-        .item-soma { padding: 10px 15px; font-weight: 800; font-size: 0.8rem; text-align: center; color: var(--cor-primaria); }
-        .footer-item { background: var(--header-bg); color: white; padding: 15px; font-weight: 900; text-align: center; font-size: 0.9rem; }
-        @media (max-width: 600px) { .grid-escala { grid-template-columns: 1.5fr repeat(3, 1fr) 0.8fr; } .grid-item.nome { padding-left: 10px; } }
+        .grid-item { padding: 12px 10px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; }
+        .grid-item.nome { justify-content: flex-start; font-weight: 800; border-right: 1px solid var(--border-color); padding-left: 20px; }
+        .grid-item.total { background: rgba(0,0,0,0.02); font-weight: 700; color: var(--texto); border-right: 1px solid var(--border-color); }
+        .grid-item.semanal { background: rgba(59, 130, 246, 0.05); font-weight: 900; color: var(--cor-primaria); }
+        
+        .grid-soma-setor { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr repeat(3, 1fr) 0.8fr 1fr; background: rgba(59, 130, 246, 0.05); border-bottom: 2px solid var(--cor-primaria); }
+        .item-soma { padding: 10px 10px; font-weight: 800; font-size: 0.75rem; text-align: center; color: var(--cor-primaria); }
+        .footer-item { background: var(--header-bg); color: white; padding: 15px; font-weight: 900; text-align: center; font-size: 0.85rem; }
+        
+        @media (max-width: 800px) { .grid-escala { grid-template-columns: 1.5fr repeat(3, 0.8fr) 0.6fr 0.8fr; } }
     </style>
 </head>
 <body>
@@ -41,7 +47,7 @@
     <button id="theme-toggle" class="btn-flutuante"> <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg> </button>
 
     <div class="header-container">
-        <h1 class="titulo-pagina">Tabela de Carga Horária Diária</h1>
+        <h1 class="titulo-pagina">Tabela de Carga Horária Semanal</h1>
         <h2 class="titulo-pagina" style="font-size: 1.1rem; opacity: 0.8;">Campus Capanema</h2>
         <div id="loading">⚡ Sincronizando dados da nuvem...</div>
     </div>
@@ -52,7 +58,8 @@
             <div class="grid-header">Manhã</div>
             <div class="grid-header">Tarde</div>
             <div class="grid-header">Noite</div>
-            <div class="grid-header">Total</div>
+            <div class="grid-header">Diário</div>
+            <div class="grid-header" style="background:var(--cor-primaria)">Semanal</div>
             <div id="grid-corpo" style="display: contents;"></div>
             <div id="grid-rodape" style="display: contents;"></div>
         </div>
@@ -79,32 +86,20 @@
         return m === 0 ? h + "h" : h + "h " + m + "m";
     }
 
-    // FUNÇÃO CORRIGIDA: Validação estrita de entrada
     function calcularMinutos(texto) {
         if (!texto) return 0;
         let s = texto.toString().trim();
-        if (!s || !s.includes('|')) return 0; // Se não tem o separador, ignora (evita falsos 24h)
-
+        if (!s || !s.includes('|')) return 0;
         try {
             const partes = s.split('|').map(x => x.trim());
-            if (partes.length < 2 || !partes[0] || !partes[1]) return 0;
-
             const conv = (timeStr) => { 
                 const [h, m] = timeStr.split(':').map(val => parseInt(val) || 0);
                 return (h * 60) + m; 
             };
-
             const inicio = conv(partes[0]);
             const fim = conv(partes[1]);
-            
-            if (isNaN(inicio) || isNaN(fim)) return 0;
-            
             let diff = fim - inicio;
-            // Só ajusta se a diferença for negativa (ex: 22:00 até 02:00)
             if (diff < 0) diff += 1440; 
-            
-            // Segurança: Se o horário inicial e final forem iguais e o texto não estiver vazio, 
-            // o split pode dar 0. Mas um turno de 0 minutos não deve somar.
             return diff > 0 ? diff : 0;
         } catch (e) { return 0; }
     }
@@ -129,11 +124,11 @@
 
     function processar(db) {
         let html = "";
-        let totalGeralM = 0, totalGeralT = 0, totalGeralN = 0;
+        let totalGeralM = 0, totalGeralT = 0, totalGeralN = 0, totalGeralSemanal = 0;
         const setoresSorted = Object.keys(db).sort();
 
         setoresSorted.forEach((setor, index) => {
-            let setorM = 0, setorT = 0, setorN = 0;
+            let setorM = 0, setorT = 0, setorN = 0, setorSemanal = 0;
             let temServidorAtivo = false;
             let servidoresHtml = "";
             const corSetor = CORES_SETORES[index % CORES_SETORES.length];
@@ -144,30 +139,46 @@
                 const vM = calcularMinutos(b[0] ? b[0][3] : "");
                 const vT = calcularMinutos(b[1] ? b[1][3] : "");
                 const vN = calcularMinutos(b[2] ? b[2][3] : "");
-                const totalServidor = vM + vT + vN;
+                const totalDiario = vM + vT + vN;
 
-                if (totalServidor > 0) {
+                // LÓGICA DE DIAS TRABALHADOS:
+                // Percorre as colunas de 6 a 12 (7 dias da semana) nos 3 blocos de turno
+                let diasTrabalhados = 0;
+                for (let d = 0; d < 7; d++) {
+                    let ativoNoDia = b.some(linha => {
+                        if (!linha) return false;
+                        let status = linha[6 + d]?.toString().toUpperCase().trim();
+                        return ['P', 'T', 'C'].includes(status);
+                    });
+                    if (ativoNoDia) diasTrabalhados++;
+                }
+
+                const totalSemanal = totalDiario * diasTrabalhados;
+
+                if (totalDiario > 0) {
                     temServidorAtivo = true;
-                    setorM += vM; setorT += vT; setorN += vN;
+                    setorM += vM; setorT += vT; setorN += vN; setorSemanal += totalSemanal;
                     servidoresHtml += `
                         <div class="grid-item nome">${n}</div>
                         <div class="grid-item">${vM > 0 ? b[0][3] : "-"}</div>
                         <div class="grid-item">${vT > 0 ? b[1][3] : "-"}</div>
                         <div class="grid-item">${vN > 0 ? b[2][3] : "-"}</div>
-                        <div class="grid-item total">${formatarH(totalServidor)}</div>
+                        <div class="grid-item total">${formatarH(totalDiario)}</div>
+                        <div class="grid-item semanal">${formatarH(totalSemanal)}</div>
                     `;
                 }
             });
 
             if (temServidorAtivo) {
-                totalGeralM += setorM; totalGeralT += setorT; totalGeralN += setorN;
+                totalGeralM += setorM; totalGeralT += setorT; totalGeralN += setorN; totalGeralSemanal += setorSemanal;
                 html += `<div class="grid-setor-row" style="background:${corSetor}">${setor}</div>` + servidoresHtml + `
                     <div class="grid-soma-setor">
                         <div class="item-soma" style="text-align:left; padding-left:20px">SUBTOTAL</div>
                         <div class="item-soma">${formatarH(setorM)}</div>
                         <div class="item-soma">${formatarH(setorT)}</div>
                         <div class="item-soma">${formatarH(setorN)}</div>
-                        <div class="item-soma" style="font-weight:900">${formatarH(setorM + setorT + setorN)}</div>
+                        <div class="item-soma" style="color:var(--texto)">${formatarH(setorM + setorT + setorN)}</div>
+                        <div class="item-soma" style="font-weight:900">${formatarH(setorSemanal)}</div>
                     </div>`;
             }
         });
@@ -178,7 +189,8 @@
             <div class="footer-item">${formatarH(totalGeralM)}</div>
             <div class="footer-item">${formatarH(totalGeralT)}</div>
             <div class="footer-item">${formatarH(totalGeralN)}</div>
-            <div class="footer-item" style="background:var(--cor-primaria)">${formatarH(totalGeralM + totalGeralT + totalGeralN)}</div>`;
+            <div class="footer-item">${formatarH(totalGeralM + totalGeralT + totalGeralN)}</div>
+            <div class="footer-item" style="background:var(--cor-primaria)">${formatarH(totalGeralSemanal)}</div>`;
         document.getElementById('loading').style.display = 'none';
         document.getElementById('grade-container').style.display = 'grid';
     }
