@@ -49,14 +49,6 @@
         @media (min-width: 768px) { .charts-container { grid-template-columns: 1fr 1.5fr; } }
         .chart-box { background: var(--bg-card); padding: 20px; border-radius: 16px; min-height: 400px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* Estilos da Nova Tabela */
-        .table-area { max-width: 1200px; margin: 0 auto 30px; background: var(--bg-card); padding: 20px; border-radius: 16px; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-item-lista); color: var(--cor-f); text-transform: uppercase; font-size: 0.7rem; }
-        td { padding: 10px; border-bottom: 1px solid var(--border-item-lista); }
-        .col-dia { text-align: center; width: 60px; }
-        .col-total { font-weight: 800; background: rgba(59, 130, 246, 0.05); text-align: center; }
-
         .lista-detalhada { max-width: 1200px; margin: 0 auto 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .coluna-lista { background: var(--bg-card); border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid; }
         .coluna-p { border-top-color: var(--cor-p); } .coluna-t { border-top-color: var(--cor-t); }
@@ -126,22 +118,6 @@
             <div class="chart-box"><canvas id="chartSemanal"></canvas></div>
         </div>
 
-        <div class="table-area">
-            <h3 style="font-size: 0.8rem; margin-bottom: 15px; color: var(--cor-f);">RELATÓRIO SEMANAL DE HORAS (CARGA X DIAS)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Servidor</th>
-                        <th class="col-dia">Carga</th>
-                        <th class="col-dia">Dom</th><th class="col-dia">Seg</th><th class="col-dia">Ter</th>
-                        <th class="col-dia">Qua</th><th class="col-dia">Qui</th><th class="col-dia">Sex</th><th class="col-dia">Sáb</th>
-                        <th class="col-total">Total</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-tabela"></tbody>
-            </table>
-        </div>
-
         <div class="lista-detalhada">
             <div class="coluna-lista coluna-p"><h4>Presencial <span id="count-p">0</span></h4><ul id="list-p"></ul></div>
             <div class="coluna-lista coluna-t"><h4>Teletrabalho <span id="count-t">0</span></h4><ul id="list-t"></ul></div>
@@ -179,21 +155,30 @@
                     const nome = rows[i] ? rows[i][2]?.trim() : null;
                     if (nome && !nome.includes('@')) {
                         const blocos = [rows[i], rows[i+1], rows[i+2]];
+                        
                         const temHorario = blocos.some(l => l && l[3] && l[3].toString().trim() !== "");
                         const temLetra = blocos.some(l => {
                             if(!l) return false;
-                            for(let d=0; d<7; d++) {
+                            for(let d=0; d<7; d++) { // Aumentado para 7 dias
                                 let s = l[6+d]?.toString().toUpperCase().trim();
                                 if(['P','T','C','A'].includes(s)) return true;
                             }
                             return false;
                         });
-                        if (temHorario || temLetra) database[nome] = blocos;
+
+                        if (temHorario || temLetra) {
+                            database[nome] = blocos;
+                        }
                     }
                 }
+
                 const agora = new Date();
-                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString('pt-BR')} às ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}`;
-                document.getElementById('select-dia').value = agora.getDay();
+                document.getElementById('timestamp').innerText = `Sincronizado em: ${agora.toLocaleDateString('pt-BR')} às ${agora.getHours().toString().padStart(2, '0')}:${agora.getMinutes().toString().padStart(2, '0')}:${agora.getSeconds().toString().padStart(2, '0')}`;
+                                
+                // Ajuste para pegar o dia correto (0=Dom, 6=Sáb)
+                const hoje = new Date().getDay();
+                document.getElementById('select-dia').value = hoje;
+                
                 document.getElementById('select-turno').addEventListener('change', processar);
                 document.getElementById('select-dia').addEventListener('change', processar);
                 processar();
@@ -205,26 +190,20 @@
         function processar() {
             const turnoFiltro = document.getElementById('select-turno').value;
             const diaFiltro = parseInt(document.getElementById('select-dia').value);
+            // Inicializa arrays com 7 posições
             let semanal = { P:[0,0,0,0,0,0,0], T:[0,0,0,0,0,0,0], C:[0,0,0,0,0,0,0], A:[0,0,0,0,0,0,0], F:[0,0,0,0,0,0,0] };
             let nomesNoDia = { P:[], T:[], C:[], A:[], F:[] };
-            let htmlTabela = "";
 
-            Object.keys(database).sort().forEach(nome => {
+            Object.keys(database).forEach(nome => {
                 const blocos = database[nome];
-                
-                // Extrai carga horária individual da coluna l[3]
-                let rawHorario = blocos.find(l => l && l[3])?.[3] || "0";
-                let cargaH = parseFloat(rawHorario.toString().replace(',', '.').replace(':', '.')) || 0;
-                
-                let totalHorasSemana = 0;
-                let tdsDias = "";
+                const isAfastadoNoDia = (d) => blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
 
-                for (let d = 0; d < 7; d++) {
+                for (let d = 0; d < 7; d++) { // Loop de 7 dias
                     let statusFinal = 'F';
-                    const isAfastado = blocos.some(l => l && l[6+d]?.toString().toUpperCase().trim() === 'A');
-
-                    if (isAfastado) statusFinal = 'A';
-                    else {
+                    
+                    if (isAfastadoNoDia(d)) {
+                        statusFinal = 'A'; 
+                    } else {
                         let statusEncontrado = new Set();
                         blocos.forEach((linha, tIdx) => {
                             if (!linha) return;
@@ -233,32 +212,17 @@
                                 if (['P', 'T', 'C'].includes(s)) statusEncontrado.add(s);
                             }
                         });
+
                         if (statusEncontrado.has('C')) statusFinal = 'C';
                         else if (statusEncontrado.has('P')) statusFinal = 'P';
                         else if (statusEncontrado.has('T')) statusFinal = 'T';
                     }
 
-                    // Cálculo da hora no dia
-                    let hNoDia = (['P', 'T', 'C'].includes(statusFinal)) ? cargaH : 0;
-                    totalHorasSemana += hNoDia;
-
-                    // Estilo da célula baseado no status
-                    let bg = statusFinal === 'F' ? 'transparent' : (statusFinal === 'A' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)');
-                    tdsDias += `<td class="col-dia" style="background:${bg}">${hNoDia > 0 ? hNoDia+'h' : '-'}</td>`;
-
                     semanal[statusFinal][d]++;
-                    if (d === diaFiltro) nomesNoDia[statusFinal].push(`${nome} (${totalHorasSemana}h)`);
+                    if (d === diaFiltro) nomesNoDia[statusFinal].push(nome.trim());
                 }
-
-                htmlTabela += `<tr>
-                    <td style="font-weight:600">${nome}</td>
-                    <td class="col-dia">${cargaH}h</td>
-                    ${tdsDias}
-                    <td class="col-total">${totalHorasSemana}h</td>
-                </tr>`;
             });
 
-            document.getElementById('corpo-tabela').innerHTML = htmlTabela;
             document.getElementById('stat-total').innerText = Object.keys(database).length;
             ['P','T','C','A','F'].forEach(k => {
                 const low = k.toLowerCase();
@@ -290,7 +254,7 @@
             charts.bar = new Chart(document.getElementById('chartSemanal'), {
                 type: 'bar',
                 data: {
-                    labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                    labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'], // Legendas atualizadas
                     datasets: [
                         { label: 'Presencial', data: vol.P, backgroundColor: cores[0] },
                         { label: 'Teletrabalho', data: vol.T, backgroundColor: cores[1] },
