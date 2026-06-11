@@ -110,21 +110,21 @@
         .emp-info { font-weight: 800; color: #0f172a; font-size: 18px; margin-bottom: 6px; text-transform: uppercase; }
         .emp-contact { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
 
-        /* Badges de Status */
-        .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-top: 8px; text-align: center; }
+        /* Badges de Status (Ajustado margem superior para espaçar bem na quebra vertical) */
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-top: 6px; text-align: center; }
         .badge-presencial { background-color: #dcfce7; color: #15803d; }
         .badge-teletrabalho { background-color: #f3e8ff; color: #7e22ce; }
         .badge-afastado { background-color: #fee2e2; color: #b91c1c; }
         .badge-chefia { background-color: #fef3c7; color: #b45309; }
         .badge-descanso { background-color: #f1f5f9; color: #475569; }
         
-        .horario { font-size: 15px; font-weight: 600; color: #334155; white-space: pre-line; line-height: 1.4; text-align: center; }
+        .horario { font-size: 15px; font-weight: 600; color: #334155; white-space: pre-line; line-height: 1.5; text-align: center; }
         .dia-vazio { color: #94a3b8; font-style: italic; font-size: 14px; text-align: center; }
 
         #loading { text-align: center; padding: 50px; font-size: 20px; color: var(--text-secondary); font-weight: 500; }
 
         /* ==========================================================================
-           MÁGICA DA RESPONSIVIDADE CORRIGIDA (CENTRALIZAÇÃO PERFEITA NO MOBILE)
+           MÁGICA DA RESPONSIVIDADE (CENTRALIZAÇÃO PERFEITA NO MOBILE)
            ========================================================================== */
         @media (max-width: 850px) {
             table, thead, tbody, th, td, tr { display: block; }
@@ -186,13 +186,13 @@
     <div class="container">
         <header>
             <h1>Escala de Trabalho dos Funcionários</h1>
-            <div class="subtitle">Painel inteligente e adaptável com tipografia ampliada</div>
+            <div class="subtitle">Painel inteligente e adaptável com múltiplos blocos de horários empilhados</div>
         </header>
 
         <div class="filters">
             <div class="filter-group">
                 <label for="search-input">🔍 Buscar Funcionário</label>
-                <input type="text" id="search-input" placeholder="Digite o nome para pesquisar..." oninput="filtrarDados()">
+                <input text="text" id="search-input" placeholder="Digite o nome para pesquisar..." oninput="filtrarDados()">
             </div>
             <div class="filter-group">
                 <label for="sector-select">🏢 Filtrar por Setor</label>
@@ -217,28 +217,17 @@
         let dadosGlobais = [];
         let mapeamentoCoresSetor = {};
 
-        // NOVO: Função Inteligente de Máscara para Telefone
         function formatarTelefone(telefoneBruto) {
             if (!telefoneBruto) return null;
-            
-            // Remove tudo o que não for número (parênteses, traços, espaços)
             let numeros = telefoneBruto.toString().replace(/\D/g, '');
-            
-            // Se o usuário digitou o código do país (55), remove para não quebrar a máscara nacional
             if (numeros.length > 11 && numeros.startsWith('55')) {
                 numeros = numeros.substring(2);
             }
-            
-            // Aplica a máscara baseada na quantidade de números restantes
             if (numeros.length === 11) {
-                // Celular com 9 dígitos: (XX) XXXXX-XXXX
                 return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 7)}-${numeros.substring(7)}`;
             } else if (numeros.length === 10) {
-                // Fixo ou celular antigo com 8 dígitos: (XX) XXXX-XXXX
                 return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 6)}-${numeros.substring(6)}`;
             }
-            
-            // Caso o número esteja incompleto ou bizarro, retorna ele limpo mesmo
             return numeros;
         }
 
@@ -303,25 +292,36 @@
             }
         }
 
+        // NOVO: Função de quebra de linha dinâmica baseada em múltiplos pipes "|"
         function renderizarCelulaDia(celulaValor) {
             if (!celulaValor || celulaValor.toString().trim() === "") {
                 return `<div class="celula-mobile-wrapper"><div class="dia-vazio">FOLGA</div></div>`;
             }
             
+            // Verifica se existem separadores "|"
             if (celulaValor.toString().includes('|')) {
-                const partes = celulaValor.split('|');
-                const horario = partes[0].trim();
-                const status = partes[1].trim();
+                // Divide todas as partes encontradas removendo espaços extras nas pontas
+                const partes = celulaValor.split('|').map(p => p.trim()).filter(p => p !== "");
                 
-                const classeBadge = status.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+                // O último elemento quase sempre é o status/local de trabalho (ex: Presencial, Teletrabalho)
+                const textoStatus = partes[partes.length - 1];
+                
+                // Coleta todos os elementos anteriores (que são os blocos de horários) e une-os com quebra de linha
+                const horariosApenas = partes.slice(0, partes.length - 1);
+                const textoHorariosEmpilhados = horariosApenas.join('\n');
+                
+                // Gera a classe CSS da badge para estilização correta
+                const classeBadge = textoStatus.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
                 
                 return `
                     <div class="celula-mobile-wrapper">
-                        <div class="horario">${horario}</div>
-                        <span class="badge badge-${classeBadge}">${status}</span>
+                        <div class="horario">${textoHorariosEmpilhados}</div>
+                        <span class="badge badge-${classeBadge}">${textoStatus}</span>
                     </div>
                 `;
             }
+            
+            // Caso não tenha "|" (Ex: apenas "FOLGA" escrito), renderiza como texto direto
             return `<div class="celula-mobile-wrapper"><div class="horario">${celulaValor}</div></div>`;
         }
 
@@ -346,7 +346,6 @@
                 
                 let linesTabelaHtml = '';
                 setor.membros.forEach(m => {
-                    // NOVO: Aplica a máscara visual mantendo o link do WhatsApp com o número limpo por trás
                     const foneFormatado = formatarTelefone(m.telefone);
                     const foneLimpoParaLink = m.telefone.replace(/\D/g,'');
                     
